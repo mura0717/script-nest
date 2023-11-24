@@ -1,11 +1,10 @@
 import "dotenv/config";
 
 //DB Setup
-import * as dbConnection from './config/database/firabaseDB.js'
+//import * as dbConnection from './config/firebase/firebaseConfig.js'
 //import { setupDatabase } from "./config/database/createDatabase.js";
 
 // Firabase Setup
-import admin from './config/firebase/firebaseConfig.js';
 
 // Express Setup
 import express from "express";
@@ -30,7 +29,13 @@ app.use(cors({
 
 app.get("/", (req, res) => {
     res.send({data: "Script Nest server is running."})
-}); 
+});
+
+import { testDB } from "./services/usersServices.js";
+app.get("/createdummyusers", (req, res) => {
+    testDB();
+    res.send("200");
+})
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log("Server is running on port ", PORT))
