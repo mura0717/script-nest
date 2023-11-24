@@ -4,11 +4,15 @@ import "dotenv/config";
 import * as dbConnection from './config/database/firabaseDB.js'
 //import { setupDatabase } from "./config/database/createDatabase.js";
 
+// Firabase Setup
+import admin from './config/firebase/firebaseConfig.js';
+
 // Express Setup
 import express from "express";
 const app = express();
 //app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+
 
 
 /* import bodyParser from "body-parser";
@@ -21,6 +25,8 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     optionsSuccessStatus: 204,
 })); */
+
+
 
 app.get("/", (req, res) => {
     res.send({data: "Script Nest server is running."})
