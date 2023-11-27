@@ -1,8 +1,31 @@
 import { addDoc, collection, getFirestore } from "firebase/firestore";
-import { createFirebaseApp } from "../config/firebase/firebaseConfig.js";
+import { createFirebaseApp } from "../config/firebaseConfig.js";
+import admin from "../config/firebaseAdmin.js";
 
 const app = createFirebaseApp()
 const db = getFirestore(app)
+
+
+export const getUser = async (userId) => {
+
+}
+
+export const getAllUsers = async () => {
+
+}
+
+/* export const createUser = async (userData) => {
+ 
+} */
+
+export const editUser = async (userId) => {
+ 
+}
+
+export const deleteUser = async (userId) => {
+ 
+}
+
 
 //firebase collection
 const collectionName = "users";
