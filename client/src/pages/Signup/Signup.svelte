@@ -1,5 +1,6 @@
 <script>
   import "./signup.css";
+  import "../../styles/global.css";
   import { postRequest } from "../../store/fetchStore.js";
   import { navigate } from "svelte-navigator";
   import { user } from "../../store/userStore.js";
@@ -28,72 +29,84 @@
   }
 
   async function handleSignup() {
+    console.log("handleSignup clicked.");
     if (!inputCheck()) return;
     if (!passwordCheck()) return;
     try {
-      const response = await postRequest("/api/auth/signup", {
-        name,
-        email,
-        password,
-      });
-      if (response.status === 200) {
+      const response = await postRequest("/api/auth/signup", { name, email, password });
+      if (response.success) {
         toast.success("Signup successful!");
         navigate("/auth/login");
       } else {
-        toast.error("Signup failed. Please try again.");
+        toast.error(response.message || "Signup failed. Please try again.");
       }
     } catch (error) {
       console.error("Error during signup:", error);
-      toast.error("An error occurred during signup.");
+      toast.error(error.message || "An error occurred during registration.");
     }
   }
 </script>
 
 <Toaster />
 
-<h1>Sign Up</h1>
+<body>
+  <main>
+    <div class="page-title">
+      <h1>Sign Up</h1>
+    </div>
 
-<div class="signup-container">
-  <div>
-    <label for="name-input">Name:</label>
-    <div>
-      <input type="text" id="name-input" placeholder="Name" bind:value={name} />
+    <div class="signup-container">
+      <div>
+        <label for="name-input">Name:</label>
+        <div>
+          <input
+            class="input-field"
+            type="text"
+            id="name-input"
+            placeholder="Name"
+            bind:value={name}
+          />
+        </div>
+      </div>
+      <div>
+        <label for="email-input">Email:</label>
+        <div>
+          <input
+            class="input-field"
+            type="email"
+            id="email-input"
+            placeholder="Email"
+            bind:value={email}
+          />
+        </div>
+      </div>
+      <div>
+        <label for="password-input">Password:</label>
+        <div>
+          <input
+            class="input-field"
+            type="password"
+            id="password-input"
+            placeholder="Password"
+            bind:value={password}
+          />
+        </div>
+      </div>
+      <div>
+        <label for="rePassword-input">Re-Password:</label>
+        <div>
+          <input
+            class="input-field"
+            type="password"
+            id="rePassword-input"
+            placeholder="Re-Password"
+            bind:value={rePassword}
+          />
+        </div>
+      </div>
+      <div class="submit-button-container">
+        <button class="submit-button" type="submit" on:click={handleSignup}>Register</button>
+      </div>
     </div>
-  </div>
-  <div>
-    <label for="email-input">Email:</label>
-    <div>
-      <input
-        type="email"
-        id="email-input"
-        placeholder="Email"
-        bind:value={email}
-      />
-    </div>
-  </div>
-  <div>
-    <label for="password-input">Password:</label>
-    <div>
-      <input
-        type="password"
-        id="password-input"
-        placeholder="Password"
-        bind:value={password}
-      />
-    </div>
-  </div>
-  <div>
-    <label for="rePassword-input">Re-Password:</label>
-    <div>
-      <input
-        type="password"
-        id="rePassword-input"
-        placeholder="Re-Password"
-        bind:value={rePassword}
-      />
-    </div>
-  </div>
-  <div>
-    <button type="submit" on:click={handleSignup}>Register</button>
-  </div>
-</div>
+  </main>
+</body>

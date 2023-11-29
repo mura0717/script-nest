@@ -1,2 +1,12 @@
-## dummy user GET
+## firestore dummy user GET
 GET http://localhost:8080/createdummyusers
+
+## signup POST request
+POST http://localhost:8080/api/auth/signup HTTP/1.1
+content-type: application/json
+
+{
+    "name": "User1",
+    "email": "muratkaanarici+user1@gmail.com",
+    "password": "123"
+}

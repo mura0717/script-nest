@@ -1,18 +1,12 @@
-.form-container {
-    display: grid;
-    grid-template-columns: auto auto;
-    gap: 10px;
-    max-width: 500px;
-    margin: 20px;
+.idea-edit-button-container {
+    padding-top: 1rem;
+    padding-left: 3rem;
 }
 
-.button-area {
-    padding: 5px;
-}
 .form-edit-button {
     grid-column: span 2;
     padding: 5px 25px;
-    background-color: #bcbcbc;
+    background-color:darkkhaki;
     color: rgb(0, 0, 0);
     border:1em;
     border-radius: 4px;
@@ -20,5 +14,34 @@
 }
 
 .form-edit-button:hover {
-    background-color: #dedede;
+    background-color:khaki;
 }
+
+.idea-form-container {
+    flex-direction: column;
+    padding-left: 2rem;
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 10px;
+    max-width: 500px;
+    margin: 20px;
+}
+
+.idea-form-elements-container {
+    flex-direction: column;
+}
+
+.idea-form-element {
+    padding-bottom: 1rem;
+}
+
+.idea-form-element-label {
+    font-weight: bold;
+}
+
+.idea-input-field {
+    background-color:beige;
+    border-color: rgb(200, 200, 200);
+    border-width: 1px;
+}
+

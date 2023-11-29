@@ -1,0 +1,13 @@
+.scriptnest-logo {
+    padding-top: 1rem;
+    padding-left: 2rem;
+    max-height: 180px;
+    max-width: 360px;
+}
+
+.index-tagline {
+    padding-top: 1rem;
+    padding-left: 4rem;
+    font-weight: 500;
+    font-size: larger;
+}

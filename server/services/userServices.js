@@ -1,5 +1,5 @@
 import { addDoc, collection, getFirestore } from "firebase/firestore";
-import { createFirebaseApp } from "../config/firebaseConfig.js";
+import { createFirebaseApp } from "../config/firebaseServerConfig.js";
 import admin from "../config/firebaseAdmin.js";
 
 const app = createFirebaseApp()

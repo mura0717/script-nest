@@ -11,7 +11,7 @@
         <li><a href="/auth/login">Login</a></li>
         <li><a href="/">Logout</a></li>
         <li><a href="/auth/signup">Signup</a></li>
-        <li><a href="/auth/userprofile">Profile</a></li>
+        <li><a href="/auth/user">Profile</a></li>
         <li><a href="/auth/ideaform">IdeaForm</a></li>
         <li><a href="/auth/contact">Contact</a></li>
         <li>

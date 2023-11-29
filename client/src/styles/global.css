@@ -1,0 +1,27 @@
+/* PAGE STYLING */
+.page-title {
+    padding: 1rem;
+    font-size:x-large;
+}
+
+.global-font {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+/* FORM STYLING */
+.input-field {
+    background-color:beige;
+    border-color: rgb(200, 200, 200);
+    border-width: 1px;
+}
+
+.submit-button {
+    padding: 3px;
+    background-color:cyan;
+    border-color: black;
+    border-width: 1px;
+}
+
+.submit-button-container {
+    padding-top: 1rem;
+}
