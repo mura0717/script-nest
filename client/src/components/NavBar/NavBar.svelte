@@ -1,5 +1,12 @@
 <script>
     import "./NavBar.css";
+    import toast, { Toaster } from "svelte-french-toast";
+    import { userStore } from "../../store/userStore.js";
+    import { getRequest } from '../../store/fetchStore.js';
+  //import { isLoggedIn } from "../../store/loginStatus.js";
+  import { navigate } from "svelte-navigator";
+
+ 
 </script>
 
 <nav class="navbar">

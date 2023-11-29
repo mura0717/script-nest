@@ -5,26 +5,29 @@ import admin from "../config/firebaseAdmin.js";
 const app = createFirebaseApp()
 const db = getFirestore(app)
 
+const userService = {
 
-export const getUser = async (userId) => {
+  getUser: async (userId) => {
 
-}
+  },
+  
+  getAllUsers: async () => {
+  
+  },
+  
+  /* export const createUser = async (userData) => {
+   
+  } */
+  
+  editUser: async (userId) => {
+   
+  },
+  
+  deleteUser: async (userId) => {
+   
+  }
 
-export const getAllUsers = async () => {
-
-}
-
-/* export const createUser = async (userData) => {
- 
-} */
-
-export const editUser = async (userId) => {
- 
-}
-
-export const deleteUser = async (userId) => {
- 
-}
+};
 
 
 //firebase collection
@@ -80,4 +83,6 @@ export const testDB = async () => {
 }
 
 
+
+export default userService;
 

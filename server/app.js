@@ -40,6 +40,9 @@ app.get("/createdummyusers", (req, res) => {
 import authRouters from "./routers/authRouters.js";
 app.use(authRouters);
 
+import userRouters from "./routers/userRouters.js";
+app.use(userRouters);
+
 //Server Test
 app.get("/test", (req, res) => {
     res.send('Test endpoint is working')

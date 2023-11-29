@@ -1,4 +1,5 @@
 import "./app.pcss";
+import "./config/firebaseClientConfig.js";
 import App from "./App.svelte";
 
 const app = new App({

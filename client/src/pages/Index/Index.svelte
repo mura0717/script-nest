@@ -10,7 +10,7 @@
             <img src={scriptnestLogo} alt="Script Nest Logo">
         </div>
         <div class="global-font index-tagline">
-            <h1>Film ideas organized simpler!</h1>
+            <h1>Script ideas organized simpler!</h1>
         </div>
     </main>
 </body>

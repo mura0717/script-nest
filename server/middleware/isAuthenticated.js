@@ -1,6 +1,6 @@
 import admin from "../config/firebaseAdmin.js";
 
-export async function requireLogin(req, res, next) {
+ async function isAuthenticated(req, res, next) {
   try {
     const token = req.headers.authorization;
     if (!token) {
@@ -15,3 +15,5 @@ export async function requireLogin(req, res, next) {
     res.status(401).json({ message: "Not authenticated." });
   }
 }
+
+export default isAuthenticated;

@@ -1,22 +1,22 @@
 <script>
     import { navigate, useLocation } from "svelte-navigator";
-    import { user } from "../../store/usersStore.js";
+    import { userStore } from "../../store/userStore.js";
 
     const location = useLocation();
   
-    $: if(!$user){
-        navigate("/auth/login", {
+    $: if(!$userStore.user){
+        navigate("/auth/login", { //user not logged in
         state: { from: $location.pathname },
         replace: true,
       });
-    } else if ($user.isAdmin == 0) {
-      navigate("/auth/user/profile", {
+    } else if ($userStore.isAdmin == true) {
+      navigate("/auth/admin/profile", {
         state: { from: $location.pathname },
         replace: true,
       });
     } 
   </script>
   
-  {#if $user}
+  {#if $userStore.user}
     <slot />
   {/if}

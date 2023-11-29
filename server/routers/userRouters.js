@@ -1,20 +1,22 @@
 import { Router } from "express";
 const router = Router();
+import AppError from "../utils/errorHandling/AppError.js";
+import { catchAsync } from "../utils/errorHandling/errorHandlers.js";
 import userServices from "../services/userServices.js";
-import { requireAdmin } from "../middleware/requireAdmin.js";
+import isAdmin from "../middleware/isAdmin.js";
 
-/* // User name fetch
-router.get("/api/auth/user/profile", async (req, res) => {
-  const userName = req.session.user;
-  if (userName) {
-    res.send(200).json({ message: "User's name fetched.", data: userName });
+ // User name fetch
+router.get("/api/auth/user/profile", catchAsync(async (req, res, next) => {
+  const { displayName } = req.query;
+  if (!displayName) {  
+    return next(new AppError("User's name couldn't fetched.", 401));
   } else {
-    res.send(401).json({ message: "User's name couldn't fetched." });
+    res.status(200).json({ success: true, message: "User's name fetched.", data: displayName  });
   }
-});
+}));
 
 // All users fetch
-router.get("/api/auth/admin", requireAdmin, async (req, res) => {
+router.get("/api/auth/admin", isAdmin, async (req, res) => {
   try {
     const results = await usersService.getAllUsers();
     if (results.allUsers && results.allUsers.length >= 0) {
@@ -30,4 +32,4 @@ router.get("/api/auth/admin", requireAdmin, async (req, res) => {
   }
 });
 
-export default router; */
+export default router;

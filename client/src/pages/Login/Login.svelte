@@ -4,7 +4,7 @@
   import { auth } from '../../config/firebaseClientConfig.js';
   import { postRequest } from "../../store/fetchStore.js";
   import { navigate } from "svelte-navigator";
-  import { user } from "../../store/userStore.js";
+  import { userStore } from "../../store/userStore.js";
   import { updateLoginStatus } from "../../store/loginStatus.js";
   import toast, { Toaster } from "svelte-french-toast";
 
