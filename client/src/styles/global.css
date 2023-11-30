@@ -1,11 +1,30 @@
-/* PAGE STYLING */
-.page-title {
-    padding: 1rem;
-    font-size:x-large;
+/*PAGE STRUCTURE */
+body, html {
+  height: 100%;
+  margin: 0;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+}
+
+
+/*FONTS */
+@font-face {
+  font-family: 'American Typewriter';
+  src: url('./fonts/American Typewriter Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
 }
 
 .global-font {
-    font-family: 'Courier New', Courier, monospace;
+    font-family: 'American Typewriter', 'Courier New', 'Courier', 'monospace';
 }
 
 /* FORM STYLING */

@@ -39,9 +39,12 @@
   function toggleEdit() {
     isEditable = !isEditable;
   }
-</script>
 
-<body>
+  async function saveIdeaForm() {
+
+  } 
+ </script>
+
   <main class="global-font">
     <div class="idea-edit-button-container">
       <button class="form-edit-button" type="button" on:click={toggleEdit}>
@@ -217,4 +220,3 @@
       </form>
     </div>
   </main>
-</body>

@@ -49,7 +49,6 @@
 
 <Toaster />
 
-<body>
   <main>
     <div class="page-title">
       <h1>Sign Up</h1>
@@ -109,4 +108,3 @@
       </div>
     </div>
   </main>
-</body>

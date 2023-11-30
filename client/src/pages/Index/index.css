@@ -1,13 +1,9 @@
-.scriptnest-logo {
-    padding-top: 1rem;
-    padding-left: 2rem;
-    max-height: 180px;
-    max-width: 360px;
+.index-header-style {
+    padding-top: 10rem;
+    padding-left: 6rem;
 }
 
-.index-tagline {
-    padding-top: 1rem;
-    padding-left: 4rem;
-    font-weight: 500;
-    font-size: larger;
+.index-description-style {
+    @apply text-xl my-4;
+    padding-top: 2rem;
 }

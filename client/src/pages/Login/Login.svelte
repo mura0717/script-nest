@@ -40,7 +40,6 @@
   }
 </script>
 
-<body>
   <main>
     <div class="page-title">
       <h1>Login</h1>
@@ -77,4 +76,3 @@
       </div>
     </div>
   </main>
-</body>
