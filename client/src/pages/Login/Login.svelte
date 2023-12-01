@@ -1,5 +1,6 @@
 <script>
   import "./login.css";
+  import { Button } from 'flowbite-svelte';
   import { signInWithEmailAndPassword } from 'firebase/auth';
   import { auth } from '../../config/firebaseClientConfig.js';
   import { postRequest } from "../../store/fetchStore.js";
@@ -7,6 +8,7 @@
   import { userStore } from "../../store/userStore.js";
   import { updateLoginStatus } from "../../store/loginStatus.js";
   import toast, { Toaster } from "svelte-french-toast";
+  import { Toast } from 'flowbite-svelte';
 
   let email = "";
   let password = "";
@@ -72,7 +74,7 @@
         />
       </div>
       <div class="submit-button-container">
-        <button class="submit-button" on:click={handleLogin}>Submit</button>
+        <Button on:click={handleLogin}>Submit</Button>
       </div>
     </div>
   </main>

@@ -5,7 +5,7 @@ import admin from "../config/firebaseAdmin.js";
 const app = createFirebaseApp()
 const db = getFirestore(app)
 
-const userService = {
+const userServices = {
 
   getUser: async (userId) => {
 
@@ -84,5 +84,5 @@ export const testDB = async () => {
 
 
 
-export default userService;
+export default userServices;
 

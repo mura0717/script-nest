@@ -43,6 +43,9 @@ app.use(authRouters);
 import userRouters from "./routers/userRouters.js";
 app.use(userRouters);
 
+import ideaRouters from "./routers/ideaRouters.js";
+app.use(ideaRouters);
+
 //Server Test
 app.get("/test", (req, res) => {
     res.send('Test endpoint is working')

@@ -3,5 +3,5 @@
 }
 
 .navbar-elements-style {
-    @apply text-xl;
+    @apply text-lg;
 }

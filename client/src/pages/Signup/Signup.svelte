@@ -1,6 +1,7 @@
 <script>
   import "./signup.css";
   import "../../styles/global.css";
+  import { Button } from 'flowbite-svelte';
   import { postRequest } from "../../store/fetchStore.js";
   import { navigate } from "svelte-navigator";
   import { userStore } from "../../store/userStore.js";
@@ -104,7 +105,7 @@
         </div>
       </div>
       <div class="submit-button-container">
-        <button class="submit-button" type="submit" on:click={handleSignup}>Register</button>
+        <Button type="submit" on:click={handleSignup}>Register</Button>
       </div>
     </div>
   </main>

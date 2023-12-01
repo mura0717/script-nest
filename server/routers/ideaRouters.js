@@ -3,7 +3,7 @@ const router = Router();
 
 import AppError from "../utils/errorHandling/AppError.js";
 import { catchAsync } from "../utils/errorHandling/errorHandlers.js";
-import { ideaServices } from "../services/ideaServices.js";
+import ideaServices from "../services/ideaServices.js";
 import isAuthenticated from "../middleware/isAuthenticated.js";
 
 //GET ALL IDEAS
@@ -26,3 +26,5 @@ router.patch('/api/ideas', catchAsync(async (req, res) => {
     // Add code to edit ideas from Firestore for the given userId
     // Return success response
 }));
+
+export default router;

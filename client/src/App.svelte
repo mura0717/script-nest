@@ -26,11 +26,12 @@
     <Route path="/auth/login" component={Login}></Route>
     <Route path="/auth/ideaform" component={IdeaForm}></Route>
     <Route path="/auth/contact" component={Contact}></Route>
+    <!-- <Route path="/auth/user/profile" component={UserProfile}></Route> -->
 
     <!-- Private Routes -->
-    <PrivateRoute path="/auth/user/profile" let:location>
+     <PrivateRoute path="/auth/user/profile" let:location>
       <UserProfile></UserProfile>
-    </PrivateRoute>
+    </PrivateRoute> 
   </main>
 
   <Footer />
