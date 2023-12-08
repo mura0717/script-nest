@@ -12,7 +12,10 @@
   import PrivateRoute from "./components/PrivateRoutes/PrivateRoute.svelte";
   import UserProfile from "./pages/UserProfile/UserProfile.svelte";
   import IdeaForm from "./pages/Idea/IdeaForm.svelte";
+  import GetInspired from "./pages/GetInspired/GetInspired.svelte";
   import Contact from "./pages/Contact/Contact.svelte";
+  import AdminProfile from "./pages/AdminProfile/AdminProfile.svelte";
+
 </script>
 
 <Router>
@@ -25,13 +28,18 @@
     <Route path="/auth/signup" component={Signup}></Route>
     <Route path="/auth/login" component={Login}></Route>
     <Route path="/auth/ideaform" component={IdeaForm}></Route>
+    <Route path="/auth/get-inspired" component={GetInspired}></Route>
     <Route path="/auth/contact" component={Contact}></Route>
-    <!-- <Route path="/auth/user/profile" component={UserProfile}></Route> -->
+    <Route path="/auth/user/profile" component={UserProfile}></Route>
 
     <!-- Private Routes -->
-     <PrivateRoute path="/auth/user/profile" let:location>
+    <!--  <PrivateRoute path="/auth/user/profile" let:location>
       <UserProfile></UserProfile>
-    </PrivateRoute> 
+    </PrivateRoute>  -->
+    <PrivateRoute path="/auth/admin/profile" let:location>
+      <AdminProfile></AdminProfile>
+    </PrivateRoute>
+
   </main>
 
   <Footer />

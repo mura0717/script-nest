@@ -1,19 +1,19 @@
 import admin from "../config/firebaseAdmin.js";
+import AppError from "../utils/errorHandling/AppError.js";
+import { catchAsync } from "../utils/errorHandling/errorHandlers.js";
 
- async function isAuthenticated(req, res, next) {
-  try {
-    const token = req.headers.authorization;
-    if (!token) {
-      return res.status(401).json({ message: "No token provided." });
-    }
-    // Extract the token from 'Bearer <token>'
-    const idToken = token.split(" ")[1];
-    await admin.auth().verifyIdToken(idToken);
-    next();
-  } catch (error) {
-    console.error("Error in authentication:", error);
-    res.status(401).json({ message: "Not authenticated." });
+const isAuthenticated = catchAsync(async (req, res, next) => {
+  const header = req.headers.authorization;
+  if (!header) {
+    return next(new AppError("No token provided.", 401));
   }
-}
+  // Extract the token from 'Bearer <token>'
+  const idToken = header.split(" ")[1];
+  if (!idToken) {
+    return next(new AppError("No bearer token provided.", 401));
+  }
+  await admin.auth().verifyIdToken(idToken);
+  next();
+});
 
 export default isAuthenticated;

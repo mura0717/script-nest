@@ -40,11 +40,16 @@ app.get("/createdummyusers", (req, res) => {
 import authRouters from "./routers/authRouters.js";
 app.use(authRouters);
 
+import adminRouters from "./routers/adminRouters.js";
+app.use(adminRouters);
+
 import userRouters from "./routers/userRouters.js";
 app.use(userRouters);
 
 import ideaRouters from "./routers/ideaRouters.js";
 app.use(ideaRouters);
+
+
 
 //Server Test
 app.get("/test", (req, res) => {

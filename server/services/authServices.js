@@ -23,8 +23,11 @@ export const signupServices = {
 export const loginServices = {
   verifyIdToken: async (idToken) => {
     console.log("loginServices is hit.");
+    console.log("idToken:", idToken);
     try {
       const decodedToken = await admin.auth().verifyIdToken(idToken);
+      console.log("decoded token:", decodedToken);
+      console.log("uid:", decodedToken.uid);
       return decodedToken;
     } catch (error) {
       console.log(error);

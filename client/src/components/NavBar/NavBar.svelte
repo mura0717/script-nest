@@ -22,19 +22,36 @@
   import { Toast } from "flowbite-svelte";
 
   //import { isLoggedIn } from "../../store/loginStatus.js";
+
+
+/*   async function handleLogout() {
+    try {
+      const response = await getRequest("/api/auth/logout");
+    isLoggedIn.set(false);
+    user.set(null);
+    toast.success("Logout success.");
+    navigate("/");
+
+    } catch (error) {
+      toast.error("Error logging out.");
+      throw new Error(`HTTP error! Status: ${error}`);
+  } */
+
+
 </script>
 
 <Navbar class="navbar-bg">
   <NavBrand href="/">
-    <img src={scriptnestLogo} class="mr-3 h-6 sm:h-9" alt="Flowbite Logo" />
+    <img src={scriptnestLogo} class="mr-3 h-6 sm:h-12" alt="ScriptNest Logo" />
   </NavBrand>
   <NavHamburger />
   <NavUl>
     <NavLi class="navbar-elements-style" href="/auth/login">Login</NavLi>
     <NavLi class="navbar-elements-style" href="/">Logout</NavLi>
     <NavLi class="navbar-elements-style" href="/auth/signup">Signup</NavLi>
-    <NavLi class="navbar-elements-style" href="/auth/user">Profile</NavLi>
+    <NavLi class="navbar-elements-style" href="/auth/user/profile">Profile</NavLi>
     <NavLi class="navbar-elements-style" href="/auth/ideaform">IdeaForm</NavLi>
+    <NavLi class="navbar-elements-style" href="/auth/get-inspired">Get Inspired</NavLi>
     <NavLi class="navbar-elements-style" href="/auth/contact">Contact</NavLi>
     <div
       id="bell"

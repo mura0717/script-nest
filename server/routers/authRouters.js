@@ -40,11 +40,12 @@ router.post(
   })
 );
 
-// LOGIN CHECK
-router.get(
+// USER LOGIN CHECK
+router.post(
   "/api/auth/login/guard",
   isAuthenticated,
   catchAsync(async (req, res, next) => {
+    console.log("Login check endpoint is hit.");
     const { idToken } = req.body;
     if (!idToken) {
       return next(new AppError("ID token is missing. Not logged in.", 400));
@@ -54,7 +55,11 @@ router.get(
   })
 );
 
-// Admin-specific routes
-
+// USER LOGOUT (Actually done in client side. For sending response purposes only.)
+router.get(
+  "/api/auth/logout",
+  catchAsync(async (req, res, next) => {
+    res.status(200).json({ success: true, message: "Logout initiated." });
+  }));
 
 export default router;

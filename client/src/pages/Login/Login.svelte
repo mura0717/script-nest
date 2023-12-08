@@ -27,11 +27,11 @@
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const idToken = await userCredential.user.getIdToken();
-      console.log("idToken before post request:", idToken);
       const response = await postRequest("/api/auth/login", { idToken });
       if (response.success) {
+        console.log("idToken:", idToken);
         toast.success("Login successful!");
-        navigate("/auth/user");
+        navigate("/auth/user/profile");
       } else {
         toast.error(response.message || "Login failed. Please try again.");
       }

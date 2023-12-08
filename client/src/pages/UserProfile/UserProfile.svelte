@@ -8,10 +8,13 @@
   let userName = "";
   let userIdeas = [];
 
+  console.log("User Profile");
+
+
   onMount(() => {
     userName = $userStore.user;
   });
-
+  
   onMount(async () => {
     const { user } = $userStore.user;
     if (user) {
@@ -20,7 +23,7 @@
         userIdeas = await response.json();
       }
     }
-  });
+  }); 
 </script>
 
 <main>
