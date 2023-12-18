@@ -1,6 +1,5 @@
 import { API_BASE_URL_JS } from "../store/global.js";
 
-
 // Function to make a GET request
 async function getRequest(endpoint) {
   try {

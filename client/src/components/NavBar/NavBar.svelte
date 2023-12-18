@@ -19,25 +19,22 @@
   import { navigate } from "svelte-navigator";
   import { userStore } from "../../store/userStore.js";
   import { getRequest } from "../../store/fetchStore.js";
+  import { signOutUser } from "../../config/firebaseClientConfig";
+  import { isLoggedIn } from "./../../store/loginStatus.js";
   import { Toast } from "flowbite-svelte";
 
-  //import { isLoggedIn } from "../../store/loginStatus.js";
-
-
-/*   async function handleLogout() {
-    try {
-      const response = await getRequest("/api/auth/logout");
-    isLoggedIn.set(false);
-    user.set(null);
-    toast.success("Logout success.");
-    navigate("/");
-
-    } catch (error) {
-      toast.error("Error logging out.");
-      throw new Error(`HTTP error! Status: ${error}`);
-  } */
-
-
+  async function handleLogout() {
+    console.log("Logout button clicked.");
+    console.log("before signout isLoggedIn:", isLoggedIn);
+    signOutUser()
+      .then(() => {
+        console.log("after signout isLoggedIn:", isLoggedIn);
+        navigate("/");
+      })
+      .catch((error) => {
+        console.error("Logout error:", error);
+      });
+  }
 </script>
 
 <Navbar class="navbar-bg">
@@ -47,11 +44,15 @@
   <NavHamburger />
   <NavUl>
     <NavLi class="navbar-elements-style" href="/auth/login">Login</NavLi>
-    <NavLi class="navbar-elements-style" href="/">Logout</NavLi>
+    <NavLi class="navbar-elements-style" on:click={handleLogout}>Logout</NavLi>
     <NavLi class="navbar-elements-style" href="/auth/signup">Signup</NavLi>
-    <NavLi class="navbar-elements-style" href="/auth/user/profile">Profile</NavLi>
+    <NavLi class="navbar-elements-style" href="/auth/user/profile"
+      >Profile</NavLi
+    >
     <NavLi class="navbar-elements-style" href="/auth/ideaform">IdeaForm</NavLi>
-    <NavLi class="navbar-elements-style" href="/auth/get-inspired">Get Inspired</NavLi>
+    <NavLi class="navbar-elements-style" href="/auth/get-inspired"
+      >Get Inspired</NavLi
+    >
     <NavLi class="navbar-elements-style" href="/auth/contact">Contact</NavLi>
     <div
       id="bell"

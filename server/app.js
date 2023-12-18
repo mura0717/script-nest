@@ -1,6 +1,5 @@
 import "dotenv/config";
 
-
 //===================FIRESTORE SETUP=====================//
 
 //===================EXPRESS SETUP=====================//
@@ -13,7 +12,6 @@ app.use(express.json());
 //===================ERROR HANDLING=====================//
 import errorMiddleware from './middleware/errorMiddleware.js';
 app.use(errorMiddleware);
-
 
 
 //===================CORS SETUP=====================//
@@ -48,7 +46,6 @@ app.use(userRouters);
 
 import ideaRouters from "./routers/ideaRouters.js";
 app.use(ideaRouters);
-
 
 
 //Server Test

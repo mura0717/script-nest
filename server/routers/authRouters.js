@@ -43,17 +43,10 @@ router.post(
 // USER LOGIN CHECK
 router.post(
   "/api/auth/login/guard",
-  isAuthenticated,
-  catchAsync(async (req, res, next) => {
+  isAuthenticated, (req, res) => {
     console.log("Login check endpoint is hit.");
-    const { idToken } = req.body;
-    if (!idToken) {
-      return next(new AppError("ID token is missing. Not logged in.", 400));
-    } else {
       res.status(200).json({ success: true, message: "User logged in" });
-    }
-  })
-);
+    });
 
 // USER LOGOUT (Actually done in client side. For sending response purposes only.)
 router.get(
