@@ -1,20 +1,16 @@
 <script>
   import "../../styles/global.css";
+  import "./userprofile.css";
   import { onMount } from "svelte";
   import { userStore } from "./../../store/userStore.js";
   import { getRequest } from "../../store/fetchStore.js";
-  import { Button, Card } from "flowbite-svelte";
+  import IdeasSearchBar from "../../components/IdeasSearchBar/IdeasSearchBar.svelte";
+  import Sidebar from "../../components/Sidebar/Sidebar.svelte";
 
-  let userName = "";
   let userIdeas = [];
 
   console.log("User Profile");
 
-
-  onMount(() => {
-    userName = $userStore.user;
-  });
-  
   onMount(async () => {
     const { user } = $userStore.user;
     if (user) {
@@ -23,22 +19,27 @@
         userIdeas = await response.json();
       }
     }
-  }); 
+  });
+
+  function handleSearchInput(event) {
+    const searchTerm = event.target.value;
+    // Implement search logic here
+  }
 </script>
 
-<main>
-  <div class="page-title">
-    <h1>Welcome " {userName} "</h1>
+<main class="user-profile-main-container">
+  <aside class="sidebar-container">
+    <Sidebar />
+  </aside>
+  <div class="user-profile-content">
+    <IdeasSearchBar searchHandler={handleSearchInput} />
+    <div class="idea-cards-container">
+      <!-- Iterate over your userIdeas here to display cards -->
+      {#each userIdeas as idea}
+        <div class="idea-card">
+          <!-- Content of the card -->
+        </div>
+      {/each}
+    </div>
   </div>
-  <Card>
-    <h5
-      class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
-    >
-      Noteworthy technology acquisitions 2021
-    </h5>
-    <p class="mb-3 font-normal text-gray-700 dark:text-gray-400 leading-tight">
-      Here are the biggest enterprise technology acquisitions of 2021 so far, in
-      reverse chronological order.
-    </p>
-  </Card>
 </main>

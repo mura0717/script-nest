@@ -50,9 +50,7 @@
       >Profile</NavLi
     >
     <NavLi class="navbar-elements-style" href="/auth/ideaform">IdeaForm</NavLi>
-    <NavLi class="navbar-elements-style" href="/auth/get-inspired"
-      >Get Inspired</NavLi
-    >
+  
     <NavLi class="navbar-elements-style" href="/auth/contact">Contact</NavLi>
     <div
       id="bell"

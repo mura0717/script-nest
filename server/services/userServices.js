@@ -59,14 +59,8 @@ let dummyUsersList = [];
     "UserPass123!",
     false
   );
-  const user2 = createUser(
-    "Taylor Brown",
-    "taylor.brown@example.com",
-    "UserPass456!",
-    false
-  );
 
-  dummyUsersList.push(adminUser, user1, user2);
+  dummyUsersList.push(adminUser, user1);
   return dummyUsersList;
 };
 

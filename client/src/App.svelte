@@ -15,8 +15,10 @@
   import GetInspired from "./pages/GetInspired/GetInspired.svelte";
   import Contact from "./pages/Contact/Contact.svelte";
   import AdminProfile from "./pages/AdminProfile/AdminProfile.svelte";
+  import { DarkMode } from 'flowbite-svelte';
 
 </script>
+<!-- <DarkMode /> -->
 
 <Router>
   <div id="app">

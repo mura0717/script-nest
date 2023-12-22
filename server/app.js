@@ -50,7 +50,7 @@ app.use(ideaRouters);
 
 //Server Test
 app.get("/test", (req, res) => {
-    res.send('Test endpoint is working')
+    res.send('Test endpoint is working.')
 });
 
 
