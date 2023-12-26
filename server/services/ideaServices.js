@@ -13,7 +13,9 @@ const ideaServices = {
 
   editIdea: async (userId) => {},
 
-  deleteIdea: async (userId) => {},
+  deleteIdea: async (userId) => { },
+  
+  saveBookReference: async (bookId) => { },
 };
 
 export default ideaServices;

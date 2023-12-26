@@ -9,6 +9,6 @@
 </script>
 
 <div>
-  <Checkbox id={id} label={label} value={value} bind:group={bindGroup} disabled={disabled} />
+  <Checkbox {id} {label} {value} bind:group={bindGroup} {disabled} />
   <Label class="checkbox-element" for={id}>{label}</Label>
 </div>

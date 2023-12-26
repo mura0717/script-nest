@@ -8,6 +8,7 @@
   export let value;
   export let rows;
   export let cols;
+  export let placeholder;
   export let disabled;
 </script>
 
@@ -19,6 +20,7 @@
     bind:value
     {rows}
     {cols}
+    {placeholder}
     {disabled}
   />
 </div>

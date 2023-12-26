@@ -10,15 +10,13 @@
    function toggleEdit() {
     isEditable = !isEditable;
   }
-
-  async function saveIdeaForm() {}
   
   export let idea = {
     title: "",
-    origin: "",
+    selectedOrigin: "",
     sourceMaterial: "",
     authors: "",
-    genre: [],
+    selectedGenres: [],
     timePeriod: "",
     setting: "",
     filmReferences: "",
@@ -27,6 +25,13 @@
     synopsis: "",
     comments: "",
   };
+  
+  let localOriginValue = idea.selectedOrigin;
+  localOriginValue = "Original Idea";
+  
+  function handleOriginChange(event) {
+    localOriginValue = event.currentTarget.value;
+  }
 
   const originOptions = [
     "Original Idea",
@@ -36,8 +41,6 @@
     "Play",
     "Film",
   ];
-
-  let selectedOrigin = '';
 
   const genreOptions = [
     "Action",
@@ -56,7 +59,7 @@
     "Western",
   ];
 
-  let selectedGenres = [];
+  async function saveIdeaForm() {}
 
 </script>
 
@@ -87,6 +90,7 @@
           />
         </div>
          <!-- ORIGIN -->
+        <div class="idea-form-element">
         <div class="idea-element-label">
           <Label class="idea-element-label" for="origin-input"
             >Origin:</Label
@@ -96,14 +100,17 @@
               <RadioButtonElement
                 id={`origin-${originOption.toLowerCase()}`}
                 name="origin"
-                value={originOption}
                 label={originOption}
-                bind:group={selectedOrigin}
+                value={originOption}
+                selectedValue={localOriginValue}
+                onChange={handleOriginChange}
                 disabled={!isEditable}
               />
             {/each}
           </div>
-          <!-- SOURCE MATERIAL -->
+          </div>
+          <!-- SOURCE MATERIAL TITLE -->
+          {#if localOriginValue !== "Original Idea"}
           <div class="idea-form-element">
             <TextElement
               id="origin-input"
@@ -111,6 +118,7 @@
               bind:value={idea.sourceMaterial}
               rows={1}
               cols={50}
+              placeholder="Ex: Romeo & Juliet"
               disabled={!isEditable}
             />
             <!-- SOURCE AUTHOR(S) -->
@@ -120,13 +128,13 @@
               bind:value={idea.authors}
               rows={1}
               cols={50}
+              placeholder="Ex: William Shakespeare"
               disabled={!isEditable}
             />
           </div>
+          {/if}
            <!-- GENRE -->
           <div class="idea-form-element">
-            
-          <div class="idea-element-label">
           <Label class="idea-element-label" for="genre-input"
             >Genre:</Label
           >
@@ -136,84 +144,60 @@
                 id={`origin-${genreOption.toLowerCase()}`}
                 value={genreOption}
                 label={genreOption}
-                bind:group={selectedGenres}
+                bind:group={idea.selecetedGenres}
                 disabled={!isEditable}
               />
             {/each}
           </div>
-          <div class="idea-form-element">
-            <Label class="idea-form-element-label" for="time-period-input"
-              >Time Period:</Label
-            >
-            <div>
-              <textarea
-                class="idea-input-field"
-                id="time-input"
-                bind:value={idea.timePeriod}
-                disabled={!isEditable}
-                rows="1"
-                cols="50"
-              />
-            </div>
           </div>
-          <div class="idea-form-element">
-            <Label class="idea-form-element-label" for="setting-input"
-              >Setting:</Label
-            >
-            <div>
-              <textarea
-                class="idea-input-field"
-                id="setting-input"
-                bind:value={idea.setting}
-                disabled={!isEditable}
-                rows="1"
-                cols="50"
-              />
-            </div>
+          <!-- TIME PERIOD -->
+           <div class="idea-form-element">
+          <TextElement
+            id="time-input"
+            label="Time Period"
+            bind:value={idea.timePeriod}
+            rows={1}
+            cols={50}
+            placeholder="Ex: Sometime in 14th Century"
+            disabled={!isEditable}
+          />
           </div>
+          <!-- SETTING -->
           <div class="idea-form-element">
-            <Label class="idea-form-element-label" for="premise-input"
-              >Premise:</Label
-            >
-            <div>
-              <textarea
-                class="idea-input-field"
-                id="premise-input"
-                bind:value={idea.premise}
-                disabled={!isEditable}
-                rows="2"
-                cols="50"
-              />
-            </div>
+          <TextElement
+            id="setting-input"
+            label="Setting"
+            bind:value={idea.setting}
+            rows={1}
+            cols={50}
+            placeholder="Ex: Verona, Italy"
+            disabled={!isEditable}
+          />
           </div>
+          <!-- PREMISE -->
           <div class="idea-form-element">
-            <Label class="idea-form-element-label" for="synopsis-input"
-              >Synopsis:</Label
-            >
-            <div>
-              <textarea
-                class="idea-input-field"
-                id="synopsis-input"
-                bind:value={idea.synopsis}
-                disabled={!isEditable}
-                rows="4"
-                cols="50"
-              />
-            </div>
+             <TextElement
+            id="premise-input"
+            label="Premise"
+            bind:value={idea.premise}
+            rows={1}
+            cols={50}
+            placeholder="Ex: Love conquers all."
+            disabled={!isEditable}
+          />
           </div>
+          <!-- SYNOPSIS -->
           <div class="idea-form-element">
-            <Label class="idea-form-element-label" for="film-references-input"
-              >Film References:</Label
-            >
-            <div>
-              <input
-                class="idea-input-field"
-                id="film-references-input"
-                bind:value={idea.filmReferences}
-                disabled={!isEditable}
-              />
-            </div>
+             <TextElement
+            id="synopis-input"
+            label="Synopsis"
+            bind:value={idea.synopsis}
+            rows={15}
+            cols={50}
+            placeholder="Ex: An age-old vendetta between two powerful families erupts into bloodshed..."
+          />
           </div>
+           <!-- LIT. REFERENCES -->
           <div class="idea-form-element">
             <Label
               class="idea-form-element-label"
@@ -228,21 +212,30 @@
               />
             </div>
           </div>
+          <!-- FILM REFERENCES -->
           <div class="idea-form-element">
-            <Label class="idea-form-element-label" for="comments-input"
-              >Comments:</Label
+            <Label class="idea-form-element-label" for="film-references-input"
+              >Film References:</Label
             >
             <div>
-              <textarea
+              <input
                 class="idea-input-field"
-                id="comments-input"
-                bind:value={idea.comments}
+                id="film-references-input"
+                bind:value={idea.filmReferences}
                 disabled={!isEditable}
-                rows="4"
-                cols="50"
-                placeholder="Leave a comment..."
               />
             </div>
+          </div>
+          <!-- COMMENTS -->
+          <div class="idea-form-element">
+             <TextElement
+            id="comments-input"
+            label="Comments"
+            bind:value={idea.comments}
+            rows={4}
+            cols={50}
+            placeholder="Ex: I think the first part drags a little..."
+          />
           </div>
         </div>
       </div>

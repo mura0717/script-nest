@@ -6,11 +6,12 @@
   export let name;
   export let label;
   export let value;
-  export let bindGroup;
+  export let selectedValue;
   export let disabled;
+  export let onChange;
 </script>
 
 <div>
-  <Radio {id} {name} {value} bind:group={bindGroup} {disabled} />
+  <Radio {id} {name} {label} {value} checked={selectedValue === value} on:change={onChange} {disabled} />
   <Label for={id}>{label}</Label>
 </div>

@@ -1,5 +1,6 @@
 .idea-edit-button-container {
-  padding-left: 3rem;
+  flex-direction: column;
+  padding-left: 28rem;
 }
 
 .form-edit-button {
@@ -13,7 +14,7 @@
 }
 
 .form-edit-button:hover {
-  background-color: khaki;
+  background-color:khaki;
 }
 
 .idea-form-container {
@@ -21,9 +22,9 @@
   padding-left: 2rem;
   display: grid;
   grid-template-columns: auto auto;
-  gap: 10px;
+  gap: 100px;
   max-width: 500px;
-  margin: 20px;
+  margin: 15px;
 }
 
 .idea-form-elements-container {
@@ -31,16 +32,15 @@
 }
 
 .idea-form-element {
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 .idea-element-label {
   color: black;
   font-weight: bold;
   font-size: medium;
-  padding-bottom: 10px;
-  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 .origin-grid {

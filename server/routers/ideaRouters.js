@@ -27,4 +27,18 @@ router.patch('/api/ideas', catchAsync(async (req, res) => {
     // Return success response
 }));
 
+router.get('/api/ideas/books', isAuthenticated, catchAsync(async (req, res) => {
+    const response = await fetch(
+      `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
+        query
+      )}&key=${process.env.GOOGLE_BOOKS_API}`
+    );
+    const bookId = await response.json;
+    await ideaServices.saveBookReference(bookId);
+    res
+      .status(200)
+      .send({ bookId });
+
+}))
+
 export default router;
