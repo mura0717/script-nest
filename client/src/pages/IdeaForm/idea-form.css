@@ -31,18 +31,16 @@
 }
 
 .idea-form-element {
+  padding-top: 1rem;
   padding-bottom: 1rem;
 }
 
-.idea-form-element-label {
+.idea-element-label {
   color: black;
   font-weight: bold;
-}
-
-.idea-input-field {
-  background-color: #f9fafb;
-  border-color: rgb(200, 200, 200);
-  border-width: 1px;
+  font-size: medium;
+  padding-bottom: 10px;
+  padding-top: 5px;
 }
 
 .origin-grid {

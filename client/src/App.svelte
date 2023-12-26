@@ -11,7 +11,7 @@
 
   import PrivateRoute from "./components/PrivateRoutes/PrivateRoute.svelte";
   import UserProfile from "./pages/UserProfile/UserProfile.svelte";
-  import IdeaForm from "./pages/Idea/IdeaForm.svelte";
+  import IdeaForm from "./pages/IdeaForm/IdeaForm.svelte";
   import GetInspired from "./pages/GetInspired/GetInspired.svelte";
   import Contact from "./pages/Contact/Contact.svelte";
   import AdminProfile from "./pages/AdminProfile/AdminProfile.svelte";
