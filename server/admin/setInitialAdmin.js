@@ -1,6 +1,6 @@
 import "dotenv/config";
 import admin from "../config/firebaseAdmin.js";
-import AppError from "../utils/errorHandling/AppError.js";
+import AppError from "../utils/ErrorHandling/AppError.js";
 
 // This could be part of a one-time setup script or a special admin-only endpoint
 async function setInitialAdminUser(uid, next) {

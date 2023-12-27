@@ -1,6 +1,6 @@
 import admin from "firebase-admin";
-import AppError from "../utils/errorHandling/AppError.js";
-import { catchAsync } from "../utils/errorHandling/errorHandlers.js";
+import AppError from "../utils/ErrorHandling/AppError.js";
+import { catchAsync } from "../utils/ErrorHandling/GlobalErrorHandler.js";
 
 const isAdmin = catchAsync(async (req, res, next) => {
   const header = req.headers.authorization;

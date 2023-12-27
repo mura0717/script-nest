@@ -47,6 +47,9 @@ app.use(userRouters);
 import ideaRouters from "./routers/ideaRouters.js";
 app.use(ideaRouters);
 
+import apiRouters from "./routers/apiRouters.js";
+app.use(apiRouters)
+
 
 //Server Test
 app.get("/test", (req, res) => {

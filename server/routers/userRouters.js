@@ -1,7 +1,7 @@
 import { Router } from "express";
 const router = Router();
-import AppError from "../utils/errorHandling/AppError.js";
-import { catchAsync } from "../utils/errorHandling/errorHandlers.js";
+import AppError from "../utils/ErrorHandling/AppError.js";
+import { catchAsync } from "../utils/ErrorHandling/GlobalErrorHandler.js";
 import userServices from "../services/userServices.js";
 import isAdmin from "../middleware/isAdmin.js";
 

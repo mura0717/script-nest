@@ -1,9 +1,11 @@
 <script>
-  import "./idea-form.css";
+  import "./idea.css";
   import { Label } from "flowbite-svelte";
   import TextElement from "../../components/IdeaFormElements/TextElement/TextElement.svelte";
   import CheckboxElement from "../../components/IdeaFormElements/CheckBox/CheckboxElement.svelte";
-  import RadioButtonElement from './../../components/IdeaFormElements/RadioButton/RadioButtonElement.svelte';
+  import RadioButtonElement from '../../components/IdeaFormElements/RadioButton/RadioButtonElement.svelte';
+  import LiteratureReferences from "../../components/IdeaFormElements/API/LiteratureReferences.svelte";
+  import FilmReferences from "../../components/IdeaFormElements/API/FilmReferences.svelte";
 
   let isEditable = false;
 
@@ -86,6 +88,7 @@
             bind:value={idea.title}
             rows={1}
             cols={50}
+            placeholder=""
             disabled={!isEditable}
           />
         </div>
@@ -144,7 +147,7 @@
                 id={`origin-${genreOption.toLowerCase()}`}
                 value={genreOption}
                 label={genreOption}
-                bind:group={idea.selecetedGenres}
+                bind:bindGroup={idea.selecetedGenres}
                 disabled={!isEditable}
               />
             {/each}
@@ -195,36 +198,16 @@
             rows={15}
             cols={50}
             placeholder="Ex: An age-old vendetta between two powerful families erupts into bloodshed..."
+            disabled={!isEditable}
           />
           </div>
-           <!-- LIT. REFERENCES -->
+           <!-- LITERATURE REFERENCES -->
           <div class="idea-form-element">
-            <Label
-              class="idea-form-element-label"
-              for="literature-references-input">Literature References:</Label
-            >
-            <div>
-              <input
-                class="idea-input-field"
-                id="literature-references-input"
-                bind:value={idea.literatureReferences}
-                disabled={!isEditable}
-              />
-            </div>
+             <LiteratureReferences /> <!-- Needs to be implemented correctly!!! -->     
           </div>
           <!-- FILM REFERENCES -->
           <div class="idea-form-element">
-            <Label class="idea-form-element-label" for="film-references-input"
-              >Film References:</Label
-            >
-            <div>
-              <input
-                class="idea-input-field"
-                id="film-references-input"
-                bind:value={idea.filmReferences}
-                disabled={!isEditable}
-              />
-            </div>
+            <FilmReferences />
           </div>
           <!-- COMMENTS -->
           <div class="idea-form-element">
@@ -235,6 +218,7 @@
             rows={4}
             cols={50}
             placeholder="Ex: I think the first part drags a little..."
+            disabled={!isEditable}
           />
           </div>
         </div>

@@ -1,0 +1,7 @@
+.book-display:hover .book-details {
+    display: block;
+}
+
+.book-details {
+    display: none;
+}

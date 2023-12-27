@@ -4,7 +4,7 @@ const router = Router();
 import admin from 'firebase-admin';
 import isAdmin from '../middleware/isAdmin.js'
 import isAuthenticated from "../middleware/isAuthenticated.js";
-import { catchAsync } from "../utils/errorHandling/errorHandlers.js";
+import { catchAsync } from "../utils/ErrorHandling/GlobalErrorHandler.js";
 
 router.post('/api/auth/set-admin', isAuthenticated, isAdmin, catchAsync(async (req,res, next) => {
     const { uid } = req.body;
@@ -47,6 +47,6 @@ router.get("/api/auth/admin/allusers", isAdmin, async (req, res) => {
 
 router.post("/admin/create");
 router.get("/admin/users");
-router.get("/api/auth/set-admin") //superAdmin
+router.get("/api/auth/set-admin") //super admin
 
 export default router;

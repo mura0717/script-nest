@@ -15,7 +15,6 @@ const ideaServices = {
 
   deleteIdea: async (userId) => { },
   
-  saveBookReference: async (bookId) => { },
 };
 
 export default ideaServices;

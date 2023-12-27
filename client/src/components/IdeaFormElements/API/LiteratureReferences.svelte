@@ -1,45 +1,57 @@
 <script>
-import {Search, Form} from "flowbite-svelte";
-import {getRequest} from "../../../store/fetchStore";
+  import { Search, Label } from "flowbite-svelte";
+  import { getRequest, postRequest } from "../../../store/fetchStore";
+  import "./references.css";
+  import "../../../pages/Idea/idea.css";
 
-let books = [];
-let selectedBook = '';
+  const currentIdeaId = "";
+  let books = [];
+  let selectedBook;
 
-async function searchBooks(query) {
-    const books = getRequest(`/api/ideas/books?q=${query}`);
-    
-}
+  async function searchBooks(query) {
+    books = await getRequest(`/api/ideas/books?q=${encodeURIComponent(query)}`);
+  }
 
-function selectBooks(book) {
+  async function selectBook(book) {
     selectedBook = book;
+    const bookReference = {
+      coverImageUrl: book.volumeInfo.imageLinks.thumbnail.small,
+      title: book.volumeInfo.title,
+      publicationDatae: book.volumeInfo.publishedDate,
+      authors: book.volumeInfo.authors,
+    };
 
-}
-
+    await postRequest(`/api/ideas/${currentIdeaId}/books`, bookReference);
+  }
 </script>
 
 <div>
-    <Form class="flex gap-2">
-    <Search size="md" on:input={(e) => searchBooks(e.target.value)} />
-  {#if books.length > 0}
-    <div class="dropdown">
-      {#each books as book}
-        <div class="dropdown-item" on:click={() => selectBooks(book)}>
-          {book.volumeInfo.title}
-        </div>
-      {/each}
-    </div>
-  {/if}
-  </Form>
+  <Label class="idea-element-label"for="literature-references-input">Literature References:</Label>
+  <form class="flex gap-2">
+    <Search size="md" on:input={(event) => searchBooks(event.target.value)} />
+    {#if books.length > 0}
+      <div class="dropdown">
+        {#each books as book}
+          <div class="dropdown-item" on:click={() => selectBook(book)}>
+            {book.volumeInfo.title}
+          </div>
+        {/each}
+      </div>
+    {/if}
+  </form>
 
   {#if selectedBook}
-  <div class="book-display" on:mouseenter={selectedBook.volumeInfo.title} on:mouseleave={selectedBook.volumeInfo.title}>
-    <img src={selectedBook.volumeInfo.imageLinks.thumbnail} alt={selectedBook.volumeInfo.title} />
-    <!-- Hidden details to show on hover -->
-    <div class="book-details">
-      <p>{selectedBook.volumeInfo.publishedDate}</p>
-      <p>{selectedBook.volumeInfo.authors.join(', ')}</p>
+    <div class="book-display">
+      <img
+        src={selectedBook.volumeInfo.imageLinks.thumbnail}
+        alt={selectedBook.volumeInfo.title}
+      />
+      <!-- Hidden details to show on hover -->
+      <div class="book-details">
+        <p>{selectedBook.volumeInfo.title}</p>
+        <p>{selectedBook.volumeInfo.publishedDate}</p>
+        <p>{selectedBook.volumeInfo.authors.join(", ")}</p>
+      </div>
     </div>
-  </div>
-{/if}
-
+  {/if}
 </div>
