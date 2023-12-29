@@ -1,4 +1,5 @@
 <script>
+	
     import { navigate, useLocation } from "svelte-navigator";
     import { userStore } from "../../store/userStore.js";
 

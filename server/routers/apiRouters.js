@@ -2,8 +2,8 @@ import { Router } from "express";
 const router = Router();
 import AppError from "../utils/ErrorHandling/AppError.js";
 import { catchAsync } from "../utils/ErrorHandling/GlobalErrorHandler.js";
-import apiServices from "../services/apiServices.js";
-import isAdmin from "../middleware/isAdmin.js";
+import isAuthenticated from "../middleware/isAuthenticated.js";
+import { booksServices } from "../services/apiServices.js";
 
 router.get(
   "/api/ideas/books",
@@ -14,8 +14,8 @@ router.get(
         query
       )}&key=${process.env.GOOGLE_BOOKS_API}`
     );
-    const data = await response.json;
-    await apiServices.saveBookReference(bookId);
+    const bookId = await response.json;
+    //await apiServices.saveBookReference(bookId);
     res.status(200).send({ bookId, message: "Books fetch successful." });
   })
 );

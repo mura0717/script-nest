@@ -6,6 +6,7 @@ import isAdmin from '../middleware/isAdmin.js'
 import isAuthenticated from "../middleware/isAuthenticated.js";
 import { catchAsync } from "../utils/ErrorHandling/GlobalErrorHandler.js";
 
+// SET ADMIN
 router.post('/api/auth/set-admin', isAuthenticated, isAdmin, catchAsync(async (req,res, next) => {
     const { uid } = req.body;
     if (!uid) {

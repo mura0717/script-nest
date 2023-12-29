@@ -10,25 +10,17 @@
     DropdownDivider,
   } from "flowbite-svelte";
   import {
-    ChevronDownOutline,
     BellSolid,
-    EyeSolid,
   } from "flowbite-svelte-icons";
   import "./navbar.css";
   import scriptnestLogo from "../../assets/logos/scriptnest_logo.png";
   import { navigate } from "svelte-navigator";
   import { userStore } from "../../store/userStore.js";
-  import { getRequest } from "../../store/fetchStore.js";
   import { signOutUser } from "../../config/firebaseClientConfig";
-  import { isLoggedIn } from "./../../store/loginStatus.js";
-  import { Toast } from "flowbite-svelte";
 
   async function handleLogout() {
-    console.log("Logout button clicked.");
-    console.log("before signout isLoggedIn:", isLoggedIn);
     signOutUser()
       .then(() => {
-        console.log("after signout isLoggedIn:", isLoggedIn);
         navigate("/");
       })
       .catch((error) => {

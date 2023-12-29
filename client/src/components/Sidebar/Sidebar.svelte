@@ -14,7 +14,7 @@
     TrashBinOutline,
   } from "flowbite-svelte-icons";
   import { onMount } from "svelte";
-  import { userStore } from "./../../store/userStore.js";
+  import { userStore } from "../../store/userStore.js";
 
   export let userName = '';
 

@@ -2,7 +2,7 @@ import { doc, addDoc, updateDoc, collection, getFirestore } from "firebase/fires
 import { createFirebaseApp } from "../config/firebaseServerConfig.js";
 import admin from "../config/firebaseAdmin.js";
 
-const ideaServices = {
+export const ideaServices = {
   getIdea: async (userId) => {},
 
   getAllIdeas: async () => {},

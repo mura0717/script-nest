@@ -5,7 +5,7 @@
   import { userStore } from "./../../store/userStore.js";
   import { getRequest } from "../../store/fetchStore.js";
   import IdeasSearchBar from "../../components/IdeasSearchBar/IdeasSearchBar.svelte";
-  import Sidebar from "../../components/Sidebar/Sidebar.svelte";
+  import Sidebar from "../../components/SideBar/SideBar.svelte";
 
   let userIdeas = [];
 
