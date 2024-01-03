@@ -95,7 +95,7 @@
          <!-- ORIGIN -->
         <div class="idea-form-element">
         <div class="idea-element-label">
-          <Label class="idea-element-label" for="origin-input"
+          <Label class="idea-element-label"
             >Origin:</Label
           >
           <div class="origin-grid">
@@ -144,10 +144,10 @@
           <div class="genre-grid">
             {#each genreOptions as genreOption}
               <CheckboxElement
-                id={`origin-${genreOption.toLowerCase()}`}
+                id={`genre-${genreOption.toLowerCase()}`}
                 value={genreOption}
                 label={genreOption}
-                bind:bindGroup={idea.selecetedGenres}
+                bind:bindGroup={idea.selectedGenres}
                 disabled={!isEditable}
               />
             {/each}

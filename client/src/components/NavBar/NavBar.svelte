@@ -14,19 +14,7 @@
   } from "flowbite-svelte-icons";
   import "./navbar.css";
   import scriptnestLogo from "../../assets/logos/scriptnest_logo.png";
-  import { navigate } from "svelte-navigator";
-  import { userStore } from "../../store/userStore.js";
-  import { signOutUser } from "../../config/firebaseClientConfig";
-
-  async function handleLogout() {
-    signOutUser()
-      .then(() => {
-        navigate("/");
-      })
-      .catch((error) => {
-        console.error("Logout error:", error);
-      });
-  }
+ 
 </script>
 
 <Navbar class="navbar-bg">
@@ -36,12 +24,12 @@
   <NavHamburger />
   <NavUl>
     <NavLi class="navbar-elements-style" href="/auth/login">Login</NavLi>
-    <NavLi class="navbar-elements-style" on:click={handleLogout}>Logout</NavLi>
+    <!-- <NavLi class="navbar-elements-style" on:click={handleLogout}>Logout</NavLi> -->
     <NavLi class="navbar-elements-style" href="/auth/signup">Signup</NavLi>
-    <NavLi class="navbar-elements-style" href="/auth/user/profile"
+   <!--  <NavLi class="navbar-elements-style" href="/auth/user/profile"
       >Profile</NavLi
-    >
-    <NavLi class="navbar-elements-style" href="/auth/ideaform">IdeaForm</NavLi>
+    > -->
+   <!--  <NavLi class="navbar-elements-style" href="/auth/user/newidea">New Idea</NavLi> -->
   
     <NavLi class="navbar-elements-style" href="/auth/contact">Contact</NavLi>
     <div

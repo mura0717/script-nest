@@ -4,7 +4,6 @@
   import { Button } from 'flowbite-svelte';
   import { postRequest } from "../../store/fetchStore.js";
   import { navigate } from "svelte-navigator";
-  import { userStore } from "../../store/userStore.js";
   import toast, { Toaster } from "svelte-french-toast";
 
   let name = "";
@@ -92,12 +91,12 @@
         </div>
       </div>
       <div>
-        <label for="rePassword-input">Re-Password:</label>
+        <label for="re-password-input">Re-Password:</label>
         <div>
           <input
             class="input-field"
             type="password"
-            id="rePassword-input"
+            id="re-password-input"
             placeholder="Re-Password"
             bind:value={rePassword}
           />

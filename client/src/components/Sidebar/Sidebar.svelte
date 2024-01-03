@@ -4,10 +4,10 @@
     SidebarGroup,
     SidebarItem,
     SidebarWrapper,
+    Avatar
   } from "flowbite-svelte";
   import {
     FolderOpenOutline,
-    UserSolid,
     FileOutline,
     ArrowRightToBracketSolid,
     UserSettingsOutline,
@@ -15,46 +15,60 @@
   } from "flowbite-svelte-icons";
   import { onMount } from "svelte";
   import { userStore } from "../../store/userStore.js";
+  import { navigate } from "svelte-navigator";
+  import { signOutUser } from "../../config/firebaseClientConfig";
 
-  export let userName = '';
+  async function handleLogout() {
+    signOutUser()
+      .then(() => {
+        navigate("/");
+      })
+      .catch((error) => {
+        console.error("Logout error:", error);
+      });
+  }
+
+  export let userName = "";
 
   onMount(() => {
-    userName = $userStore.user;
+    userName = $userStore.user.email;
+    console.log(userName);
   });
-
 </script>
 
 <Sidebar>
   <SidebarWrapper>
     <SidebarGroup>
-      <SidebarItem label="My Ideas">
+      <SidebarItem label="My Ideas" href="/auth/user/profile">
         <svelte:fragment slot="icon">
           <FolderOpenOutline class="w-5 h-5" />
         </svelte:fragment>
       </SidebarItem>
-      <SidebarItem label="New Idea" href="/auth/ideaform">
+      <SidebarItem label="New Idea" href="/auth/user/newidea">
         <svelte:fragment slot="icon">
           <FileOutline class="w-5 h-5" />
         </svelte:fragment>
       </SidebarItem>
-      <SidebarItem label="Settings" href="/auth/settings">
+      <SidebarItem label="Settings" href="/auth/user/settings">
         <svelte:fragment slot="icon">
           <UserSettingsOutline class="w-5 h-5" />
         </svelte:fragment>
       </SidebarItem>
-      <SidebarItem label="Trash" href="/auth/trash">
+      <SidebarItem label="Trash" href="/auth/user/trash">
         <svelte:fragment slot="icon">
           <TrashBinOutline class="w-5 h-5" />
         </svelte:fragment>
       </SidebarItem>
     </SidebarGroup>
     <SidebarGroup>
-      <SidebarItem label="Sign Out" href="/">
+      <SidebarItem label="Sign Out" on:click={handleLogout}>
         <svelte:fragment slot="icon">
           <ArrowRightToBracketSolid class="w-5 h-5" />
         </svelte:fragment>
       </SidebarItem>
-      {userName}
     </SidebarGroup>
+    <div class="text-xs">
+      {userName}
+    </div>
   </SidebarWrapper>
 </Sidebar>

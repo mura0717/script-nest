@@ -5,7 +5,6 @@
   import { auth } from '../../config/firebaseClientConfig.js';
   import { postRequest } from "../../store/fetchStore.js";
   import { navigate } from "svelte-navigator";
-  import { userStore } from "../../store/userStore.js";
   import toast, { Toaster } from "svelte-french-toast";
 
   let email = "";
@@ -21,7 +20,7 @@
 
   async function handleLogin() {
     console.log("handleLogin is hit.")
-    if(!inputCheck) return
+    if(!inputCheck()) return;
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const idToken = await userCredential.user.getIdToken();
@@ -29,7 +28,7 @@
       if (response.success) {
         console.log("idToken:", idToken);
         toast.success("Login successful!");
-        navigate("/auth/user/profile");
+        navigate("/auth/user/profile", {replace: true});
       } else {
         toast.error(response.message || "Login failed. Please try again.");
       }
@@ -47,7 +46,7 @@
     <div class="login-container">
       <div>
         <div>
-          <label for="name-input">Email:</label>
+          <label for="email-input">Email:</label>
         </div>
         <input
           class="input-field"
@@ -60,7 +59,7 @@
 
       <div>
         <div>
-          <label for="name-input">Email:</label>
+          <label for="password-input">Password:</label>
         </div>
 
         <input
