@@ -3,12 +3,16 @@ import { AppError } from "../utils/ErrorHandling/AppError.js";
 import { handleError } from "../utils/ErrorHandling/GlobalErrorHandlerClient.js";
 
 async function getRequest(endpoint) {
+  console.log("fetchStore-Sending request to:", API_BASE_URL_JS + endpoint);
+  const firebaseToken = localStorage.getItem("firebaseAuthToken");
+  console.log("fetchStore-getRequest firebaseToken:", firebaseToken);
   try {
     const response = await fetch(API_BASE_URL_JS + endpoint, {
       credentials: "include",
       method: "GET",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Autorization": `Bearer ${firebaseToken}`,
       }
     });
     if (!response.ok) {
@@ -26,7 +30,8 @@ async function getRequest(endpoint) {
 }
 
 async function postRequest(endpoint, data) {
-  console.log("url:", API_BASE_URL_JS + endpoint)
+  console.log("url:", API_BASE_URL_JS + endpoint);
+  const firebaseToken = localStorage.getItem('firebaseAuthToken');
   try {
     const response = await fetch(API_BASE_URL_JS + endpoint, {
       credentials: "include",
@@ -41,7 +46,6 @@ async function postRequest(endpoint, data) {
       const error = new AppError(`Failed to post data. Status: ${response.status}`, { status: responseData.status });
       handleError(error);
       throw error;
-
     }
     return responseData;
   } catch (error) {

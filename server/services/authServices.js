@@ -3,7 +3,7 @@ import AppError from '../utils/ErrorHandling/AppError.js';
 
 export const signupServices = {
   registerUserWithFirebase: async (newUser) => {
-    console.log("registerUserWithFirebase is hit.")
+    console.log("authServices-registerUserWithFirebase is hit.")
     const { name, email, password } = newUser;
     try {
       const userRecord = await admin.auth().createUser({
@@ -11,7 +11,7 @@ export const signupServices = {
         password: password,
         displayName: name,
       });
-      console.log("userRecord:", userRecord);
+      console.log("authServices-userRecord:", userRecord);
       return userRecord;
     } catch (error) {
       console.log(error);
@@ -22,12 +22,12 @@ export const signupServices = {
 
 export const loginServices = {
   verifyIdToken: async (idToken) => {
-    console.log("loginServices is hit.");
-    console.log("idToken:", idToken);
+    console.log("authServices-loginServices is hit.");
+    console.log("authServices-idToken:", idToken);
     try {
       const decodedToken = await admin.auth().verifyIdToken(idToken);
-      console.log("decoded token:", decodedToken);
-      console.log("uid:", decodedToken.uid);
+      console.log("authServices-decoded token:", decodedToken);
+      console.log("authServices-uid:", decodedToken.uid);
       return decodedToken;
     } catch (error) {
       console.log(error);

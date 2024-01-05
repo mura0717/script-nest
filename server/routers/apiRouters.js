@@ -8,24 +8,34 @@ import { booksServices } from "../services/apiServices.js";
 router.get(
   "/api/ideas/books",
   isAuthenticated,
-  catchAsync(async (req, res) => {
+  catchAsync(async (req, res, next) => {
+    console.log("apiRouters-getBook is hit.");
+    const searchQuery = req.query.q;
+    console.log("apiRouters-getBook searchQuery:", searchQuery);
+    if (!searchQuery) {
+      return next(new AppError("No search query provided.", 400));
+    }
     const response = await fetch(
       `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
-        query
+        searchQuery
       )}&key=${process.env.GOOGLE_BOOKS_API}`
     );
-    const bookId = await response.json;
+    console.log("apiRouter-apiGetRouter response:", response);
+    const bookId = await response.json();
     //await apiServices.saveBookReference(bookId);
     res.status(200).send({ bookId, message: "Books fetch successful." });
   })
 );
 
-router.post("/api/ideas/:ideaId/books", isAuthenticated, catchAsync(async (req, res) => {
+router.post(
+  "/api/ideas/ideaId/books",
+  isAuthenticated,
+  catchAsync(async (req, res) => {
     const userId = req.user.id; // Assume you have the user's ID from authentication
     const ideaId = req.params.ideaId;
     const bookReference = req.body; // Book reference data sent from the client
 
-    await saveBookReference(userId, ideaId, bookReference);
+    //await saveBookReference(userId, ideaId, bookReference);
     res.status(200).json({ message: "Book reference saved successfully" });
   })
 );

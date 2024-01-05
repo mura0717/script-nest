@@ -98,7 +98,7 @@
           <Label class="idea-element-label"
             >Origin:</Label
           >
-          <div class="origin-grid">
+          <div class="origin-grid" id="origin-input">
             {#each originOptions as originOption}
               <RadioButtonElement
                 id={`origin-${originOption.toLowerCase()}`}
@@ -116,7 +116,7 @@
           {#if localOriginValue !== "Original Idea"}
           <div class="idea-form-element">
             <TextElement
-              id="origin-input"
+              id="source-material-input"
               label="Source Material Title"
               bind:value={idea.sourceMaterial}
               rows={1}
@@ -138,13 +138,14 @@
           {/if}
            <!-- GENRE -->
           <div class="idea-form-element">
-          <Label class="idea-element-label" for="genre-input"
+          <Label class="idea-element-label"
             >Genre:</Label
           >
-          <div class="genre-grid">
+          <div class="genre-grid" id="genre-input">
             {#each genreOptions as genreOption}
               <CheckboxElement
                 id={`genre-${genreOption.toLowerCase()}`}
+                name="genre"
                 value={genreOption}
                 label={genreOption}
                 bind:bindGroup={idea.selectedGenres}
@@ -202,11 +203,11 @@
           />
           </div>
            <!-- LITERATURE REFERENCES -->
-          <div class="idea-form-element">
+          <div class="idea-form-element" id="lit-ref-input">
              <LiteratureReferences /> <!-- Needs to be implemented correctly!!! -->     
           </div>
           <!-- FILM REFERENCES -->
-          <div class="idea-form-element">
+          <div class="idea-form-element" id="film-ref-input">
             <FilmReferences />
           </div>
           <!-- COMMENTS -->

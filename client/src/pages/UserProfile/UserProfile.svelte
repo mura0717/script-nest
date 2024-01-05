@@ -10,7 +10,7 @@
 
   let userIdeas = [];
 
-  console.log("User Profile");
+  console.log("Directed to User Profile page");
 
   onMount(async () => {
     const { user } = $userStore.user;
