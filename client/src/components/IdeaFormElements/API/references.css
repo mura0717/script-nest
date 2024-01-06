@@ -1,3 +1,11 @@
+
+.book-thumbnail{
+    width: 30px; /* Adjust the size as needed */
+    height: auto;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
 .book-display:hover .book-details {
     display: block;
 }
@@ -5,3 +13,4 @@
 .book-details {
     display: none;
 }
+

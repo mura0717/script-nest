@@ -21,8 +21,10 @@
           );
           if (googleBookApiResponse && googleBookApiResponse.bookId && googleBookApiResponse.bookId.items) {
             bookSearchResults = googleBookApiResponse.bookId.items.slice(0, 5).map((item) => ({
-              title: item.volumeInfo.title,
+              thumbnail: item.volumeInfo.imageLinks.smallThumbnail,
+              title: item.volumeInfo.title, 
             }));
+            showDropdown = true;
           } else {
             throw new AppError(`Error - Expected data is not present: ${error.message}`, {
               initialError: error,
@@ -31,7 +33,7 @@
         } else {
           bookSearchResults = [];
         }
-      }, 1000);
+      }, 500);
       console.log("LitRef-Updated books after search:", bookSearchResults);
     } catch (error) {
       handleError(error);
@@ -61,13 +63,13 @@
   <form class="flex gap-2">
     <Search size="md" on:input={(event) => searchBooks(event.target.value)} />
     {#if bookSearchResults.length > 0}
-      <Dropdown>
+      <Dropdown class="min-w-full" size="md" bind:open={showDropdown}>
         {#each bookSearchResults as book}
-          <DropdownItem 
-            on:click
-            on:keypress={() => selectBook(book)}
+          <DropdownItem class="flex items-center"
+            on:click={() => selectBook(book)}
           >
-            {book.title}  <!-- Because response is mapped like this => title: item.volumeInfo.title  -->
+            <img class="book-thumbnail" src={book.thumbnail} alt={book.title} /> 
+            {book.title} <!-- Because response is mapped like this => title: item.volumeInfo.title  -->
           </DropdownItem>
         {/each}
         </Dropdown>
