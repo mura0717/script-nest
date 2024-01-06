@@ -1,15 +1,44 @@
 <script>
-  import { Search, Label } from "flowbite-svelte";
+  import { Search, Label, Dropdown, DropdownItem } from "flowbite-svelte";
   import { getRequest, postRequest } from "../../../store/fetchStore";
   import "./references.css";
   import "../../../pages/Idea/idea.css";
+  import { handleError } from "../../../utils/ErrorHandling/GlobalErrorHandlerClient";
 
   const currentIdeaId = "";
-  let books = [];
+  let bookSearchResults = [];
   let selectedBook;
+  let searchTimeout;
+  let showDropdown = false;
 
-  async function searchBooks(query) {
-    books = await getRequest(`/api/ideas/books?q=${encodeURIComponent(query)}`);
+  async function searchBooks(searchQuery) {
+    try {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(async () => {
+        if (searchQuery.length > 0) {
+          let googleBookApiResponse = await getRequest(
+            `/api/ideas/books?q=${encodeURIComponent(searchQuery)}`
+          );
+          if (googleBookApiResponse && googleBookApiResponse.bookId && googleBookApiResponse.bookId.items) {
+            bookSearchResults = googleBookApiResponse.bookId.items.slice(0, 5).map((item) => ({
+              title: item.volumeInfo.title,
+            }));
+          } else {
+            throw new AppError(`Error - Expected data is not present: ${error.message}`, {
+              initialError: error,
+            });
+          }
+        } else {
+          bookSearchResults = [];
+        }
+      }, 1000);
+      console.log("LitRef-Updated books after search:", bookSearchResults);
+    } catch (error) {
+      handleError(error);
+      throw new AppError(`An error occurred: ${error.message}`, {
+        initialError: error,
+      });
+    }
   }
 
   async function selectBook(book) {
@@ -26,17 +55,22 @@
 </script>
 
 <div>
-  <Label class="idea-element-label"for="literature-references-input">Literature References:</Label>
+  <Label class="idea-element-label" for="literature-references-input"
+    >Literature References:</Label
+  >
   <form class="flex gap-2">
     <Search size="md" on:input={(event) => searchBooks(event.target.value)} />
-    {#if books.length > 0}
-      <div class="dropdown">
-        {#each books as book}
-          <div class="dropdown-item" on:click={() => selectBook(book)}>
-            {book.volumeInfo.title}
-          </div>
+    {#if bookSearchResults.length > 0}
+      <Dropdown>
+        {#each bookSearchResults as book}
+          <DropdownItem 
+            on:click
+            on:keypress={() => selectBook(book)}
+          >
+            {book.title}  <!-- Because response is mapped like this => title: item.volumeInfo.title  -->
+          </DropdownItem>
         {/each}
-      </div>
+        </Dropdown>
     {/if}
   </form>
 

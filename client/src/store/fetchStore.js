@@ -12,7 +12,7 @@ async function getRequest(endpoint) {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Autorization": `Bearer ${firebaseToken}`,
+        "Authorization": `Bearer ${firebaseToken}`,
       }
     });
     if (!response.ok) {
