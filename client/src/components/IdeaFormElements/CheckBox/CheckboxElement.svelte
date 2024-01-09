@@ -6,10 +6,9 @@
   export let label;
   export let value;
   export let bindGroup;
-  export let disabled;
 </script>
 
 <div>
-  <Checkbox {id} {name} {label} {value} bind:group={bindGroup} {disabled} />
+  <Checkbox {id} {name} {label} {value} bind:group={bindGroup} />
   <Label class="checkbox-element" for={id}>{label}</Label>
 </div>

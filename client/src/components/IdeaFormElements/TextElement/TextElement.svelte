@@ -9,7 +9,6 @@
   export let rows;
   export let cols;
   export let placeholder;
-  export let disabled;
 </script>
 
 <div>
@@ -21,6 +20,5 @@
     {rows}
     {cols}
     {placeholder}
-    {disabled}
   />
 </div>
