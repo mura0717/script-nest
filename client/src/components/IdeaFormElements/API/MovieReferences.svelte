@@ -7,17 +7,18 @@
   import debounce from "debounce";
   import { AppError } from "../../../utils/ErrorHandling/AppError";
   import { handleError } from "../../../utils/ErrorHandling/GlobalErrorHandlerClient";
+  import { createEventDispatcher } from "svelte";
 
-  const currentIdeaId = "";
   let movieSearchResults = [];
   let selectedMovies = [];
   let showDropdown = false;
+  const movieRefDispatch = createEventDispatcher();
 
   async function fetchMovies(query) {
     try {
       const response = await getRequest(`/api/ideas/movies?q=${encodeURIComponent(query)}`);
       if (response && response.filmId && response.filmId.results) {
-        console.log("LitRef-google movie api response:", response);
+        console.log("MovieRef- TMDB api response:", response);
         return response.filmId.results.slice(0, 5).map((item) => ({
           thumbnail: item.poster_path
           ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
@@ -64,8 +65,8 @@
           title: movie.title,
           releaseDate: movie.releaseDate,
         };
-
         selectedMovies = [...selectedMovies, movie];
+        movieRefDispatch("updateMovieRefs", selectedMovies)
         movieSearchResults = [];
         //await postRequest(`/api/ideas/${currentIdeaId}/books`, bookReference);
       }

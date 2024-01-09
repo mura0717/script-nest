@@ -7,11 +7,12 @@
   import debounce from "debounce";
   import { AppError } from "../../../utils/ErrorHandling/AppError";
   import { handleError } from "../../../utils/ErrorHandling/GlobalErrorHandlerClient";
+  import { createEventDispatcher } from "svelte";
 
-  const currentIdeaId = "";
   let bookSearchResults = [];
   let selectedBooks = [];
   let showDropdown = false;
+  const litRefDispatch = createEventDispatcher();
 
   async function fetchBooks(query) {
     try {
@@ -72,8 +73,8 @@
         };
 
         selectedBooks = [...selectedBooks, book];
+        litRefDispatch("updateLitRefs", selectedBooks)
         bookSearchResults = [];
-        //await postRequest(`/api/ideas/${currentIdeaId}/books`, bookReference);
       }
     } catch (error) {
       handleError(error);

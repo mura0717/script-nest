@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.comment-element-input-field {
+  background-color: #f9fafb;
+  border-color: rgb(200, 200, 200);
+  border-width: 1px;
+}
+
+.comments-list-container {
+  @apply pt-3;
+}
+
+.comment-info {
+  @apply text-sm font-bold underline;
+}
+
+.comment-display {
+  font-family: Arial, Helvetica, sans-serif;
+  @apply text-sm p-3 border;
+
+}
+

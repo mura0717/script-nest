@@ -1,4 +1,5 @@
 <script>
+  import "./sidebar.css";
   import {
     Sidebar,
     SidebarGroup,
@@ -28,7 +29,7 @@
       handleError(error);
       return;
     }
-    // Additional check if route requires admin access 
+    // Additional check if route requires admin access
     /* if (routeRequiresAdmin(route) && !$userStore.isAdmin) {
         const error = new AppError("Unauthorized access. Admin only.", { status: "Unauthorized" });
         handleError(error);
@@ -37,7 +38,7 @@
     navigate(route);
   }
 
-/*   function routeRequiresAdmin(route) {
+  /*   function routeRequiresAdmin(route) {
     // Define logic to determine if a route requires admin access
     // For example:
     return route.startsWith('/auth/admin');
@@ -56,7 +57,7 @@
   export let userName = "";
 
   onMount(() => {
-    userName = $userStore.user.email;
+    userName = $userStore.user.displayName;
     console.log(userName);
   });
 </script>
@@ -64,36 +65,50 @@
 <Sidebar>
   <SidebarWrapper>
     <SidebarGroup>
-      <SidebarItem label="My Ideas" on:click={() => navigateToRoute('/auth/user/profile')}>
+      <SidebarItem label={userName}>
         <svelte:fragment slot="icon">
-          <FolderOpenOutline class="w-5 h-5" />
+          <Avatar class="sidebar-avatar-img" />
         </svelte:fragment>
       </SidebarItem>
-      <SidebarItem label="New Idea" on:click={() => navigateToRoute('/auth/user/newidea')}>
+      <SidebarItem
+        label="My Ideas"
+        on:click={() => navigateToRoute("/auth/user/profile")}
+      >
         <svelte:fragment slot="icon">
-          <FileOutline class="w-5 h-5" />
+          <FolderOpenOutline class="sidebar-item-icon" />
         </svelte:fragment>
       </SidebarItem>
-      <SidebarItem label="Settings" on:click={() => navigateToRoute('/auth/user/settings')}>
+      <SidebarItem
+        label="New Idea"
+        on:click={() => navigateToRoute("/auth/user/newidea")}
+      >
         <svelte:fragment slot="icon">
-          <UserSettingsOutline class="w-5 h-5" />
+          <FileOutline class="sidebar-item-icon" />
         </svelte:fragment>
       </SidebarItem>
-      <SidebarItem label="Trash" on:click={() => navigateToRoute('/auth/user/trash')}>
+      <SidebarItem
+        label="Settings"
+        on:click={() => navigateToRoute("/auth/user/settings")}
+      >
         <svelte:fragment slot="icon">
-          <TrashBinOutline class="w-5 h-5" />
+          <UserSettingsOutline class="sidebar-item-icon" />
+        </svelte:fragment>
+      </SidebarItem>
+      <SidebarItem
+        label="Trash"
+        on:click={() => navigateToRoute("/auth/user/trash")}
+      >
+        <svelte:fragment slot="icon">
+          <TrashBinOutline class="sidebar-item-icon" />
         </svelte:fragment>
       </SidebarItem>
     </SidebarGroup>
     <SidebarGroup>
       <SidebarItem label="Sign Out" on:click={handleLogout}>
         <svelte:fragment slot="icon">
-          <ArrowRightToBracketSolid class="w-5 h-5" />
+          <ArrowRightToBracketSolid class="sidebar-item-icon" />
         </svelte:fragment>
       </SidebarItem>
     </SidebarGroup>
-    <div class="text-xs">
-      {userName}
-    </div>
   </SidebarWrapper>
 </Sidebar>

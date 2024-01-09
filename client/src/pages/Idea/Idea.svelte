@@ -6,7 +6,8 @@
   import CheckboxElement from "../../components/IdeaFormElements/CheckBox/CheckboxElement.svelte";
   import RadioButtonElement from "../../components/IdeaFormElements/RadioButton/RadioButtonElement.svelte";
   import LiteratureReferences from "../../components/IdeaFormElements/API/LiteratureReferences.svelte";
-  import FilmReferences from "../../components/IdeaFormElements/API/FilmReferences.svelte";
+  import MovieReferences from "../../components/IdeaFormElements/API/MovieReferences.svelte";
+  import CommentElement from "../../components/IdeaFormElements/CommentElement/CommentElement.svelte";
 
   export let idea = {
     title: "",
@@ -16,19 +17,12 @@
     selectedGenres: [],
     timePeriod: "",
     setting: "",
-    filmReferences: "",
-    literatureReferences: "",
+    movieReferences: [],
+    literatureReferences: [],
     premise: "",
     synopsis: "",
-    comments: "",
+    comments: [],
   };
-
-  let localOriginValue = idea.selectedOrigin;
-  localOriginValue = "Original Idea";
-
-  function handleOriginChange(event) {
-    localOriginValue = event.currentTarget.value;
-  }
 
   const originOptions = [
     "Original Idea",
@@ -38,6 +32,9 @@
     "Play",
     "Film",
   ];
+
+  let localOriginValue = idea.selectedOrigin;
+  localOriginValue = "Original Idea";
 
   const genreOptions = [
     "Action",
@@ -56,11 +53,27 @@
     "Western",
   ];
 
+  function handleOriginChange(event) {
+    localOriginValue = event.currentTarget.value;
+  }
 
-    /* const saveIdea = debounce(async () => {
-    console.log("Auto-saving:", idea);
-  }, 5 000);*/
+  function handleLitRefsUpdate(updatedLitRefs) {
+    console.log("Idea Page - Before handleLitRefsUpdate:", idea.literatureReferences);
+    idea.literatureReferences = updatedLitRefs;
+    console.log("Idea Page - After handleLitRefsUpdate:", idea.literatureReferences);
+  }
 
+   function handleMovieRefsUpdate(updatedMovieRefs) {
+    console.log("Idea Page - Before handleMovieRefsUpdate:", idea.movieReferences);
+    idea.movieReferences = updatedMovieRefs;
+    console.log("Idea Page - After handleMovieRefsUpdate:", idea.movieReferences);
+  }
+
+  function handleCommentsUpdate(updatedComments) {
+    console.log("Idea Page - Before handleCommentsUpdate:", idea.comments);
+    idea.comments = updatedComments;
+    console.log("Idea Page - After handleCommentsUpdate:", idea.comments);
+  }
 
   async function saveIdea() {
     console.log("Auto-saving:", idea);
@@ -194,23 +207,16 @@
           </div>
           <!-- LITERATURE REFERENCES -->
           <div class="idea-form-element" id="lit-ref-input">
-            <LiteratureReferences />
+            <LiteratureReferences on:updateLitRefs={handleLitRefsUpdate} />
             <!-- Needs to be implemented correctly!!! -->
           </div>
           <!-- FILM REFERENCES -->
           <div class="idea-form-element" id="film-ref-input">
-            <FilmReferences />
+            <MovieReferences on:updateMovieRefs={handleMovieRefsUpdate}/>
           </div>
           <!-- COMMENTS -->
           <div class="idea-form-element">
-            <TextElement
-              id="comments-input"
-              label="Comments"
-              bind:value={idea.comments}
-              rows={4}
-              cols={50}
-              placeholder="Ex: I think the first part drags a little..."
-            />
+            <CommentElement on:updateComments={handleCommentsUpdate} />
           </div>
         </div>
       </div>

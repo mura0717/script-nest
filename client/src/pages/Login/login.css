@@ -1,4 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .login-container {
-    padding-top: 0%;
-    padding-left: 2rem;
+    @apply pt-0 pl-8 pr-6;
 }
+
+.login-label {
+    @apply pb-3 pt-3;
+}
+
+.login-input {
+    @apply pb-3 pt-3;
+}
+
+
+
+

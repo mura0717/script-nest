@@ -19,7 +19,7 @@
     </div>
     <div>
       <Button  href="/auth/signup">
-        <span class=""><b>Sign up</b> It’s free</span></Button>
+        <span class=""><b>Sign up, now!</b> It’s free</span></Button>
     </div>
   </div>
   <div class="flex justify-center items-center my-8">

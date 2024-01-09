@@ -1,6 +1,6 @@
 <script>
   import "./login.css";
-  import { Button } from 'flowbite-svelte';
+  import { Input, Label, Button } from 'flowbite-svelte';
   import { signInWithEmailAndPassword } from 'firebase/auth';
   import { auth } from '../../config/firebaseClientConfig.js';
   import { postRequest } from "../../store/fetchStore.js";
@@ -46,27 +46,29 @@
     <div class="login-container">
       <div>
         <div>
-          <label for="email-input">Email:</label>
+          <Label for="email-input" class="login-label">Email:</Label>
         </div>
-        <input
-          class="input-field"
+        <Input
+          class="login-input"
           type="email"
           id="email-input"
           placeholder="Email"
+          size="md"
           bind:value={email}
         />
       </div>
 
       <div>
         <div>
-          <label for="password-input">Password:</label>
+          <Label for="password-input" class="login-label">Password:</Label>
         </div>
 
-        <input
-          class="input-field"
+        <Input
+          class="login-input"
           type="password"
           id="password-input"
           placeholder="Password"
+          size="md"
           bind:value={password}
         />
       </div>
