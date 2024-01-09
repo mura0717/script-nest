@@ -1,6 +1,6 @@
 <script>
   import { Label, Textarea, Button } from "flowbite-svelte";
-  import "./comment-element.css";
+  import "./comments.css";
   import "../../../pages/Idea/idea.css";
   import "../../../styles/global.css";
   import { createEventDispatcher, onMount } from "svelte";

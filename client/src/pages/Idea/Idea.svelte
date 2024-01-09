@@ -7,7 +7,8 @@
   import RadioButtonElement from "../../components/IdeaFormElements/RadioButton/RadioButtonElement.svelte";
   import LiteratureReferences from "../../components/IdeaFormElements/API/LiteratureReferences.svelte";
   import MovieReferences from "../../components/IdeaFormElements/API/MovieReferences.svelte";
-  import CommentElement from "../../components/IdeaFormElements/CommentElement/CommentElement.svelte";
+  import Comments from "../../components/IdeaFormElements/CommentElement/Comments.svelte";
+  import Collaborators from "../../components/IdeaFormElements/CollaboratorElement/Collaborators.svelte";
 
   export let idea = {
     title: "",
@@ -22,6 +23,7 @@
     premise: "",
     synopsis: "",
     comments: [],
+    collaborators: [],
   };
 
   const originOptions = [
@@ -58,15 +60,27 @@
   }
 
   function handleLitRefsUpdate(updatedLitRefs) {
-    console.log("Idea Page - Before handleLitRefsUpdate:", idea.literatureReferences);
+    console.log(
+      "Idea Page - Before handleLitRefsUpdate:",
+      idea.literatureReferences
+    );
     idea.literatureReferences = updatedLitRefs;
-    console.log("Idea Page - After handleLitRefsUpdate:", idea.literatureReferences);
+    console.log(
+      "Idea Page - After handleLitRefsUpdate:",
+      idea.literatureReferences
+    );
   }
 
-   function handleMovieRefsUpdate(updatedMovieRefs) {
-    console.log("Idea Page - Before handleMovieRefsUpdate:", idea.movieReferences);
+  function handleMovieRefsUpdate(updatedMovieRefs) {
+    console.log(
+      "Idea Page - Before handleMovieRefsUpdate:",
+      idea.movieReferences
+    );
     idea.movieReferences = updatedMovieRefs;
-    console.log("Idea Page - After handleMovieRefsUpdate:", idea.movieReferences);
+    console.log(
+      "Idea Page - After handleMovieRefsUpdate:",
+      idea.movieReferences
+    );
   }
 
   function handleCommentsUpdate(updatedComments) {
@@ -90,6 +104,11 @@
   <!-- PAGE TITLE (IDEA) -->
   <div class="page-title">
     <p>{idea.title || "Untitled New Idea"}</p>
+  </div>
+
+  <!-- COLLABORATORS -->
+  <div>
+    <Collaborators/>
   </div>
 
   <!-- FORM -->
@@ -212,11 +231,11 @@
           </div>
           <!-- FILM REFERENCES -->
           <div class="idea-form-element" id="film-ref-input">
-            <MovieReferences on:updateMovieRefs={handleMovieRefsUpdate}/>
+            <MovieReferences on:updateMovieRefs={handleMovieRefsUpdate} />
           </div>
           <!-- COMMENTS -->
           <div class="idea-form-element">
-            <CommentElement on:updateComments={handleCommentsUpdate} />
+            <Comments on:updateComments={handleCommentsUpdate} />
           </div>
         </div>
       </div>

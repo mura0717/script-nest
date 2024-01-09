@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.collaborators-container {
+    @apply p-3;
+}
+
+.searchbar-collaborators {
+    @apply mt-3 mb-3 w-72;
+
+}
+
+.collaborator-element-label {
+    font-family: monospace;
+    @apply text-sm; 
+
+}
+
+.collaborator-list-group {
+    @apply flex mt-1 mb-2 w-48;
+
+}
+
+.collaborator-list-element {
+    @apply flex text-base items-center font-semibold gap-2;
+
+}
+
+.avatar-collaborator-img {
+
+}
+
+.add-collaborator-button {
+    @apply  p-3 text-sm;
+
+}
+
+.remove-collaborator-button {
+    @apply p-3;
+
+}
+
+.add-collaborator-icon {
+
+}
+
+.remove-collaborator-icon {
+    
+}
