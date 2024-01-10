@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@tailwind variants;
 
 .search-bar {
   @apply flex gap-2 pb-2;
@@ -55,4 +56,19 @@
   display: none;
   font-family: Calibri, sans-serif;
   @apply absolute top-1 right-0 bg-red-500 text-sm text-white p-1 rounded-lg;
+}
+
+.remove-ref-modal-container {
+  @apply text-center;
+
+}
+
+.modal-exclamation-icon {
+  @apply mx-auto mb-4 text-gray-400 dark:text-gray-200;
+
+}
+
+.modal-text {
+  @apply mb-5 text-base font-normal text-gray-500 dark:text-gray-400;
+
 }

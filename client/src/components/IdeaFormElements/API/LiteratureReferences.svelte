@@ -1,5 +1,13 @@
 <script>
-  import { Search, Label, Dropdown, DropdownItem } from "flowbite-svelte";
+  import {
+    Search,
+    Label,
+    Dropdown,
+    DropdownItem,
+    Modal,
+    Button,
+  } from "flowbite-svelte";
+  import { ExclamationCircleOutline } from "flowbite-svelte-icons";
   import default_image_thumbnail from "../../../assets/defaultImages/default_image_thumbnail.jpeg";
   import { getRequest, postRequest } from "../../../store/fetchStore";
   import "./api-refs.css";
@@ -12,12 +20,14 @@
   let bookSearchResults = [];
   let selectedBooks = [];
   let showDropdown = false;
+  let currentBookIndex;
+  let showRemoveBookModal = false;
   const litRefDispatch = createEventDispatcher();
 
   async function fetchBooks(query) {
     try {
       const response = await getRequest(
-        `/api/ideas/books?q=${encodeURIComponent(query)}`
+        `/api/auth/ideas/books?q=${encodeURIComponent(query)}`
       );
       if (response && response.bookId && response.bookId.items) {
         console.log("LitRef-google book api response:", response);
@@ -73,7 +83,7 @@
         };
 
         selectedBooks = [...selectedBooks, book];
-        litRefDispatch("updateLitRefs", selectedBooks)
+        litRefDispatch("updateLitRefs", selectedBooks);
         bookSearchResults = [];
       }
     } catch (error) {
@@ -84,8 +94,13 @@
     }
   }
 
-  function removeBook(index) {
-    selectedBooks = selectedBooks.filter((_, i) => i !== index);
+  function removeBook(bookIndex) {
+    selectedBooks = selectedBooks.filter((_, i) => i !== bookIndex);
+  }
+
+  function openRemoveBookModal(bookIndex) {
+    currentBookIndex = bookIndex;
+    showRemoveBookModal = true;
   }
 </script>
 
@@ -113,13 +128,13 @@
 
   {#if selectedBooks}
     <div class="refs-display">
-      {#each selectedBooks as book, index}
+      {#each selectedBooks as book, bookIndex}
         <div class="ref-item">
           <div class="ref-cover-display">
             <img
+              class="ref-cover-image"
               src={book.thumbnail}
               alt={book.title}
-              class="ref-cover-image"
             />
           </div>
           <!-- DETAILS on HOVER -->
@@ -128,11 +143,30 @@
             <p>({book.authors.join(", ")},</p>
             <p>{book.publishedDate})</p>
           </div>
-          <button class="remove-ref-button" on:click={() => removeBook(index)}
+          <button
+            class="remove-ref-button"
+            on:click={() => openRemoveBookModal(bookIndex)}
             >X
           </button>
         </div>
       {/each}
     </div>
   {/if}
+
+  <Modal bind:open={showRemoveBookModal} size="xs" autoclose>
+    <div class="remove-ref-modal-container">
+      <ExclamationCircleOutline class="modal-exclamation-icon w-8 h-8" />
+      <h3 class="modal-text">
+        Are you sure you want to remove this literature reference?
+      </h3>
+      <Button
+        color="red"
+        class="me-2"
+        on:click={() => removeBook(currentBookIndex)}>Yes, I'm sure</Button
+      >
+      <Button color="alternative" on:click={() => (showRemoveBookModal = false)}
+        >No, cancel</Button
+      >
+    </div>
+  </Modal>
 </div>

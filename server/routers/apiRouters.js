@@ -6,7 +6,7 @@ import isAuthenticated from "../middleware/isAuthenticated.js";
 import { booksServices } from "../services/apiServices.js";
 
 router.get(
-  "/api/ideas/books",
+  "/api/auth/ideas/books",
   isAuthenticated,
   catchAsync(async (req, res, next) => {
     console.log("apiRouters-getBook is hit.");
@@ -28,13 +28,12 @@ router.get(
 );
 
 router.post(
-  "/api/ideas/ideaId/books",
+  "/api/auth/ideas/ideaId/books",
   isAuthenticated,
   catchAsync(async (req, res) => {
     const userId = req.user.id; // Assume you have the user's ID from authentication
     const ideaId = req.params.ideaId;
     const bookReference = req.body; // Book reference data sent from the client
-
     //await saveBookReference(userId, ideaId, bookReference);
     res.status(200).json({ message: "Book reference saved successfully" });
   })
@@ -42,7 +41,7 @@ router.post(
 
 
 router.get(
-  "/api/ideas/movies",
+  "/api/auth/ideas/movies",
   isAuthenticated,
   catchAsync(async (req, res, next) => {
     console.log("apiRouters-getFilm is hit.");

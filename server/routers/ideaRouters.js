@@ -13,27 +13,27 @@ router.get('/api/ideas', catchAsync(async (req, res) => {
 }));
 
 // GET A SINGLE IDEA
-router.get('/api/ideas/{ideaId}', catchAsync(async (req, res) => {
+router.get('/api/auth/ideas/{ideaId}', catchAsync(async (req, res) => {
     const userId = req.user.uid;
     // Add code to fetch an idea from Firestore for the given userId
     // Return idea in response
 }))
 
 //CREATE NEW IDEA
-router.post('/api/ideas', catchAsync(async (req, res) => {
+router.post('/api/auth/ideas', catchAsync(async (req, res) => {
     const userId = req.user.uid;
     const ideaData = req.body;
     // Add code to save ideaData to Firestore under the userId
     // Return success response
 }))
 
-router.patch('/api/ideas/{ideaId}', catchAsync(async (req, res) => {
+router.patch('/api/auth/ideas/{ideaId}', catchAsync(async (req, res) => {
     const userId = req.user.uid; // User's UID
     // Add code to edit ideas from Firestore for the given userId
     // Return success response
 }));
 
-router.delete('api/ideas/{ideaId}', catchAsync(async (req, res) => {
+router.delete('api/auth/ideas/{ideaId}', catchAsync(async (req, res) => {
   const userId = req.user.uid;
   // Add code to delete an idea from Firestore for the given userId
   // Return success response
