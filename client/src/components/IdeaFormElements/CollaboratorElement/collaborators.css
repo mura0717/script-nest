@@ -3,48 +3,80 @@
 @tailwind utilities;
 
 .collaborators-container {
-    @apply p-3;
+  font-family: Arial, Helvetica, sans-serif;
+  @apply p-3;
 }
 
-.searchbar-collaborators {
-    @apply mt-3 mb-3 w-72;
-
+.searchbar-collaborators-container {
+  @apply flex mt-3 mb-3 w-72;
 }
 
 .collaborator-element-label {
-    font-family: monospace;
-    @apply text-sm; 
-
+  @apply text-sm;
 }
 
-.collaborator-list-group {
-    @apply flex mt-1 mb-2 w-48;
-
+.searchbar-display {
+  @apply h-8 py-2.5 rounded-none;
 }
 
-.collaborator-list-element {
-    @apply flex text-base items-center font-semibold gap-2;
-
+.search-button-display {
+  @apply h-8 w-8 !p-2.5 rounded-s-none;
 }
 
-.avatar-collaborator-img {
+.search-outline-icon {
+  @apply w-5 h-5;
+}
 
+.user-search-dropdown {
+  @apply static min-w-full;
+}
+
+.user-search-dropdown-item {
+  @apply flex items-center p-1;
+}
+
+.user-search-dropdown-item-display {
+  @apply flex items-center text-sm font-semibold gap-3;
+}
+
+.user-avatar-thumbnail {
+  width: 40px;
+  height: auto;
+  vertical-align: middle;
+}
+
+.collaborators-display {
+  @apply w-fit border rounded-lg p-1;
+}
+
+.collaborators-list-group {
+  @apply flex w-fit;
+}
+
+.collaborators-list-group-item {
+  @apply p-1;
+}
+
+.collaborators-list-group-item-display {
+  @apply flex items-center text-sm font-semibold gap-3;
+}
+
+.collaborator-avatar-image {
+  @apply w-12 h-12;
 }
 
 .add-collaborator-button {
-    @apply  p-3 text-sm;
-
+  @apply p-2;
 }
 
 .remove-collaborator-button {
-    @apply p-3;
-
+  @apply p-2;
 }
 
 .add-collaborator-icon {
-
+  @apply w-4 h-4;
 }
 
 .remove-collaborator-icon {
-    
+  @apply w-4 h-4;
 }

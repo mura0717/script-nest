@@ -160,7 +160,7 @@
   <Modal bind:open={showRemoveMovieModal} size="xs" autoclose>
     <div class="remove-ref-modal-container">
       <ExclamationCircleOutline
-        class="modal-exclamation-icon w-8 h-8"
+        class="modal-exclamation-icon"
       />
       <h3 class="modal-text">
         Are you sure you want to remove this film reference?

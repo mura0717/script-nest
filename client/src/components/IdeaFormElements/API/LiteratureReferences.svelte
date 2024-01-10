@@ -155,7 +155,7 @@
 
   <Modal bind:open={showRemoveBookModal} size="xs" autoclose>
     <div class="remove-ref-modal-container">
-      <ExclamationCircleOutline class="modal-exclamation-icon w-8 h-8" />
+      <ExclamationCircleOutline class="modal-exclamation-icon" />
       <h3 class="modal-text">
         Are you sure you want to remove this literature reference?
       </h3>

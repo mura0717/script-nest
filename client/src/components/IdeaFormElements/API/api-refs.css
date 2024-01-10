@@ -1,7 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@tailwind variants;
 
 .search-bar {
   @apply flex gap-2 pb-2;
@@ -64,7 +63,7 @@
 }
 
 .modal-exclamation-icon {
-  @apply mx-auto mb-4 text-gray-400 dark:text-gray-200;
+  @apply w-8 h-8 mx-auto mb-4 text-gray-400 dark:text-gray-200;
 
 }
 

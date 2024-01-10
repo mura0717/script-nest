@@ -29,7 +29,7 @@ router.post(
   })
 );
 
-// All users fetch
+// ALL USERS FETCH
 router.get("/api/auth/admin/allusers", isAdmin, async (req, res) => {
   try {
     const results = await usersService.getAllUsers();
@@ -46,8 +46,7 @@ router.get("/api/auth/admin/allusers", isAdmin, async (req, res) => {
   }
 });
 
-router.post("/admin/create");
-router.get("/admin/users");
+router.post("/api/auth/admin/create");
 router.get("/api/auth/set-admin") //super admin
 
 export default router;

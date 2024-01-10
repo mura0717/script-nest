@@ -2,7 +2,7 @@ import "dotenv/config";
 import admin from "../config/firebaseAdmin.js";
 import AppError from "../utils/ErrorHandling/AppError.js";
 
-// This could be part of a one-time setup script or a special admin-only endpoint
+// This is a one-time special admin-only endpoint
 async function setInitialAdminUser(uid, next) {
   if (!uid) {
     return next(new AppError("No authorized uid provided.", 401));
@@ -16,5 +16,5 @@ async function setInitialAdminUser(uid, next) {
   }
 }
 
-// Call this function with the UID of the initial admin user
-setInitialAdminUser("4rTkYbETINR5uj0F55bFw5kspRG3");
+// Call this function with the UID of a user to set admin status.
+setInitialAdminUser("PUT UID HERE");

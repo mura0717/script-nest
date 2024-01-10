@@ -59,14 +59,14 @@
     localOriginValue = event.currentTarget.value;
   }
 
-    function handleCollabsUpdate(updateCollaborators) {
+    function handleCollaboratorsUpdate(updateCollaborators) {
     console.log(
-      "Idea Page - Before handleCollabsUpdate:",
+      "Idea Page - Before handleCollaboratorsUpdate:",
       idea.collaborators
     );
     idea.collaborators = updateCollaborators;
     console.log(
-      "Idea Page - After handleCollabsUpdate:",
+      "Idea Page - After handleCollaboratorsUpdate:",
       idea.collaborators
     );
   }
@@ -120,7 +120,7 @@
 
   <!-- COLLABORATORS -->
   <div>
-    <Collaborators on:updateCollaborators={handleCollabsUpdate}/>
+    <Collaborators on:updateCollaborators={handleCollaboratorsUpdate}/>
   </div>
 
   <!-- FORM -->

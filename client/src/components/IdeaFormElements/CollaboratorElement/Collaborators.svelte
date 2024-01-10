@@ -17,7 +17,7 @@
   import {
     SearchOutline,
     UserAddOutline,
-    TrashBinSolid,
+    TrashBinSolid, GlobeSolid, GlobeOutline,
   } from "flowbite-svelte-icons";
   import default_image_thumbnail from "../../../assets/defaultImages/default_image_thumbnail.jpeg";
   import { createEventDispatcher, onMount } from "svelte";
@@ -27,8 +27,8 @@
   import { AppError } from "../../../utils/ErrorHandling/AppError";
   import { handleError } from "../../../utils/ErrorHandling/GlobalErrorHandlerClient";
 
-  let userName = "";
-  let userSearchResults = [];
+  let searchEmail = "";
+  let userSearchResult = "";
   let addedCollaborators = [];
   let showDropdown = false;
   const collaboratorDispatch = createEventDispatcher();
@@ -64,11 +64,12 @@
     }
   }
 
-  async function searchUsers(userName) {
-    if (userName.length > 0) {
+  async function searchUsers() {
+    if (searchEmail != "") {
       try {
-        const results = await inviteUserByEmail(userName);
-        userSearchResults = results;
+        const result = await inviteUserByEmail(searchEmail);
+        console.log("Collaborators Element - searchusers:", result);
+        userSearchResult = result;
         showDropdown = true;
       } catch (error) {
         handleError(error);
@@ -77,7 +78,7 @@
         });
       }
     } else {
-      userSearchResults = [];
+      userSearchResult = "";
     }
   }
 
@@ -92,7 +93,7 @@
 
         addedCollaborators = [...addedCollaborators, collaborator];
         collaboratorDispatch("updateCollaborators", addedCollaborators);
-        userSearchResults = [];
+        userSearchResult = "";
       }
     } catch (error) {
       handleError(error);
@@ -105,67 +106,71 @@
   function removeCollaborator() {
     addedCollaborators = addedCollaborators.filter((_, i) => i !== index);
   }
+
+  function showShareModal(){}
 </script>
 
+
+
 <div class="collaborators-container">
-  <form class="searchbar-collaborators">
-    <Search size="sm" class="rounded-none py-2.5" placeholder="Add people..." />
-    <Button
-      class="!p-2.5 rounded-s-none"
-      on:click={(event) => searchUsers(event.target.value)}
-    >
-      <SearchOutline class="w-5 h-5" />
+    <Button on:click={showShareModal}>
+        <GlobeSolid/>
+        Share
+    </Button>
+  <Label class="collaborator-element-label">Collaborators:</Label>
+  <form class="searchbar-collaborators-container">
+    <Search
+      size="sm"
+      class="searchbar-display"
+      placeholder="Add people..."
+      bind:value={searchEmail}
+    />
+    <Button class="search-button-display" on:click={searchUsers}>
+      <SearchOutline class="search-outline-icon" />
     </Button>
   </form>
 
-  {#if userSearchResults.length > 0}
-    <Label class="collaborator-element-label">Collaborators:</Label>
-    <Dropdown class="dropdown" size="sm" bind:open={showDropdown}>
-      {#each userSearchResults as user}
-        <DropdownItem class="dropdown-item">
-          <img
-            class="user-avatar-thumbnail"
-            src={user.avatar}
-            alt={user.name}
-          />
-          {user.name}
-          <Button
-            class="add-collaborator-button"
-            on:click={() => addUserAsCollaborator(user)}
-          >
-            <UserAddOutline class="add-collaborator-icon" />
-          </Button>
+  {#if userSearchResult}
+    <Dropdown class="user-search-dropdown" size="sm" bind:open={showDropdown}>
+      {#each userSearchResult as user}
+        <DropdownItem class="user-search-dropdown-item">
+          <div class="user-search-dropdown-item-display">
+            <img
+              class="user-avatar-thumbnail"
+              src={user.avatar}
+              alt={user.name}
+            />
+            <p>{user.name}</p>
+            <Button
+              class="add-collaborator-button"
+              on:click={() => addUserAsCollaborator(user)}
+            >
+              <UserAddOutline class="add-collaborator-icon" />
+            </Button>
+          </div>
         </DropdownItem>
       {/each}
     </Dropdown>
   {/if}
 
-  <Listgroup active class="collaborator-list-group">
-    <ListgroupItem class="collaborator-list-element">
-      <div>
-        <Avatar class="avatar-collaborator-img" size="sm" />
-        {userName}
-      </div>
-      <div>
-        <Button class="remove-collaborator-button">
-          <TrashBinSolid class="remove-collaborator-icon" />
-        </Button>
-      </div>
-    </ListgroupItem>
-  </Listgroup>
-
   {#if addedCollaborators}
-    <div class="collabs-display">
+    <div class="collaborators-display">
       {#each addedCollaborators as collaborator, index}
-        <div class="collab-item">
-          <div class="collab-avatar-display">
-            <img
-              class="collab-avatar-image"
-              src={collaborator.avatar}
-              alt={collaborator.name}
-            />
-          </div>
-        </div>
+        <Listgroup active class="collaborators-list-group">
+          <ListgroupItem class="collaborators-list-group-item">
+            <div class="collaborators-list-group-item-display">
+              <img
+                class="collaborator-avatar-image"
+                src={collaborator.avatar}
+                alt={collaborator.name}
+              />
+              <p>{collaborator.name}</p>
+              <Button class="remove-collaborator-button">
+                <TrashBinSolid class="remove-collaborator-icon" />
+              </Button>
+            </div>
+          </ListgroupItem>
+        </Listgroup>
       {/each}
     </div>
   {/if}
