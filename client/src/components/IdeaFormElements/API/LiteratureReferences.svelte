@@ -17,6 +17,7 @@
   import { handleError } from "../../../utils/ErrorHandling/GlobalErrorHandlerClient";
   import { createEventDispatcher } from "svelte";
 
+  let searchBookName = "";
   let bookSearchResults = [];
   let selectedBooks = [];
   let showDropdown = false;
@@ -24,10 +25,10 @@
   let showRemoveBookModal = false;
   const litRefDispatch = createEventDispatcher();
 
-  async function fetchBooks(query) {
+  async function fetchBooks(searchQuery) {
     try {
       const response = await getRequest(
-        `/api/auth/ideas/books?q=${encodeURIComponent(query)}`
+        `/api/auth/ideas/books?q=${encodeURIComponent(searchQuery)}`
       );
       if (response && response.bookId && response.bookId.items) {
         console.log("LitRef-google book api response:", response);
@@ -42,7 +43,7 @@
             : "No publication date",
         }));
       } else {
-        throw new AppError("No data found from Google Books", { query });
+        throw new AppError("No data found from Google Books", { query: searchQuery });
       }
     } catch (error) {
       handleError(error);
@@ -85,6 +86,8 @@
         selectedBooks = [...selectedBooks, book];
         litRefDispatch("updateLitRefs", selectedBooks);
         bookSearchResults = [];
+        searchBookName = "";
+        
       }
     } catch (error) {
       handleError(error);
@@ -112,6 +115,7 @@
     <Search
       size="md"
       on:input={(event) => debouncedSearchBooks(event.target.value)}
+      bind:value={searchBookName}
     />
     {#if bookSearchResults.length > 0}
       <Dropdown class="dropdown" size="md" bind:open={showDropdown}>

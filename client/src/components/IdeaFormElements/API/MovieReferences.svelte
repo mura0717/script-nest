@@ -17,6 +17,7 @@
   import { handleError } from "../../../utils/ErrorHandling/GlobalErrorHandlerClient";
   import { createEventDispatcher } from "svelte";
 
+  let searchMovieName = "";
   let movieSearchResults = [];
   let selectedMovies = [];
   let showDropdown = false;
@@ -82,6 +83,7 @@
         selectedMovies = [...selectedMovies, movie];
         movieRefDispatch("updateMovieRefs", selectedMovies);
         movieSearchResults = [];
+        searchMovieName = "";
       }
     } catch (error) {
       handleError(error);
@@ -109,6 +111,7 @@
     <Search
       size="md"
       on:input={(event) => debouncedSearchMovies(event.target.value)}
+      bind:value={searchMovieName}
     />
     {#if movieSearchResults.length > 0}
       <Dropdown class="dropdown" size="md" bind:open={showDropdown}>
