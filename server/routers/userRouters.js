@@ -43,6 +43,7 @@ router.get(
           displayName: userRecord.displayName,
           email: userRecord.email,
           photoURL: userRecord.photoURL,
+          uid: userRecord.uid,
         };
         console.log(
           "userRouter.js - Searched User Data to be Sent to Client:",

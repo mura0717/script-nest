@@ -15,6 +15,7 @@
   import UserProfile from "./pages/UserProfile/UserProfile.svelte";
   import SideBar from "./components/SideBar/SideBar.svelte";
   import Idea from "./pages/Idea/Idea.svelte";
+  import SharedWithMe from "./pages/SharedWithMe/SharedWithMe.svelte";
   import Contact from "./pages/Contact/Contact.svelte";
   import AdminProfile from "./pages/AdminProfile/AdminProfile.svelte";
   import { DarkMode } from "flowbite-svelte";
@@ -46,6 +47,9 @@
         </PrivateRoute>
         <PrivateRoute path="/auth/user/newidea" let:location>
           <Idea></Idea>
+        </PrivateRoute>
+        <PrivateRoute path="/auth/user/sharedwithme" let:location>
+          <SharedWithMe></SharedWithMe>
         </PrivateRoute>
         <PrivateRoute path="/auth/admin/profile" let:location>
           <AdminProfile></AdminProfile>

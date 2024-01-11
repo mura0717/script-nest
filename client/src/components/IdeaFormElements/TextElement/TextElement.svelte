@@ -1,7 +1,7 @@
 <script>
   import { Label, Textarea } from "flowbite-svelte";
   import "./text-element.css";
-  import "../../../pages/Idea/idea.css"
+  import "../../../pages/Idea/idea.css";
 
   export let id;
   export let label;

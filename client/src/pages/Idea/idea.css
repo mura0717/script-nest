@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .idea-page-container {
-  @apply flex;
+  @apply flex ml-8;
 }
 
 .idea-title {
@@ -22,7 +22,7 @@
 }
 
 .idea-form-elements-container {
-  flex-direction: column;
+  flex-direction: column;;
 }
 
 .idea-form-element {
@@ -35,6 +35,7 @@
   font-weight: bold;
   font-size: medium;
   padding-bottom: 5px;
+  padding-top: 5px;
 }
 
 .origin-grid {

@@ -1,5 +1,5 @@
 <script>
-  import "./sidebar.css";
+  import "../../components/SideBar/sidebar.css";
   import {
     Sidebar,
     SidebarGroup,
@@ -13,6 +13,7 @@
     ArrowRightToBracketSolid,
     UserSettingsOutline,
     TrashBinOutline,
+    UsersSolid,
   } from "flowbite-svelte-icons";
   import { onMount } from "svelte";
   import { userStore } from "../../store/userStore.js";
@@ -71,6 +72,14 @@
           <p class="sidebar-username-display">{userName}</p>
       </div>
       <SidebarItem
+        label="New Idea"
+        on:click={() => navigateToRoute("/auth/user/newidea")}
+      >
+        <svelte:fragment slot="icon">
+          <FileOutline class="sidebar-item-icon" />
+        </svelte:fragment>
+      </SidebarItem>
+      <SidebarItem
         label="My Ideas"
         on:click={() => navigateToRoute("/auth/user/profile")}
       >
@@ -79,11 +88,11 @@
         </svelte:fragment>
       </SidebarItem>
       <SidebarItem
-        label="New Idea"
-        on:click={() => navigateToRoute("/auth/user/newidea")}
+        label="Shared with me"
+        on:click={() => navigateToRoute("/auth/user/sharedwithme")}
       >
         <svelte:fragment slot="icon">
-          <FileOutline class="sidebar-item-icon" />
+          <UsersSolid class="sidebar-item-icon" />
         </svelte:fragment>
       </SidebarItem>
       <SidebarItem

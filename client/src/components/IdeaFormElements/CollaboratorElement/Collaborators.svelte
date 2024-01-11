@@ -59,6 +59,7 @@
           {
             avatar: retrievedUser.photoURL || default_image_thumbnail,
             name: retrievedUser.displayName || "Unknown User",
+            uid: retrievedUser.uid || "Unknown UID",
           },
         ];
       } else {
@@ -97,6 +98,7 @@
         const collaboratorReference = {
           avatar: collaborator.avatar,
           name: collaborator.name,
+          uid: collaborator.uid,
         };
 
         addedCollaborators = [...addedCollaborators, collaborator];
@@ -199,7 +201,7 @@
       <ExclamationCircleOutline
         class="modal-exclamation-icon"
       />
-      <h3 class="remove-collaborator-text">
+      <h3 class="remove-collaborator-modal-text">
         Are you sure you want to remove collaborator?
       </h3>
       <Button color="red" class="me-2" on:click={() => removeCollaborator(currentCollaboratorIndex)} >Yes, I'm sure</Button>

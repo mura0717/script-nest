@@ -3,11 +3,11 @@
 @tailwind utilities;
 
 .collaborators-container {
-  @apply p-3;
+  @apply mr-2 mt-3 mb-2;
 }
 
 .share-modal-button {
-  @apply ml-16 mt-6 text-center space-x-2 p-2;
+  @apply ml-16 mt-6 mr-6 text-center space-x-2 p-2;
 }
 
 .collaborator-element-label {
@@ -15,7 +15,7 @@
 }
 
 .collaborators-display {
-  background-color: antiquewhite;
+  background-color: #f9fbfd;
   @apply mt-3 w-full h-full border rounded-lg p-2;
 }
 
@@ -42,7 +42,7 @@
 
 .remove-collaborator-button {
   display: none;
-  @apply absolute right-14 bg-red-500 text-white p-1 rounded-lg;
+  @apply absolute right-8 bg-red-500 text-white p-1 rounded-lg;
 }
 
 .remove-collaborator-icon {

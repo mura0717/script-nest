@@ -1,6 +1,6 @@
 <script>
   import "./idea.css";
-  import "../../styles/global.css"
+  import "../../styles/global.css";
   import { Label } from "flowbite-svelte";
   import debounce from "debounce";
   import TextElement from "../../components/IdeaFormElements/TextElement/TextElement.svelte";
@@ -139,20 +139,18 @@
           </div>
           <!-- ORIGIN -->
           <div class="idea-form-element">
-            <div class="idea-element-label">
-              <Label class="idea-element-label">Origin:</Label>
-              <div class="origin-grid" id="origin-input">
-                {#each originOptions as originOption}
-                  <RadioButtonElement
-                    id={`origin-${originOption.toLowerCase()}`}
-                    name="origin"
-                    label={originOption}
-                    value={originOption}
-                    selectedValue={localOriginValue}
-                    onChange={handleOriginChange}
-                  />
-                {/each}
-              </div>
+            <Label class="idea-element-label">Origin:</Label>
+            <div class="origin-grid" id="origin-input">
+              {#each originOptions as originOption}
+                <RadioButtonElement
+                  id={`origin-${originOption.toLowerCase()}`}
+                  name="origin"
+                  label={originOption}
+                  value={originOption}
+                  selectedValue={localOriginValue}
+                  onChange={handleOriginChange}
+                />
+              {/each}
             </div>
             <!-- SOURCE MATERIAL TITLE -->
             {#if localOriginValue !== "Original Idea"}
@@ -253,8 +251,11 @@
       </form>
     </div>
   </div>
-    <!-- COLLABORATORS -->
+  <!-- COLLABORATORS -->
   <div>
-    <Collaborators {ideaTitle} on:updateCollaborators={handleCollaboratorsUpdate} />
+    <Collaborators
+      {ideaTitle}
+      on:updateCollaborators={handleCollaboratorsUpdate}
+    />
   </div>
 </main>
