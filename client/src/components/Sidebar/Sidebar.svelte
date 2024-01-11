@@ -62,14 +62,14 @@
   });
 </script>
 
+<div class="sidebar-container">
 <Sidebar>
   <SidebarWrapper>
-    <SidebarGroup>
-      <SidebarItem label={userName}>
-        <svelte:fragment slot="icon">
-          <Avatar class="sidebar-avatar-img" />
-        </svelte:fragment>
-      </SidebarItem>
+    <SidebarGroup class="sidebar-group">
+      <div class="sidebar-user-display">
+          <Avatar class="sidebar-avatar-image" />
+          <p class="sidebar-username-display">{userName}</p>
+      </div>
       <SidebarItem
         label="My Ideas"
         on:click={() => navigateToRoute("/auth/user/profile")}
@@ -102,8 +102,6 @@
           <TrashBinOutline class="sidebar-item-icon" />
         </svelte:fragment>
       </SidebarItem>
-    </SidebarGroup>
-    <SidebarGroup>
       <SidebarItem label="Sign Out" on:click={handleLogout}>
         <svelte:fragment slot="icon">
           <ArrowRightToBracketSolid class="sidebar-item-icon" />
@@ -112,3 +110,4 @@
     </SidebarGroup>
   </SidebarWrapper>
 </Sidebar>
+</div>

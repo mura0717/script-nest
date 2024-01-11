@@ -146,7 +146,6 @@
             <p>{movie.title}</p>
             <p>({movie.releaseDate})</p>
           </div>
-          <!-- <button class="remove-ref-button" on:click={() => removeFilm(index)} -->
           <button
             class="remove-ref-button"
             on:click={() => openRemoveMovieModal(movieIndex)}

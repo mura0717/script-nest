@@ -17,7 +17,10 @@
   import {
     SearchOutline,
     UserAddOutline,
-    TrashBinSolid, GlobeSolid, GlobeOutline,
+    TrashBinSolid,
+    GlobeSolid,
+    GlobeOutline,
+    ExclamationCircleOutline,
   } from "flowbite-svelte-icons";
   import default_image_thumbnail from "../../../assets/defaultImages/default_image_thumbnail.jpeg";
   import { createEventDispatcher, onMount } from "svelte";
@@ -31,6 +34,10 @@
   let userSearchResult = "";
   let addedCollaborators = [];
   let showDropdown = false;
+  let showShareModal = false;
+  let currentCollaboratorIndex;
+  let showRemoveCollaboratorModal = false;
+  export let ideaTitle;
   const collaboratorDispatch = createEventDispatcher();
 
   async function inviteUserByEmail(userEmail) {
@@ -47,6 +54,7 @@
       );
       if (response && response.data) {
         const retrievedUser = response.data;
+        userEmail = "";
         return [
           {
             avatar: retrievedUser.photoURL || default_image_thumbnail,
@@ -54,7 +62,7 @@
           },
         ];
       } else {
-        throw new AppError("No users found with this email:", { userEmail });
+        throw new AppError("Invitation not sent to:", { userEmail });
       }
     } catch (error) {
       handleError(error);
@@ -93,6 +101,7 @@
 
         addedCollaborators = [...addedCollaborators, collaborator];
         collaboratorDispatch("updateCollaborators", addedCollaborators);
+        searchEmail = "";
         userSearchResult = "";
       }
     } catch (error) {
@@ -103,59 +112,30 @@
     }
   }
 
-  function removeCollaborator() {
-    addedCollaborators = addedCollaborators.filter((_, i) => i !== index);
+  function removeCollaborator(collaboratorIndex) {
+    addedCollaborators = addedCollaborators.filter((_, i) => i !== collaboratorIndex);
   }
 
-  function showShareModal(){}
+  function openRemoveCollaboratorModal(collaboratorIndex){
+    currentCollaboratorIndex = collaboratorIndex;
+    showRemoveCollaboratorModal = true;
+  }
+
+  function openShareModal() {
+    showShareModal = true;
+  }
 </script>
 
-
-
 <div class="collaborators-container">
-    <Button on:click={showShareModal}>
-        <GlobeSolid/>
-        Share
-    </Button>
-  <Label class="collaborator-element-label">Collaborators:</Label>
-  <form class="searchbar-collaborators-container">
-    <Search
-      size="sm"
-      class="searchbar-display"
-      placeholder="Add people..."
-      bind:value={searchEmail}
-    />
-    <Button class="search-button-display" on:click={searchUsers}>
-      <SearchOutline class="search-outline-icon" />
-    </Button>
-  </form>
+  <Button class="share-modal-button" on:click={openShareModal}>
+    <GlobeSolid />
+    <p>Share</p>
+  </Button>
 
-  {#if userSearchResult}
-    <Dropdown class="user-search-dropdown" size="sm" bind:open={showDropdown}>
-      {#each userSearchResult as user}
-        <DropdownItem class="user-search-dropdown-item">
-          <div class="user-search-dropdown-item-display">
-            <img
-              class="user-avatar-thumbnail"
-              src={user.avatar}
-              alt={user.name}
-            />
-            <p>{user.name}</p>
-            <Button
-              class="add-collaborator-button"
-              on:click={() => addUserAsCollaborator(user)}
-            >
-              <UserAddOutline class="add-collaborator-icon" />
-            </Button>
-          </div>
-        </DropdownItem>
-      {/each}
-    </Dropdown>
-  {/if}
-
-  {#if addedCollaborators}
+  {#if addedCollaborators.length > 0}
     <div class="collaborators-display">
-      {#each addedCollaborators as collaborator, index}
+      <Label class="collaborator-element-label">Collaborators:</Label>
+      {#each addedCollaborators as collaborator, collaboratorIndex}
         <Listgroup active class="collaborators-list-group">
           <ListgroupItem class="collaborators-list-group-item">
             <div class="collaborators-list-group-item-display">
@@ -165,13 +145,65 @@
                 alt={collaborator.name}
               />
               <p>{collaborator.name}</p>
-              <Button class="remove-collaborator-button">
+              <button class="remove-collaborator-button" on:click={() => openRemoveCollaboratorModal(collaboratorIndex)}>
                 <TrashBinSolid class="remove-collaborator-icon" />
-              </Button>
+              </button>
             </div>
           </ListgroupItem>
         </Listgroup>
       {/each}
     </div>
   {/if}
+  <Modal bind:open={showShareModal} size="xs" autoclose={false}>
+    <h3>Share "{ideaTitle || "Untitled New Idea" }"</h3>
+    <form class="searchbar-collaborators-container">
+      <Search
+        size="sm"
+        class="searchbar-display"
+        placeholder="Add people..."
+        bind:value={searchEmail}
+      />
+      <Button class="search-button-display" on:click={searchUsers}>
+        <SearchOutline class="search-outline-icon" />
+      </Button>
+    </form>
+    {#if userSearchResult}
+      <Listgroup
+        class="user-search-dropdown"
+        size="sm"
+        bind:open={showDropdown}
+      >
+        {#each userSearchResult as user}
+          <ListgroupItem >
+            <div class="user-search-dropdown-item">
+              <img
+                class="user-avatar-thumbnail"
+                src={user.avatar}
+                alt={user.name}
+              />
+              <p>{user.name}</p>
+              <Button
+                class="add-collaborator-button"
+                on:click={() => addUserAsCollaborator(user)}
+              >
+                <UserAddOutline class="add-collaborator-icon" />
+              </Button>
+            </div>
+          </ListgroupItem>
+        {/each}
+      </Listgroup>
+    {/if}
+  </Modal>
+    <Modal bind:open={showRemoveCollaboratorModal} size="xs" autoclose>
+    <div class="remove-collaborator-modal-container">
+      <ExclamationCircleOutline
+        class="modal-exclamation-icon"
+      />
+      <h3 class="remove-collaborator-text">
+        Are you sure you want to remove collaborator?
+      </h3>
+      <Button color="red" class="me-2" on:click={() => removeCollaborator(currentCollaboratorIndex)} >Yes, I'm sure</Button>
+      <Button color="alternative" on:click={() => (showRemoveCollaboratorModal = false)}>No, cancel</Button>
+    </div>
+  </Modal>
 </div>

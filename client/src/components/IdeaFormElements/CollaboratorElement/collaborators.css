@@ -3,16 +3,54 @@
 @tailwind utilities;
 
 .collaborators-container {
-  font-family: Arial, Helvetica, sans-serif;
   @apply p-3;
+}
+
+.share-modal-button {
+  @apply ml-16 mt-6 text-center space-x-2 p-2;
+}
+
+.collaborator-element-label {
+  @apply text-sm mb-1;
+}
+
+.collaborators-display {
+  background-color: antiquewhite;
+  @apply mt-3 w-full h-full border rounded-lg p-2;
+}
+
+.collaborators-list-group {
+  @apply flex;
+}
+
+.collaborators-list-group-item {
+  @apply pt-0 pb-0 pl-1 pr-2;
+}
+
+.collaborators-list-group-item-display {
+  @apply flex items-center text-sm font-semibold gap-1;
+}
+
+.collaborator-avatar-image {
+  width: 40px;
+  height: auto;
+}
+
+.collaborators-list-group-item:hover .remove-collaborator-button {
+  display: block;
+}
+
+.remove-collaborator-button {
+  display: none;
+  @apply absolute right-14 bg-red-500 text-white p-1 rounded-lg;
+}
+
+.remove-collaborator-icon {
+  @apply w-4 h-4;
 }
 
 .searchbar-collaborators-container {
   @apply flex mt-3 mb-3 w-72;
-}
-
-.collaborator-element-label {
-  @apply text-sm;
 }
 
 .searchbar-display {
@@ -28,15 +66,11 @@
 }
 
 .user-search-dropdown {
-  @apply static min-w-full;
+  @apply w-fit;
 }
 
 .user-search-dropdown-item {
-  @apply flex items-center p-1;
-}
-
-.user-search-dropdown-item-display {
-  @apply flex items-center text-sm font-semibold gap-3;
+  @apply flex items-center p-0 text-sm font-semibold gap-3;
 }
 
 .user-avatar-thumbnail {
@@ -45,31 +79,7 @@
   vertical-align: middle;
 }
 
-.collaborators-display {
-  @apply w-fit border rounded-lg p-1;
-}
-
-.collaborators-list-group {
-  @apply flex w-fit;
-}
-
-.collaborators-list-group-item {
-  @apply p-1;
-}
-
-.collaborators-list-group-item-display {
-  @apply flex items-center text-sm font-semibold gap-3;
-}
-
-.collaborator-avatar-image {
-  @apply w-12 h-12;
-}
-
 .add-collaborator-button {
-  @apply p-2;
-}
-
-.remove-collaborator-button {
   @apply p-2;
 }
 
@@ -77,6 +87,18 @@
   @apply w-4 h-4;
 }
 
-.remove-collaborator-icon {
-  @apply w-4 h-4;
+
+.remove-collaborator-modal-container {
+  @apply text-center;
+
+}
+
+.modal-exclamation-icon {
+  @apply w-8 h-8 mx-auto mb-4 text-gray-400 dark:text-gray-200;
+
+}
+
+.remove-collaborator-modal-text {
+  @apply mb-5 text-base font-normal text-gray-500 dark:text-gray-400;
+
 }

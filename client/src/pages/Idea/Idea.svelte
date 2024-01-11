@@ -1,5 +1,6 @@
 <script>
   import "./idea.css";
+  import "../../styles/global.css"
   import { Label } from "flowbite-svelte";
   import debounce from "debounce";
   import TextElement from "../../components/IdeaFormElements/TextElement/TextElement.svelte";
@@ -25,6 +26,9 @@
     comments: [],
     collaborators: [],
   };
+
+  let ideaTitle = idea.title;
+  $: ideaTitle = idea.title;
 
   const originOptions = [
     "Original Idea",
@@ -59,7 +63,7 @@
     localOriginValue = event.currentTarget.value;
   }
 
-    function handleCollaboratorsUpdate(updateCollaborators) {
+  function handleCollaboratorsUpdate(updateCollaborators) {
     console.log(
       "Idea Page - Before handleCollaboratorsUpdate:",
       idea.collaborators
@@ -112,145 +116,145 @@
   }
 </script>
 
-<main class="global-font">
-  <!-- PAGE TITLE (IDEA) -->
-  <div class="page-title">
-    <p>{idea.title || "Untitled New Idea"}</p>
-  </div>
-
-  <!-- COLLABORATORS -->
-  <div>
-    <Collaborators on:updateCollaborators={handleCollaboratorsUpdate}/>
-  </div>
-
-  <!-- FORM -->
-  <div class="idea-form-container">
-    <form on:submit|preventDefault>
-      <div class="idea-form-elements-container">
-        <!-- TITLE -->
-        <div class="idea-form-element">
-          <TextElement
-            id="title-input"
-            label="Title"
-            bind:value={idea.title}
-            rows={1}
-            cols={50}
-            placeholder=""
-          />
-        </div>
-        <!-- ORIGIN -->
-        <div class="idea-form-element">
-          <div class="idea-element-label">
-            <Label class="idea-element-label">Origin:</Label>
-            <div class="origin-grid" id="origin-input">
-              {#each originOptions as originOption}
-                <RadioButtonElement
-                  id={`origin-${originOption.toLowerCase()}`}
-                  name="origin"
-                  label={originOption}
-                  value={originOption}
-                  selectedValue={localOriginValue}
-                  onChange={handleOriginChange}
-                />
-              {/each}
-            </div>
+<main class="idea-page-container global-font">
+  <!-- IDEA TITLE -->
+  <div class="idea-container">
+    <div class="idea-title">
+      <p>{ideaTitle || "Untitled New Idea"}</p>
+    </div>
+    <!-- FORM -->
+    <div class="idea-form-container">
+      <form on:submit|preventDefault>
+        <div class="idea-form-elements-container">
+          <!-- TITLE -->
+          <div class="idea-form-element">
+            <TextElement
+              id="title-input"
+              label="Title"
+              bind:value={idea.title}
+              rows={1}
+              cols={50}
+              placeholder=""
+            />
           </div>
-          <!-- SOURCE MATERIAL TITLE -->
-          {#if localOriginValue !== "Original Idea"}
+          <!-- ORIGIN -->
+          <div class="idea-form-element">
+            <div class="idea-element-label">
+              <Label class="idea-element-label">Origin:</Label>
+              <div class="origin-grid" id="origin-input">
+                {#each originOptions as originOption}
+                  <RadioButtonElement
+                    id={`origin-${originOption.toLowerCase()}`}
+                    name="origin"
+                    label={originOption}
+                    value={originOption}
+                    selectedValue={localOriginValue}
+                    onChange={handleOriginChange}
+                  />
+                {/each}
+              </div>
+            </div>
+            <!-- SOURCE MATERIAL TITLE -->
+            {#if localOriginValue !== "Original Idea"}
+              <div class="idea-form-element">
+                <TextElement
+                  id="source-material-input"
+                  label="Source Material Title"
+                  bind:value={idea.sourceMaterial}
+                  rows={1}
+                  cols={50}
+                  placeholder="Ex: Romeo & Juliet"
+                />
+                <!-- SOURCE AUTHOR(S) -->
+                <TextElement
+                  id="authors-input"
+                  label="Author(s)"
+                  bind:value={idea.authors}
+                  rows={1}
+                  cols={50}
+                  placeholder="Ex: William Shakespeare"
+                />
+              </div>
+            {/if}
+            <!-- GENRE -->
+            <div class="idea-form-element">
+              <Label class="idea-element-label">Genre:</Label>
+              <div class="genre-grid" id="genre-input">
+                {#each genreOptions as genreOption}
+                  <CheckboxElement
+                    id={`genre-${genreOption.toLowerCase()}`}
+                    name="genre"
+                    value={genreOption}
+                    label={genreOption}
+                    bind:bindGroup={idea.selectedGenres}
+                  />
+                {/each}
+              </div>
+            </div>
+            <!-- TIME PERIOD -->
             <div class="idea-form-element">
               <TextElement
-                id="source-material-input"
-                label="Source Material Title"
-                bind:value={idea.sourceMaterial}
+                id="time-input"
+                label="Time Period"
+                bind:value={idea.timePeriod}
                 rows={1}
                 cols={50}
-                placeholder="Ex: Romeo & Juliet"
+                placeholder="Ex: Sometime in 14th Century"
               />
-              <!-- SOURCE AUTHOR(S) -->
+            </div>
+            <!-- SETTING -->
+            <div class="idea-form-element">
               <TextElement
-                id="authors-input"
-                label="Author(s)"
-                bind:value={idea.authors}
+                id="setting-input"
+                label="Setting"
+                bind:value={idea.setting}
                 rows={1}
                 cols={50}
-                placeholder="Ex: William Shakespeare"
+                placeholder="Ex: Verona, Italy"
               />
             </div>
-          {/if}
-          <!-- GENRE -->
-          <div class="idea-form-element">
-            <Label class="idea-element-label">Genre:</Label>
-            <div class="genre-grid" id="genre-input">
-              {#each genreOptions as genreOption}
-                <CheckboxElement
-                  id={`genre-${genreOption.toLowerCase()}`}
-                  name="genre"
-                  value={genreOption}
-                  label={genreOption}
-                  bind:bindGroup={idea.selectedGenres}
-                />
-              {/each}
+            <!-- PREMISE -->
+            <div class="idea-form-element">
+              <TextElement
+                id="premise-input"
+                label="Premise"
+                bind:value={idea.premise}
+                rows={1}
+                cols={50}
+                placeholder="Ex: Love conquers all."
+              />
             </div>
-          </div>
-          <!-- TIME PERIOD -->
-          <div class="idea-form-element">
-            <TextElement
-              id="time-input"
-              label="Time Period"
-              bind:value={idea.timePeriod}
-              rows={1}
-              cols={50}
-              placeholder="Ex: Sometime in 14th Century"
-            />
-          </div>
-          <!-- SETTING -->
-          <div class="idea-form-element">
-            <TextElement
-              id="setting-input"
-              label="Setting"
-              bind:value={idea.setting}
-              rows={1}
-              cols={50}
-              placeholder="Ex: Verona, Italy"
-            />
-          </div>
-          <!-- PREMISE -->
-          <div class="idea-form-element">
-            <TextElement
-              id="premise-input"
-              label="Premise"
-              bind:value={idea.premise}
-              rows={1}
-              cols={50}
-              placeholder="Ex: Love conquers all."
-            />
-          </div>
-          <!-- SYNOPSIS -->
-          <div class="idea-form-element">
-            <TextElement
-              id="synopis-input"
-              label="Synopsis"
-              bind:value={idea.synopsis}
-              rows={15}
-              cols={50}
-              placeholder="Ex: An age-old vendetta between two powerful families erupts into bloodshed..."
-            />
-          </div>
-          <!-- LITERATURE REFERENCES -->
-          <div class="idea-form-element" id="lit-ref-input">
-            <LiteratureReferences on:updateLitRefs={handleLitRefsUpdate} />
-            <!-- Needs to be implemented correctly!!! -->
-          </div>
-          <!-- FILM REFERENCES -->
-          <div class="idea-form-element" id="film-ref-input">
-            <MovieReferences on:updateMovieRefs={handleMovieRefsUpdate} />
-          </div>
-          <!-- COMMENTS -->
-          <div class="idea-form-element">
-            <Comments on:updateComments={handleCommentsUpdate} />
+            <!-- SYNOPSIS -->
+            <div class="idea-form-element">
+              <TextElement
+                id="synopis-input"
+                label="Synopsis"
+                bind:value={idea.synopsis}
+                rows={15}
+                cols={50}
+                placeholder="Ex: An age-old vendetta between two powerful families erupts into bloodshed..."
+              />
+            </div>
+            <!-- LITERATURE REFERENCES -->
+            <div class="idea-form-element" id="lit-ref-input">
+              <LiteratureReferences on:updateLitRefs={handleLitRefsUpdate} />
+              <!-- Needs to be implemented correctly!!! -->
+            </div>
+            <!-- FILM REFERENCES -->
+            <div class="idea-form-element" id="film-ref-input">
+              <MovieReferences on:updateMovieRefs={handleMovieRefsUpdate} />
+            </div>
+            <!-- COMMENTS -->
+            <div class="idea-form-element">
+              <Comments on:updateComments={handleCommentsUpdate} />
+            </div>
           </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
+  </div>
+    <!-- COLLABORATORS -->
+  <div>
+    <Collaborators {ideaTitle} on:updateCollaborators={handleCollaboratorsUpdate} />
   </div>
 </main>

@@ -2,8 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-.navbar-bg {
-    background-color: #ededdc;
+.navbar-container {
+    /* background-color: #ededdc; */
+    @apply w-full;
 }
 
 .navbar-elements-style {

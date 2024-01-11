@@ -12,7 +12,7 @@ const createUserStore = () => {
 
   const auth = getAuth();
 
-  onAuthStateChanged(auth, async (firebaseUser) => {
+  onAuthStateChanged(auth, async (firebaseUser) => { //NEEDS SIMPLIFICATION
     console.log("Authentication state changed", !!firebaseUser);
     try {
       let isAdminStatus = false;
@@ -23,10 +23,7 @@ const createUserStore = () => {
 
         console.log("userStore-idTokenResult:", idTokenResult);
         console.log("userStore-idTokenResult claims:", idTokenResult.claims);
-        console.log(
-          "userStore-type idTokenResult claims:",
-          typeof !!idTokenResult.claims.isAdmin
-        );
+        console.log("userStore-type idTokenResult claims:",typeof !!idTokenResult.claims.isAdmin);
         // set token in Local Storage
         const token = await firebaseUser.getIdToken();
         localStorage.setItem("firebaseAuthToken", token);

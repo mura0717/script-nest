@@ -29,9 +29,6 @@
 </script>
 
 <main class="user-profile-main-container">
-  <aside class="sidebar-container">
-    <Sidebar />
-  </aside>
   <div class="user-profile-content">
     <div class="mb-4">
       <IdeasSearchBar searchHandler={handleSearchInput} />
