@@ -1,5 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .signup-container {
-    padding-top: 0%;
-    padding-left: 2rem;
+  @apply pt-0 pl-8 pr-6;
 }
 
+.sign-up-label {
+  @apply pb-3 pt-3;
+}

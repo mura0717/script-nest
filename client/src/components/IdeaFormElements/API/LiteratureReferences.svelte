@@ -1,4 +1,6 @@
 <script>
+  import "./api-refs.css";
+  import "../../../pages/Idea/idea.css";
   import {
     Search,
     Label,
@@ -10,8 +12,6 @@
   import { ExclamationCircleOutline } from "flowbite-svelte-icons";
   import default_image_thumbnail from "../../../assets/defaultImages/default_image_thumbnail.jpeg";
   import { getRequest, postRequest } from "../../../store/fetchStore";
-  import "./api-refs.css";
-  import "../../../pages/Idea/idea.css";
   import debounce from "debounce";
   import { AppError } from "../../../utils/ErrorHandling/AppError";
   import { handleError } from "../../../utils/ErrorHandling/GlobalErrorHandlerClient";
@@ -43,7 +43,9 @@
             : "No publication date",
         }));
       } else {
-        throw new AppError("No data found from Google Books", { query: searchQuery });
+        throw new AppError("No data found from Google Books", {
+          query: searchQuery,
+        });
       }
     } catch (error) {
       handleError(error);
@@ -87,7 +89,6 @@
         litRefDispatch("updateLitRefs", selectedBooks);
         bookSearchResults = [];
         searchBookName = "";
-        
       }
     } catch (error) {
       handleError(error);

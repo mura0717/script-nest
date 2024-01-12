@@ -45,43 +45,45 @@
           />
         </div>
       </div>
-      <Dropdown
-        triggeredBy="#bell"
-        class="w-full max-w-sm rounded divide-y divide-gray-100 shadow dark:bg-gray-800 dark:divide-gray-700"
-      >
-        <div slot="header" class="text-center py-2 font-bold">
-          Notifications
-        </div>
-        <DropdownItem class="flex space-x-4">
-          <div class="pl-3 w-full">
-            <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">
-              New message from <span
-                class="font-semibold text-gray-900 dark:text-white"
-                >Jese Leos</span
-              >
-              : "I didn't like the tagline."
-            </div>
-            <div class="text-xs text-primary-600 dark:text-primary-500">
-              a few moments ago
-            </div>
-          </div></DropdownItem
+      <div>
+        <Dropdown
+          triggeredBy="#bell"
+          class="w-full max-w-sm rounded divide-y divide-gray-100 shadow dark:bg-gray-800 dark:divide-gray-700"
         >
-        <DropdownDivider />
-        <DropdownItem class="flex space-x-4">
-          <div class="pl-3 w-full">
-            <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">
-              New message from <span
-                class="font-semibold text-gray-900 dark:text-white"
-                >Joseph Mcfall</span
-              >
-              : "Premise is good."
-            </div>
-            <div class="text-xs text-primary-600 dark:text-primary-500">
-              10 minutes ago
-            </div>
+          <div slot="header" class="text-center py-2 font-bold">
+            Notifications
           </div>
-        </DropdownItem>
-      </Dropdown>
+          <DropdownItem class="flex space-x-4">
+            <div class="pl-3 w-full">
+              <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">
+                New comment from <span
+                  class="font-semibold text-gray-900 dark:text-white"
+                  >Jese Leos</span
+                >
+                : "I didn't like the tagline."
+              </div>
+              <div class="text-xs text-primary-600 dark:text-primary-500">
+                a few moments ago
+              </div>
+            </div></DropdownItem
+          >
+          <DropdownDivider />
+          <DropdownItem class="flex space-x-4">
+            <div class="pl-3 w-full">
+              <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">
+                New comment from <span
+                  class="font-semibold text-gray-900 dark:text-white"
+                  >Joseph Mcfall</span
+                >
+                : "Premise is good."
+              </div>
+              <div class="text-xs text-primary-600 dark:text-primary-500">
+                10 minutes ago
+              </div>
+            </div>
+          </DropdownItem>
+        </Dropdown>
+      </div>
     </NavUl>
   </Navbar>
 </div>

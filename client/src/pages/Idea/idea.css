@@ -13,6 +13,9 @@
   font-weight: bold;
 }
 
+.idea-container {
+  
+}
 .idea-form-container {
   flex-direction: column;
   display: grid;

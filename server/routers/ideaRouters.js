@@ -19,7 +19,7 @@ router.get('/api/auth/ideas/{ideaId}', catchAsync(async (req, res) => {
     // Return idea in response
 }))
 
-//CREATE NEW IDEA
+//SAVE NEW IDEA
 router.post('/api/auth/ideas', catchAsync(async (req, res) => {
     const userId = req.user.uid;
     const ideaData = req.body;
@@ -27,12 +27,15 @@ router.post('/api/auth/ideas', catchAsync(async (req, res) => {
     // Return success response
 }))
 
+//EDIT IDEA
 router.patch('/api/auth/ideas/{ideaId}', catchAsync(async (req, res) => {
     const userId = req.user.uid; // User's UID
     // Add code to edit ideas from Firestore for the given userId
     // Return success response
 }));
 
+
+//DELETE IDEA
 router.delete('api/auth/ideas/{ideaId}', catchAsync(async (req, res) => {
   const userId = req.user.uid;
   // Add code to delete an idea from Firestore for the given userId

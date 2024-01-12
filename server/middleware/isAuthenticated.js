@@ -13,8 +13,9 @@ const isAuthenticated = catchAsync(async (req, res, next) => {
   if (!idToken) {
     return next(new AppError("No bearer token provided.", 401));
   }
-  await admin.auth().verifyIdToken(idToken);
-  next();
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    req.user = decodedToken;
+    next();
 });
 
 export default isAuthenticated;

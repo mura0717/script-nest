@@ -31,13 +31,14 @@ async function getRequest(endpoint) {
 
 async function postRequest(endpoint, data) {
   console.log("url:", API_BASE_URL_JS + endpoint);
-  const firebaseToken = localStorage.getItem('firebaseAuthToken');
+  const firebaseToken = localStorage.getItem("firebaseAuthToken");
   try {
     const response = await fetch(API_BASE_URL_JS + endpoint, {
       credentials: "include",
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${firebaseToken}`,
       },
       body: JSON.stringify(data),
     });
@@ -55,12 +56,14 @@ async function postRequest(endpoint, data) {
 }
 
 async function patchRequest(endpoint, data) {
+  const firebaseToken = localStorage.getItem("firebaseAuthToken");
   try {
     const response = await fetch(API_BASE_URL_JS + endpoint, {
       credentials: "include",
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${firebaseToken}`,
       },
       body: JSON.stringify(data),
     });

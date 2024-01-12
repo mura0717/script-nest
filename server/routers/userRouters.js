@@ -27,6 +27,27 @@ router.get(
   })
 );
 
+// User Name Change
+router.patch(
+  "/api/auth/user/updates",
+  isAuthenticated,
+  catchAsync(async (req, res, next) => {
+    console.log("userRouter-patch-updates:", req.body.updates);
+    const updates = req.body.updates;
+    const uid = req.user.uid;
+    if (!updates || Object.keys(updates).length === 0) {
+      return next(new AppError("No updates provided.", 400));
+    }
+    const userEditResult = await userServices.editUser(uid, updates);
+    console.log("userRouter-patch-userEditResult:", userEditResult);
+    res.status(200).json({
+      success: true,
+      message: "User updates are successful.",
+      data: userEditResult,
+    });
+  })
+);
+
 //User Record Fetch by Email for Collaborator Invite
 router.get(
   "/api/auth/user/inviteUserByEmail",

@@ -9,22 +9,46 @@
     Label,
     Input,
   } from "flowbite-svelte";
-  import { EditOutline, UploadOutline, PenToSquareSolid } from "flowbite-svelte-icons";
+  import {
+    EditOutline,
+    UploadOutline,
+    PenToSquareSolid,
+  } from "flowbite-svelte-icons";
   import { userStore } from "../../store/userStore";
-  import { getRequest, postRequest } from "../../store/fetchStore.js";
+  import { getRequest, patchRequest, postRequest } from "../../store/fetchStore.js";
   import { onMount } from "svelte";
   import { handleError } from "../../utils/ErrorHandling/GlobalErrorHandlerClient.js";
   import { AppError } from "../../utils/ErrorHandling/AppError.js";
 
-  let userName = "";
+  let displayName = "";
   let email = "";
+  let newDisplayName = "";
   let showImageUploadModal = false;
+  let showNameEditModal = false;
 
   onMount(() => {
-    userName = $userStore.user.displayName;
+    displayName = $userStore.user.displayName;
     email = $userStore.user.email;
   });
 
+  //EDIT NAME
+  async function handleEditName(){
+    console.log("Settings-handleEditName-newDisplayName:", newDisplayName)
+    if(!newDisplayName) return
+    try {
+      const response = await patchRequest('/api/auth/user/updates', { updates: {displayName: newDisplayName}});
+      newDisplayName = "";
+      showNameEditModal = false;
+      location.reload();
+      return response;
+
+    } catch (error) {
+      handleError(error);
+      throw new AppError("Update failed:", { newName: newDisplayName });
+    }
+  }
+
+  //DROPZONE
   let value = [];
   const dropHandle = (event) => {
     value = [];
@@ -67,32 +91,58 @@
   };
 </script>
 
-<main class="settings-container">
-  <div>
-    <div class="user-image-display">
-      <Avatar class="user-image" />
-      <Button
-        class="edit-profile-image-button"
-        on:click={() => (showImageUploadModal = true)}
-      >
-        <PenToSquareSolid />
-      </Button>
+<main>
+  <div class="page-title">
+    <h1>Profile Settings</h1>
+  </div>
+  <div class="settings-container">
+    <div>
+      <div class="user-image-display">
+        <Avatar class="user-image" />
+        <Button
+          class="edit-profile-image-button"
+          on:click={() => (showImageUploadModal = true)}
+        >
+          <PenToSquareSolid />
+        </Button>
+      </div>
+    </div>
+    <div>
+      <div class="user-info-display">
+        <div class="flex">
+          <p class="user-name">Name: {displayName}</p>
+          <a
+            href="javascript:void(0)"
+            on:click={() => (showNameEditModal = true)}
+            class="font-medium text-primary-600 hover:underline dark:text-primary-500 ml-2"
+            >Edit</a
+          >
+        </div>
+        <p class="user-email">Email: {email}</p>
+      </div>
     </div>
   </div>
-  <div>
-    <div class="user-info-display">
-      <p class="user-name">Name: {userName}</p>
-      <p class="user-email">Email: {email}</p>
-    </div>
-  </div>
-
+  <Modal
+    bind:open={showNameEditModal}
+    size="xs"
+    autoclose={false}
+    class="w-full"
+  >
+    <form class="flex flex-col space-y-6 items-center" action="#">
+      <Label class="text-xl font-medium text-gray-900 dark:text-white">
+        Change Your Name
+      </Label>
+      <Input bind:value={newDisplayName} placeholder="New name here..."></Input>
+      <Button type="submit" on:click={handleEditName}>Update Name</Button>
+    </form>
+  </Modal>
   <Modal
     bind:open={showImageUploadModal}
     size="xs"
     autoclose={false}
     class="w-full"
   >
-    <form class="flex flex-col space-y-6 items-center" action="#">
+    <form class="flex flex-col space-y-6 items-center" on:submit|preventDefault={handleEditName}>
       <h3 class="text-xl font-medium text-gray-900 dark:text-white">
         Update Your Profile Image
       </h3>
