@@ -44,7 +44,7 @@
 
     } catch (error) {
       handleError(error);
-      throw new AppError("Update failed:", { newName: newDisplayName });
+      throw new AppError("Name update failed:", 400);
     }
   }
 

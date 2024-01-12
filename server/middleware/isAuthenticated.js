@@ -1,4 +1,4 @@
-import admin from "../config/firebaseAdmin.js";
+import { admin } from "../config/firebaseAdmin.js";
 import AppError from "../utils/ErrorHandling/AppError.js";
 import { catchAsync } from "../utils/ErrorHandling/GlobalErrorHandler.js";
 

@@ -57,8 +57,8 @@
         userEmail = "";
         return [
           {
-            avatar: retrievedUser.photoURL || default_image_thumbnail,
-            name: retrievedUser.displayName || "Unknown User",
+            photoURL: retrievedUser.photoURL || default_image_thumbnail,
+            displayName: retrievedUser.displayName || "Unknown User",
             uid: retrievedUser.uid || "Unknown UID",
           },
         ];
@@ -96,8 +96,8 @@
     try {
       if (collaborator) {
         const collaboratorReference = {
-          avatar: collaborator.avatar,
-          name: collaborator.name,
+          photoURL: collaborator.photoURL,
+          displayName: collaborator.displayName,
           uid: collaborator.uid,
         };
 
@@ -143,10 +143,10 @@
             <div class="collaborators-list-group-item-display">
               <img
                 class="collaborator-avatar-image"
-                src={collaborator.avatar}
-                alt={collaborator.name}
+                src={collaborator.photoURL}
+                alt={collaborator.displayName}
               />
-              <p>{collaborator.name}</p>
+              <p>{collaborator.displayName}</p>
               <button class="remove-collaborator-button" on:click={() => openRemoveCollaboratorModal(collaboratorIndex)}>
                 <TrashBinSolid class="remove-collaborator-icon" />
               </button>
@@ -180,10 +180,10 @@
             <div class="user-search-dropdown-item">
               <img
                 class="user-avatar-thumbnail"
-                src={user.avatar}
-                alt={user.name}
+                src={user.photoURL}
+                alt={user.displayName}
               />
-              <p>{user.name}</p>
+              <p>{user.displayName}</p>
               <Button
                 class="add-collaborator-button"
                 on:click={() => addUserAsCollaborator(user)}

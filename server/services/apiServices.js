@@ -5,7 +5,7 @@ import {
   collection,
   getFirestore,
 } from "firebase/firestore";
-import admin from "../config/firebaseAdmin.js";
+import { admin } from "../config/firebaseAdmin.js";
 import AppError from "../utils/ErrorHandling/AppError.js";
 
 const uri = "https://www.googleapis.com/books/v1/volumes";

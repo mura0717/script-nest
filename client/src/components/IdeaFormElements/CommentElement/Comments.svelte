@@ -6,13 +6,22 @@
   import { createEventDispatcher, onMount } from "svelte";
   import { userStore } from "../../../store/userStore.js";
 
-
   let comments = [];
   let commentText = '';
+  let ideaOwnerName = $userStore.user.displayName;
+  let ownerId = $userStore.user.uid;
+  let commentatorName = "";
   const commentDispatch = createEventDispatcher();
 
-  function assignCommentatorName(){
-    const commentatorName = $userStore.user.displayName;
+  function assignCommentatorName(ideaData, collabId){
+    
+    if(ideaData.owner.uid === collabId){
+      commentatorName = ideaOwnerName;
+    } else {
+      const collaborator = ideaData.collaborators.find(collab => collab.uid === collabId);
+      commentatorName = collaborator ? collaborator.displayName : 'Unknown User';
+    }
+    
     return commentatorName;
   } 
 

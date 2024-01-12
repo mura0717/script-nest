@@ -10,8 +10,16 @@
   import MovieReferences from "../../components/IdeaFormElements/API/MovieReferences.svelte";
   import Comments from "../../components/IdeaFormElements/CommentElement/Comments.svelte";
   import Collaborators from "../../components/IdeaFormElements/CollaboratorElement/Collaborators.svelte";
+  import { userStore } from "../../store/userStore";
+
+  let owner = {
+    photoURL: $userStore.user.photoURL,
+    displayName: $userStore.user.displayName,
+    uid: $userStore.user.uid,
+  };
 
   export let idea = {
+    owner: owner,
     title: "",
     selectedOrigin: "",
     sourceMaterial: "",
@@ -107,6 +115,7 @@
 
   async function saveIdea() {
     console.log("Auto-saving:", idea);
+    //IMPLEMENT SAVE IDEA FUNCTION HERE
   }
 
   const debouncedSaveIdea = debounce(saveIdea, 5000);

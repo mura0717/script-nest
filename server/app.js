@@ -19,7 +19,7 @@ import cors from "cors";
 /* app.use(cors({
     credentials: true,
     origin: ['http://localhost:5173', 'http://localhost:8080'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
     optionsSuccessStatus: 204,
 })); */
 app.use(cors({
@@ -27,11 +27,12 @@ app.use(cors({
     origin: true
 }));
 
-import { testDB } from "./services/userServices.js";
+// Firestore DB test
+/* import { testDB } from "./services/userServices.js";
 app.get("/createdummyusers", (req, res) => {
     testDB();
     res.send("200");
-})
+}) */
 
 
 //===================ROUTERS=====================//
@@ -51,7 +52,7 @@ import apiRouters from "./routers/apiRouters.js";
 app.use(apiRouters)
 
 
-//Server Test
+//Server Endpoint Test
 app.get("/test", (req, res) => {
     res.send('Test endpoint is working.')
 });
