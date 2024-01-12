@@ -4,7 +4,6 @@
 
 .sidebar-container {
   background-color: #f9fbfd;
-  @apply h-full w-full;
 }
 .sidebar-group {
   width: 200px;

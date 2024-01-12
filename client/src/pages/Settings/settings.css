@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.settings-container{
+    @apply flex m-14;
+
+}
+
+.user-image-display {
+    position: relative; 
+    display: inline-block;
+}
+
+.user-image{
+    width: 150px;
+    height: 100px;
+    @apply mb-8 mr-8
+}
+
+.edit-profile-image-button {
+    @apply absolute bottom-5 right-10 w-0 h-6 p-3.5; 
+}
+
+.user-info-display{
+    @apply mt-4
+}
+
+.dropzone {
+  width: 300px;
+  height: 200px;
+}
+

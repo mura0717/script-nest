@@ -11,7 +11,6 @@ const config = {
   theme: {
     extend: {
       colors: {
-        // flowbite-svelte
         primary: {
           50: "#FFF5F2",
           100: "#FFF1EE",

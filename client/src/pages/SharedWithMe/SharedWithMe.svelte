@@ -35,8 +35,8 @@
           Shared Idea content...
         </p>
         <div>
-          <Button class="p-2 w-fit mb-0">Edit</Button>
-          <Button class="p-2 w-fit mb-0">Delete</Button>
+          <Button class="p-2 w-fit mb-0">View</Button>
+          <Button class="p-2 w-fit mb-0">Remove</Button>
         </div>
       </Card>
       <!-- Iterate over your userIdeas here to display cards -->
