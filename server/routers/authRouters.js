@@ -2,7 +2,7 @@ import { Router } from "express";
 const router = Router();
 
 import AppError from "../utils/ErrorHandling/AppError.js";
-import { catchAsync } from "../utils/ErrorHandling/GlobalErrorHandler.js";
+import { catchAsync, handleError } from "../utils/ErrorHandling/GlobalErrorHandler.js";
 import { signupServices } from "../services/authServices.js";
 import { loginServices } from "../services/authServices.js";
 import isAuthenticated from "../middleware/isAuthenticated.js";

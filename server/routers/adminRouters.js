@@ -4,7 +4,7 @@ const router = Router();
 import admin from 'firebase-admin';
 import isAdmin from '../middleware/isAdmin.js'
 import isAuthenticated from "../middleware/isAuthenticated.js";
-import { catchAsync } from "../utils/ErrorHandling/GlobalErrorHandler.js";
+import { catchAsync, handleError } from "../utils/ErrorHandling/GlobalErrorHandler.js";
 
 // SET ADMIN
 router.post('/api/auth/set-admin', isAuthenticated, isAdmin, catchAsync(async (req,res, next) => {

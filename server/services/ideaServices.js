@@ -7,6 +7,7 @@ import {
 
 export const ideaServices = {
   getIdea: catchAsync(async (ideaId, userId) => {
+    console.log("ideaServices get idea is hit.");
     const ideaDocRef = db.collection("ideas").doc(ideaId);
     const ideaSnapshot = await ideaDocRef.get();
     if (ideaSnapshot.exists) {
@@ -27,6 +28,7 @@ export const ideaServices = {
   }),
 
   getAllIdeas: catchAsync(async (ownerId) => {
+    console.log("ideaServices get all ideas is hit.");
     const ideasCollectionRef = db.collection("ideas");
     const query = ideasCollectionRef.where("owner.uid", "==", ownerId);
     const ideasListSnapshot = await query.get();
@@ -43,6 +45,7 @@ export const ideaServices = {
   }),
 
   getAllSharedIdeas: catchAsync(async (collaboratorId) => {
+    console.log("ideaServices get all shared ideas is hit.");
     const ideasCollectionRef = db.collection("ideas");
     const ideasListSnapshot = await ideasCollectionRef.get();
 
@@ -67,23 +70,26 @@ export const ideaServices = {
   }),
 
   createIdea: async (ideaData) => {
+    console.log("ideaServices create idea is hit.");
     const ideasColRef = db.collection("ideas");
     const newDocRef = await ideasColRef.add(newIdea);
     return newDocRef.id;
   },
 
   editIdea: async (ideaId, updatedIdeaData) => {
+    console.log("ideaServices edit idea is hit.");
     const ideaDocRef = db.collection("ideas").doc(ideaId);
     await ideaDocRef.update(updatedIdeaData);
-    return ideaId; // Optionally, return the updated idea's ID or other confirmation
+    return ideaId;
   },
 
   deleteIdea: async (ideaId) => {
+    console.log("ideaServices delete idea is hit.");
     const ideaDocRef = db.collection("ideas").doc(ideaId);
     await ideaDocRef.delete();
-    return ideaId; // Optionally, return the deleted idea's ID or other confirmation
+    return ideaId;
   },
-};
+}
 
 /* export const testDB = async () => {
   const colRef = collection(db, collectionName);

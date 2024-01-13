@@ -3,40 +3,46 @@ const router = Router();
 
 import { catchAsync } from "../utils/ErrorHandling/GlobalErrorHandler.js";
 import isAuthenticated from "../middleware/isAuthenticated.js";
-import { ideaServices } from "../services/ideaServices.js";
+import ideaServices from "../services/ideaServices.js";
 
 //GET ALL IDEAS
-router.get('/api/ideas', catchAsync(async (req, res) => {
+router.get('/api/ideas', isAuthenticated, catchAsync(async (req, res) => {
     const userId = req.user.uid; // User's UID
     // Add code to fetch all ideas from Firestore for the given userId
     // Return ideas in response
 }));
 
 // GET A SINGLE IDEA
-router.get('/api/auth/ideas/{ideaId}', catchAsync(async (req, res) => {
+router.get(
+  "/api/auth/ideas/{ideaId}",
+  isAuthenticated, catchAsync(async (req, res) => {
     const userId = req.user.uid;
     // Add code to fetch an idea from Firestore for the given userId
     // Return idea in response
-}))
+  })
+);
 
 //SAVE NEW IDEA
-router.post('/api/auth/ideas', catchAsync(async (req, res) => {
+router.post(
+  "/api/auth/ideas", isAuthenticated, catchAsync(async (req, res) => {
     const userId = req.user.uid;
     const ideaData = req.body;
     // Add code to save ideaData to Firestore under the userId
     // Return success response
-}))
+  })
+);
 
 //EDIT IDEA
-router.patch('/api/auth/ideas/{ideaId}', catchAsync(async (req, res) => {
+router.patch(
+  "/api/auth/ideas/{ideaId}", isAuthenticated, catchAsync(async (req, res) => {
     const userId = req.user.uid; // User's UID
     // Add code to edit ideas from Firestore for the given userId
     // Return success response
-}));
-
+  })
+);
 
 //DELETE IDEA
-router.delete('api/auth/ideas/{ideaId}', catchAsync(async (req, res) => {
+router.delete('api/auth/ideas/{ideaId}', isAuthenticated, catchAsync(async (req, res) => {
   const userId = req.user.uid;
   // Add code to delete an idea from Firestore for the given userId
   // Return success response

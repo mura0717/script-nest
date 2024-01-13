@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.modal-text {
+  @apply mb-5 text-base font-normal text-gray-500 dark:text-gray-400;
+
+}

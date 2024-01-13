@@ -51,6 +51,8 @@ app.use(ideaRouters);
 import apiRouters from "./routers/apiRouters.js";
 app.use(apiRouters)
 
+import notificationRouters from "./routers/notificationRouters.js";
+app.user(notificationRouters);
 
 //Server Endpoint Test
 app.get("/test", (req, res) => {

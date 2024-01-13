@@ -1,9 +1,10 @@
 import { Router } from "express";
 const router = Router();
+
 import AppError from "../utils/ErrorHandling/AppError.js";
-import { catchAsync } from "../utils/ErrorHandling/GlobalErrorHandler.js";
+import { catchAsync, handleError } from "../utils/ErrorHandling/GlobalErrorHandler.js";
 import isAuthenticated from "../middleware/isAuthenticated.js";
-import { booksServices } from "../services/apiServices.js";
+// import { booksServices } from "../services/apiServices.js";
 
 router.get(
   "/api/auth/ideas/books",
@@ -27,7 +28,7 @@ router.get(
   })
 );
 
-router.post(
+/* router.post(
   "/api/auth/ideas/ideaId/books",
   isAuthenticated,
   catchAsync(async (req, res) => {
@@ -37,7 +38,7 @@ router.post(
     //await saveBookReference(userId, ideaId, bookReference);
     res.status(200).json({ message: "Book reference saved successfully" });
   })
-);
+); */
 
 
 router.get(

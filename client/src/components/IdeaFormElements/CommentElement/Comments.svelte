@@ -14,13 +14,14 @@
   const commentDispatch = createEventDispatcher();
 
   function assignCommentatorName(ideaData, collabId){
+    commentatorName = $userStore.user.displayName;
     
-    if(ideaData.owner.uid === collabId){
+   /*  if(ideaData.owner.uid === collabId){
       commentatorName = ideaOwnerName;
     } else {
       const collaborator = ideaData.collaborators.find(collab => collab.uid === collabId);
       commentatorName = collaborator ? collaborator.displayName : 'Unknown User';
-    }
+    } */
     
     return commentatorName;
   } 
@@ -30,7 +31,7 @@
     const newComment = {
       name: commentatorName || "Anonymous",
       comment: commentText,
-      date: new Date().toLocaleString(),
+      date: new Date().toLocaleString().slice(0, 17),
     };
     comments = [newComment, ...comments];
     commentDispatch("updateComments", comments); //("event name", payload) to be send to the parent.
