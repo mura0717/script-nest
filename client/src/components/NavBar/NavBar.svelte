@@ -26,6 +26,7 @@
     </NavBrand>
     <NavHamburger />
     <NavUl>
+      <NavLi class="navbar-elements-style" href="/auth/sockettest">SocketTest</NavLi>
       <NavLi class="navbar-elements-style" href="/auth/login">Login</NavLi>
       <NavLi class="navbar-elements-style" href="/auth/signup">Signup</NavLi>
       <NavLi class="navbar-elements-style" href="/auth/contact">Contact</NavLi>

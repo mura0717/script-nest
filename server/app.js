@@ -46,14 +46,19 @@ io.use(wrap(sessionMiddleware));
 import { eventEmitter } from "./events/eventEmitter.js";
 io.on("connection", (socket) => {
   console.log("Socket connected with id:", socket.id);
-  eventEmitter.on("new-notification", (data) => {
+  /*   eventEmitter.on("new-notification", (data) => {
     socket.emit("new-notification", data);
+  }); */
+
+  socket.on("client-choose-a-color", (data) => {
+    console.log("Received data:", data); // Debugging
+    io.emit("server-sent-a-color", data);
   });
 
   // Don't forget to handle disconnection
-  /*   socket.on("disconnect", () => {
+  socket.on("disconnect", () => {
     console.log("Socket disconnected", socket.id);
-  }); */
+  });
 });
 
 //===================CORS SETUP=====================//
