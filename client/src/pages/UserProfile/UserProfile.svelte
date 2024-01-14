@@ -1,49 +1,88 @@
 <script>
+  import { userStore } from "./../../store/userStore.js";
+  import { onMount } from "svelte";
   import "../../styles/global.css";
   import "./userprofile.css";
   import { Card, Button } from "flowbite-svelte";
   import { getRequest } from "../../store/fetchStore.js";
   import IdeasSearchBar from "../../components/IdeasSearchBar/IdeasSearchBar.svelte";
+  import { AppError } from "../../utils/ErrorHandling/AppError.js";
+  import debounce from "debounce";
 
   let userIdeas = [];
+  let filteredIdeas = [];
 
   console.log("Directed to User Profile page");
 
-  function handleSearchInput(event) {
-    const searchTerm = event.target.value;
-    // Implement search logic here
+  onMount(async () => {
+    const ideas = await fetchAllIdeas();
+    userIdeas = ideas;
+    filteredIdeas = ideas;
+  });
+
+  async function fetchAllIdeas() {
+    try {
+      const response = await getRequest(`/api/auth/ideas`);
+      if (response.ok) {
+        return await response.json(); // parse JSON response
+      } else {
+        throw new AppError("Error fetching ideas", 400);
+      }
+    } catch (error) {
+      throw new AppError(`An error occured: ${error.message}`, {
+        initialError: error,
+      });
+    }
   }
+
+  async function getIdea(){};
+
+  function handleSearchIdea(event) {
+    const searchTitleName = event.target.value.toLowerCase();
+    filteredIdeas = userIdeas.filter((idea) =>
+      idea.title.toLowerCase().includes(searchTitleName)
+    );
+  }
+
+  const debouncedIdeaSearch = debounce(handleSearchIdea, 500);
 </script>
 
 <main class="user-profile-main-container">
   <div class="user-profile-content w-full">
     <div class="mb-4 mt-4 ml-8 mr-8">
-      <IdeasSearchBar searchHandler={handleSearchInput} />
+      <IdeasSearchBar
+        on:input={(event) => debouncedIdeaSearch(event.target.value)}
+        searchHandler={handleSearchIdea}
+      />
     </div>
 
-    <div class="idea-cards-container">
+    <!--   <div class="idea-cards-container">
       <Card class="border-2">
-        <h5
-          class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
-        >
-          Idea Title
-        </h5>
-        <p
-          class="mb-3 font-normal text-gray-700 dark:text-gray-400 leading-tight"
-        >
-          Idea title content...
-        </p>
+        <h5 class="idea-card-title">Idea Title</h5>
+        <p class="idea-card-content">Idea content...</p>
         <div>
-          <Button class="p-2 w-fit mb-0">Edit</Button>
-          <Button class="p-2 w-fit mb-0">Delete</Button>
+          <Button class="idea-card-button">Edit</Button>
+          <Button class="idea-card-button">Delete</Button>
         </div>
-      </Card>
-      <!-- Iterate over your userIdeas here to display cards -->
-      {#each userIdeas as idea}
+      </Card> -->
+
+    {#if filteredIdeas.length == 0}
+      <div>
+        <p class="no-ideas-yet-text">You don't have any ideas yet.</p>
+      </div>
+    {:else}
+      {#each filteredIdeas as idea}
         <div class="idea-card">
-          <!-- Content of the card -->
+          <Card class="border-2">
+            <h5 class="idea-card-title">{idea.title}</h5>
+            <p class="idea-card-content">{idea.logline}t...</p>
+            <div>
+              <Button class="idea-card-button" on:click{}>Edit</Button>
+              <Button class="idea-card-button">Delete</Button>
+            </div>
+          </Card>
         </div>
       {/each}
-    </div>
+    {/if}
   </div>
 </main>

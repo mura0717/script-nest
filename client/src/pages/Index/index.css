@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .index-header-style {
     padding-top: 10rem;
     padding-left: 6rem;

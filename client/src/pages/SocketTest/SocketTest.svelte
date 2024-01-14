@@ -2,6 +2,8 @@
   import ColorList from "./ColorList.svelte";
   import { colorList } from "./colorStore.js";
   import { userStore } from "../../store/userStore.js";
+  import { Button } from "flowbite-svelte";
+
 
   import io from "socket.io-client";
   const socket = io("localhost:3000");
@@ -29,8 +31,8 @@
   });
 </script>
 
-<svelte:body style:background-color={bgColor} />
-<input type="color" bind:value={color} />
-<button on:click={chooseColor}>Choose Color</button>
+<svelte:body style:background-color={bgColor}/>
+<input type="color" bind:value={color}/>
+<Button on:click={chooseColor}>Choose</Button>
 
 <ColorList></ColorList>

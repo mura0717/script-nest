@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .user-profile-main-container {
   display: flex;
   height: 100vh;
@@ -20,6 +24,13 @@
   background: #fff;
 }
 
+.no-ideas-yet-text {
+  margin-left: 2em;
+  margin-top: 2em;
+  margin-bottom: 1rem;
+  font-size: large;
+}
+
 .idea-cards-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -34,3 +45,16 @@
   margin-right: 2em;
   margin-bottom: 2em;
 }
+
+.idea-card-title {
+  @apply mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white;
+}
+
+.idea-card-content {
+  @apply mb-3 font-normal text-gray-700 dark:text-gray-400 leading-tight;
+}
+
+.idea-card-button {
+  @apply p-2 w-fit mb-0
+}
+

@@ -7,14 +7,14 @@
   import { userStore } from "../../../store/userStore.js";
 
   let comments = [];
-  let commentText = '';
+  let comment = '';
   let ideaOwnerName = $userStore.user.displayName;
   let ownerId = $userStore.user.uid;
-  let commentatorName = "";
+  let assignedName = "";
   const commentDispatch = createEventDispatcher();
 
   function assignCommentatorName(ideaData, collabId){
-    commentatorName = $userStore.user.displayName;
+    assignedName = $userStore.user.displayName;
     
    /*  if(ideaData.owner.uid === collabId){
       commentatorName = ideaOwnerName;
@@ -23,28 +23,28 @@
       commentatorName = collaborator ? collaborator.displayName : 'Unknown User';
     } */
     
-    return commentatorName;
+    return assignedName;
   } 
 
   function addComment(){
-    let commentatorName = assignCommentatorName();
+    let name = assignCommentatorName();
     const newComment = {
-      name: commentatorName || "Anonymous",
-      comment: commentText,
-      date: new Date().toLocaleString().slice(0, 17),
+      commentatorName: name || "Anonymous",
+      commentText: comment,
+      commentDate: new Date().toLocaleString().slice(0, 17),
     };
     comments = [newComment, ...comments];
     commentDispatch("updateComments", comments); //("event name", payload) to be send to the parent.
-    commentText = '';
+    comment = '';
   }
 
 </script>
 
 <div>
   <Label for="comment-text-input" class="idea-element-label">Comment:</Label>
-  <Textarea id="comment-text-input" bind:value={commentText} rows={4} cols={50} placeholder="Add your comment..." />
+  <Textarea id="comment-text-input" bind:value={comment} rows={4} cols={50} placeholder="Add your comment..." />
   <div class="submit-button-container">
-    <Button on:click={() => addComment(commentText)}>Add Comment</Button>
+    <Button on:click={() => addComment(comment)}>Add Comment</Button>
   </div>
 
   <div class="comments-list-container">

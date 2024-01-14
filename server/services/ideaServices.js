@@ -39,8 +39,10 @@ export const ideaServices = {
       });
       return ideas;
     } else {
-      console.log("ideaServices-getAllIdeas Error: Ideas not found");
-      throw new AppError("Idea not found", 404);
+      console.log(
+        "ideaServices-getAllIdeas: No ideas found for the user."
+      );
+      return [];
     }
   }),
 
@@ -69,10 +71,10 @@ export const ideaServices = {
     }
   }),
 
-  createIdea: async (ideaData) => {
+  createIdea: async (newIdeaData) => {
     console.log("ideaServices create idea is hit.");
     const ideasColRef = db.collection("ideas");
-    const newDocRef = await ideasColRef.add(newIdea);
+    const newDocRef = await ideasColRef.add(newIdeaData);
     return newDocRef.id;
   },
 
