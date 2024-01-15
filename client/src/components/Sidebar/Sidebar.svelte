@@ -17,7 +17,7 @@
   } from "flowbite-svelte-icons";
   import { onMount } from "svelte";
   import { userStore } from "../../store/userStore.js";
-  import { ideaStore } from "../../store/ideaStore.js";
+  import { ideasStore } from "../../store/ideasStore.js";
   import { navigate } from "svelte-navigator";
   import { signOutUser } from "../../config/firebaseClientConfig";
   import { handleError } from "../../utils/ErrorHandling/GlobalErrorHandlerClient.js";
@@ -52,7 +52,7 @@
         navigate("/");
       })
       .catch((error) => {
-        handleError(error)
+        handleError(error);
         console.error("Logout error:", error);
       });
   }
@@ -65,9 +65,12 @@
     try {
       const newIdeaResponse = await postRequest("/api/auth/ideas");
       console.log("Sidebar/handleNewIdea/newIdeaResponse:", newIdeaResponse);
-      console.log("Sidebar/handleNewIdea/newIdeaResponse.id:", newIdeaResponse.id);
+      console.log(
+        "Sidebar/handleNewIdea/newIdeaResponse.id:",
+        newIdeaResponse.id
+      );
       if (newIdeaResponse && newIdeaResponse.id) {
-        ideaStore.setIdea({ ...defaultIdeaState, id: newIdeaResponse.id });
+        ideaStore.setIdeas({ ...defaultIdeaState, id: newIdeaResponse.id });
         navigateToRoute("/auth/user/ideas/${newIdeaResponse.id}");
       } else {
         throw new AppError("Error creating new idea", 400);

@@ -37,20 +37,20 @@
       {/if}
 
       <main class="main-content">
+        
         <!-- Public Routes -->
         <Route path="/" component={Index}></Route>
         <Route path="/auth/signup" component={Signup}></Route>
         <Route path="/auth/login" component={Login}></Route>
         <Route path="/auth/contact" component={Contact}></Route>
         <Route path="/auth/sockettest" component={SocketTest}></Route>
-    
 
         <!-- Private Routes -->
         <PrivateRoute path="/auth/user/profile" let:location>
           <UserProfile></UserProfile>
         </PrivateRoute>
-        <PrivateRoute path="/auth/user/ideas/:ideaId" let:location>
-          <Idea></Idea>
+        <PrivateRoute path="/auth/user/ideas/:ideaId" primary={false} let:location>
+          <Idea />
         </PrivateRoute>
         <PrivateRoute path="/auth/user/sharedwithme" let:location>
           <SharedWithMe></SharedWithMe>

@@ -1,9 +1,8 @@
 <script>
   import { onMount } from "svelte";
-  import { useParams } from "svelte-navigator";
   import { userStore } from "../../store/userStore";
-  import { ideaStore } from "../../store/ideaStore.js";
   import { fetchIdea } from "../../store/ideaFetchStore.js";
+  import { editIdea } from "../../store/ideaFetchStore.js";
   import { AppError } from "../../utils/ErrorHandling/AppError.js";
   import { handleError } from "../../utils/ErrorHandling/GlobalErrorHandlerClient.js";
   import * as fetchStore from "../../store/fetchStore";
@@ -19,11 +18,20 @@
   import "../../styles/global.css";
   import { Label } from "flowbite-svelte";
 
-  const params = useParams();
-  console.log("params:", params);
-  console.log("params.ideaId:", params.ideaId);
-  let ideaId = params.ideaId;
-  console.log("params.ideaId:", ideaId);
+  let ideaId;
+
+  onMount(async () => {
+    const pathSegments = window.location.pathname.split("/");
+    ideaId = pathSegments[pathSegments.length - 1];
+    console.log("Idea ID from URL:", ideaId);
+    if (ideaId) {
+      idea = await fetchIdea(ideaId);
+      console.log("Idea/onMount, fetchedIdea:", idea);
+    } else {
+      console.log("Idea/onMount, error");
+      throw new AppError(`Error reading the idea with id:${ideaId}`, 400);
+    }
+  });
 
   let owner = {
     photoURL: $userStore.user.photoURL,
@@ -83,15 +91,6 @@
 
   export function getIdeaPageId() {}
 
-  onMount(async () => {
-    if (ideaId) {
-      idea = await fetchIdea(ideaId);
-      ideaStore.setIdea(idea);
-    } else {
-      throw new AppError(`Error reading the idea with id:${ideaId}`, 400);
-    }
-  });
-
   function handleOriginChange(event) {
     localOriginValue = event.currentTarget.value;
   }
@@ -122,29 +121,28 @@
     console.log("Idea Page - After handleCommentsUpdate:", idea.comments);
   }
 
-  async function saveIdea(ideaId) {
-    if(!ideaId){
-      console.error("Idea ID is undefined");
-    }
+  async function saveIdea(currentIdeaId) {
+    console.log("IdeaPage/Auto-saving IdeaId:", currentIdeaId);
     console.log("IdeaPage/Auto-saving Idea:", idea);
-    try {
-      const saveIdeaResponse = await fetchStore.patchRequest(
-        `/api/auth/ideas/${ideaId}`, idea
-      );
-      if (saveIdeaResponse) {
-        autoSavingMessageDisplay();
-      } else {
-        throw new AppError("Couldn't update idea", { ideaId });
+    if (currentIdeaId && idea) {
+      try {
+        const updatedIdea = await editIdea(ideaId, idea);
+        idea = updatedIdea;
+        if (updatedIdea) {
+          autoSavingMessageDisplay();
+        } else {
+          throw new AppError("Couldn't update idea", { ideaId });
+        }
+      } catch (error) {
+        throw new AppError(`An error occured: ${error.message}`, {
+          initialError: error,
+        });
       }
-    } catch (error) {
-      handleError(error);
-      throw new AppError(`An error occured: ${error.message}`, {
-        initialError: error,
-      });
     }
   }
 
   $: autoSavingText = "";
+  $: console.log("Reactive ideaId:", ideaId);
 
   function autoSavingMessageDisplay() {
     autoSavingText = "(Saving...)";
@@ -153,10 +151,10 @@
     }, 3000);
   }
 
-  const debouncedSaveIdea = debounce(saveIdea, 5000);
+  const debouncedSaveIdea = debounce((id) => saveIdea(id), 5000);
 
   $: if (idea) {
-    debouncedSaveIdea();
+    debouncedSaveIdea(ideaId);
   }
 </script>
 

@@ -29,7 +29,7 @@ router.get(
     if (idea) {
       res.json(idea);
     } else {
-      res.status(404).send("Idea not found.");
+      res.status(404).json({ message: "Idea not found." });
     }
   })
 );
@@ -51,24 +51,29 @@ router.post(
 
 //EDIT IDEA
 router.patch(
-  "/api/auth/ideas/{ideaId}",
+  "/api/auth/ideas/:ideaId",
   isAuthenticated,
   catchAsync(async (req, res) => {
+    console.log("ideaRouter/patch is hit.");
     const ideaId = req.params.ideaId;
+    console.log("ideaRouter/patch ideaId;", ideaId);
     const updatedIdeaData = req.body;
+    console.log("ideaRouter/patch updatedIdeaData;", updatedIdeaData);
     await ideaServices.editIdea(ideaId, updatedIdeaData);
-    res.status(200).send("Idea updated successfully");
+    res.status(200).json({ message: "Idea updated successfully" });
   })
 );
 
 //DELETE IDEA
 router.delete(
-  "api/auth/ideas/{ideaId}",
+  "/api/auth/ideas/:ideaId",
   isAuthenticated,
   catchAsync(async (req, res) => {
+    console.log("ideaRouter/delete is hit.");
     const ideaId = req.params.ideaId;
+    console.log("ideaRouter/delete ideaId;", ideaId);
     await ideaServices.deleteIdea(ideaId);
-    res.status(200).send("Idea deleted successfully");
+    res.status(200).json({ message: "Idea deleted successfully"});
   })
 );
 

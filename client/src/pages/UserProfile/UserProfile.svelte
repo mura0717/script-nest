@@ -21,6 +21,7 @@
   });
 
   function handleEditIdea(ideaId) {
+    console.log("userprofile/handleEdit, ideaId:", ideaId)
     navigate(`/auth/user/ideas/${ideaId}`, { replace: true });
   }
 

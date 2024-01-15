@@ -1,11 +1,12 @@
 import * as fetchStore from "./fetchStore";
 import { handleError } from "../utils/ErrorHandling/GlobalErrorHandlerClient";
+import { AppError } from "../utils/ErrorHandling/AppError.js";
 
 export async function fetchIdea(ideaId) {
   try {
-    const response = await fetchStore.getRequest(`/api/auth/ideas/${ideadId}`);
+    const response = await fetchStore.getRequest(`/api/auth/ideas/${ideaId}`);
     console.log("fetchidea response:", response);
-        console.log("fetchidea response id:", response.id);
+    console.log("fetchidea response id:", response.id);
     if (response && response.id) {
       return response;
     } else {
@@ -17,7 +18,7 @@ export async function fetchIdea(ideaId) {
       statusCode: error.statusCode || 500,
     });
   }
-};
+}
 
 export async function fetchAllIdeas() {
   try {
@@ -33,7 +34,7 @@ export async function fetchAllIdeas() {
       statusCode: error.statusCode || 500,
     });
   }
-};
+}
 
 export async function deleteIdea(ideaId) {
   try {
@@ -45,6 +46,23 @@ export async function deleteIdea(ideaId) {
     }
   } catch (error) {
     throw new AppError(`An error occured: ${error.message}`, {
+      initialError: error,
+      statusCode: error.statusCode || 500,
+    });
+  }
+}
+
+export async function editIdea(ideaId, updatedIdeaData) {
+  try {
+    const response = await fetchStore.patchRequest(
+      `/api/auth/ideas/${ideaId}`,
+      updatedIdeaData
+    );
+    if (response) {
+      return await response;
+    }
+  } catch (error) {
+    throw new AppError(`An error occurred: ${error.message}`, {
       initialError: error,
       statusCode: error.statusCode || 500,
     });

@@ -86,6 +86,7 @@ export const ideaServices = {
   editIdea: async (ideaId, updatedIdeaData) => {
     console.log("ideaServices edit idea is hit.");
     const ideaDocRef = db.collection("ideas").doc(ideaId);
+    console.log("ideaServices edit, ideaDocRef:", ideaDocRef);
     await ideaDocRef.update(updatedIdeaData);
     return ideaId;
   },
@@ -93,6 +94,7 @@ export const ideaServices = {
   deleteIdea: async (ideaId) => {
     console.log("ideaServices delete idea is hit.");
     const ideaDocRef = db.collection("ideas").doc(ideaId);
+    console.log("ideaServices delete, ideaDocRef:", ideaDocRef);
     await ideaDocRef.delete();
     return ideaId;
   },
