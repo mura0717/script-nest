@@ -7,11 +7,6 @@
   height: 100vh;
 }
 
-.sidebar-container {
-  width: 300px;
-  flex-shrink: 0;
-}
-
 .user-profile-content {
   flex-shrink: 1;
   overflow-y: auto;
@@ -36,25 +31,20 @@
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 16px; /* Space between cards */
   padding: 16px; /* Padding around the grid */
-  @apply ml-8
 }
 
 .idea-card {
-  margin-top: 3em;
-  margin-left: 5em;
-  margin-right: 2em;
-  margin-bottom: 2em;
+  @apply ml-14 mr-12 border-2;
 }
 
 .idea-card-title {
-  @apply mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white;
+  @apply mb-1 mt-0 text-xl font-bold tracking-tight text-gray-900 dark:text-white;
 }
 
 .idea-card-content {
-  @apply mb-3 font-normal text-gray-700 dark:text-gray-400 leading-tight;
+  @apply mb-3 text-sm font-normal text-gray-700 dark:text-gray-400 leading-tight;
 }
 
 .idea-card-button {
-  @apply p-2 w-fit mb-0
+  @apply w-14 h-8 mb-0;
 }
-

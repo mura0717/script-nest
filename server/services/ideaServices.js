@@ -6,7 +6,7 @@ import {
 } from "../utils/ErrorHandling/GlobalErrorHandler.js";
 
 export const ideaServices = {
-  getIdea: catchAsync(async (ideaId, userId) => {
+  getIdea: async (ideaId, userId) => {
     console.log("ideaServices get idea is hit.");
     const ideaDocRef = db.collection("ideas").doc(ideaId);
     const ideaSnapshot = await ideaDocRef.get();
@@ -25,51 +25,55 @@ export const ideaServices = {
       console.log("ideaServices-getIdea Error: Idea not found");
       throw new AppError("Idea not found", 404);
     }
-  }),
+  },
 
-  getAllIdeas: catchAsync(async (ownerId) => {
-    console.log("ideaServices get all ideas is hit.");
-    const ideasCollectionRef = db.collection("ideas");
-    const query = ideasCollectionRef.where("owner.uid", "==", ownerId);
-    const ideasListSnapshot = await query.get();
-    if (!ideasListSnapshot.empty) {
+  getAllIdeas: async (ownerId) => {
+    try {
+      const ideasCollectionRef = db.collection("ideas");
+      const query = ideasCollectionRef.where("owner.uid", "==", ownerId);
+      const ideasListSnapshot = await query.get();
       let ideas = [];
-      ideasListSnapshot.forEach((doc) => {
-        ideas.push({ id: doc.id, ...doc.data() });
-      });
-      return ideas;
-    } else {
-      console.log(
-        "ideaServices-getAllIdeas: No ideas found for the user."
-      );
-      return [];
+      if (!ideasListSnapshot.empty) {
+        ideasListSnapshot.forEach((doc) => {
+          const ideaData = doc.data();
+          ideas.push({ id: doc.id, ideaData });
+        });
+        return ideas;
+      } else {
+        console.log("No ideas found for the user.");
+        return [];
+      }
+    } catch (error) {
+      handleError(error);
+      throw new AppError("Error fetching ideas from Firestore.", 404);
     }
-  }),
+  },
 
-  getAllSharedIdeas: catchAsync(async (collaboratorId) => {
-    console.log("ideaServices get all shared ideas is hit.");
-    const ideasCollectionRef = db.collection("ideas");
-    const ideasListSnapshot = await ideasCollectionRef.get();
-
-    if (!ideasListSnapshot.empty) {
+  getAllSharedIdeas: async (collaboratorId) => {
+    try {
+      const ideasCollectionRef = db.collection("ideas");
+      const ideasListSnapshot = await ideasCollectionRef.get();
       let sharedIdeas = [];
-      ideasListSnapshot.forEach((doc) => {
-        const ideaData = doc.data();
-        const isCollaborator = ideaData.collaborators.some(
-          (collab) => collab.uid === collaboratorId
-        );
-        if (isCollaborator) {
-          sharedIdeas.push({ id: doc.id, ...ideaData });
-        }
-      });
-      return sharedIdeas;
-    } else {
-      console.log(
-        "ideaServices-getAllSharedIdeas Error: Shared ideas not found"
-      );
-      throw new AppError("Shared ideas not found", 404);
+      if (!ideasListSnapshot.empty) {
+        ideasListSnapshot.forEach((doc) => {
+          const ideaData = doc.data();
+          const isCollaborator = ideaData.collaborators.some(
+            (collab) => collab.uid === collaboratorId
+          );
+          if (isCollaborator) {
+            sharedIdeas.push({ id: doc.id, ...ideaData });
+          }
+        });
+        return sharedIdeas;
+      } else {
+        console.log("No shared ideas found for the user.");
+        return [];
+      }
+    } catch (error) {
+      handleError(error);
+      throw new AppError("Error fetching shared ideas from Firestore.", 404);
     }
-  }),
+  },
 
   createIdea: async (newIdeaData) => {
     console.log("ideaServices create idea is hit.");
@@ -91,7 +95,7 @@ export const ideaServices = {
     await ideaDocRef.delete();
     return ideaId;
   },
-}
+};
 
 /* export const testDB = async () => {
   const colRef = collection(db, collectionName);

@@ -4,7 +4,10 @@
 
 .sidebar-container {
   background-color: #f9fbfd;
+  width: 300px;
+  flex-shrink: 0;
 }
+
 .sidebar-group {
   width: 200px;
   background-color: #f9fbfd;

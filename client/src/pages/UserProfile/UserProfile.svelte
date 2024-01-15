@@ -12,8 +12,6 @@
   let userIdeas = [];
   let filteredIdeas = [];
 
-  console.log("Directed to User Profile page");
-
   onMount(async () => {
     const ideas = await fetchAllIdeas();
     userIdeas = ideas;
@@ -22,20 +20,21 @@
 
   async function fetchAllIdeas() {
     try {
-      const response = await getRequest(`/api/auth/ideas`);
-      if (response.ok) {
-        return await response.json(); // parse JSON response
+      const response = await getRequest("/api/auth/ideas");
+      if (response) {
+        return await response;
       } else {
         throw new AppError("Error fetching ideas", 400);
       }
     } catch (error) {
       throw new AppError(`An error occured: ${error.message}`, {
         initialError: error,
+        statusCode: error.statusCode || 500,
       });
     }
   }
 
-  async function getIdea(){};
+  async function getIdea() {}
 
   function handleSearchIdea(event) {
     const searchTitleName = event.target.value.toLowerCase();
@@ -55,27 +54,16 @@
         searchHandler={handleSearchIdea}
       />
     </div>
-
-    <!--   <div class="idea-cards-container">
-      <Card class="border-2">
-        <h5 class="idea-card-title">Idea Title</h5>
-        <p class="idea-card-content">Idea content...</p>
-        <div>
-          <Button class="idea-card-button">Edit</Button>
-          <Button class="idea-card-button">Delete</Button>
-        </div>
-      </Card> -->
-
-    {#if filteredIdeas.length == 0}
+    {#if filteredIdeas.length === 0}
       <div>
         <p class="no-ideas-yet-text">You don't have any ideas yet.</p>
       </div>
     {:else}
       {#each filteredIdeas as idea}
-        <div class="idea-card">
-          <Card class="border-2">
-            <h5 class="idea-card-title">{idea.title}</h5>
-            <p class="idea-card-content">{idea.logline}t...</p>
+        <div class="idea-cards-container">
+          <Card size="xs" class="idea-card">
+            <h5 class="idea-card-title">{idea.ideaData.title}</h5>
+            <p class="idea-card-content">{idea.ideaData.logline}</p>
             <div>
               <Button class="idea-card-button" on:click{}>Edit</Button>
               <Button class="idea-card-button">Delete</Button>
