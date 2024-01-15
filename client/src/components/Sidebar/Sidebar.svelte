@@ -38,7 +38,7 @@
         handleError(error);
         return;
     } */
-    navigate(route);
+    navigate(route, { replace: true });
   }
 
   /*   function routeRequiresAdmin(route) {
@@ -52,6 +52,7 @@
         navigate("/");
       })
       .catch((error) => {
+        handleError(error)
         console.error("Logout error:", error);
       });
   }

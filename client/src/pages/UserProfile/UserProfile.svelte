@@ -1,16 +1,18 @@
 <script>
-  import { userStore } from "./../../store/userStore.js";
   import { onMount } from "svelte";
   import "../../styles/global.css";
   import "./userprofile.css";
-  import { Card, Button } from "flowbite-svelte";
-  import { getRequest } from "../../store/fetchStore.js";
+  import { Card, Button, Modal } from "flowbite-svelte";
+  import { navigate } from "svelte-navigator";
+  import { ExclamationCircleOutline } from "flowbite-svelte-icons";
+  import { fetchAllIdeas, deleteIdea } from "../../store/ideaFetchStore.js";
   import IdeasSearchBar from "../../components/IdeasSearchBar/IdeasSearchBar.svelte";
-  import { AppError } from "../../utils/ErrorHandling/AppError.js";
   import debounce from "debounce";
 
   let userIdeas = [];
   let filteredIdeas = [];
+  let showDeleteIdeaModal = false;
+  let currentIdeaId;
 
   onMount(async () => {
     const ideas = await fetchAllIdeas();
@@ -18,23 +20,14 @@
     filteredIdeas = ideas;
   });
 
-  async function fetchAllIdeas() {
-    try {
-      const response = await getRequest("/api/auth/ideas");
-      if (response) {
-        return await response;
-      } else {
-        throw new AppError("Error fetching ideas", 400);
-      }
-    } catch (error) {
-      throw new AppError(`An error occured: ${error.message}`, {
-        initialError: error,
-        statusCode: error.statusCode || 500,
-      });
-    }
+  function handleEditIdea(ideaId) {
+    navigate(`/auth/user/ideas/${ideaId}`, { replace: true });
   }
 
-  async function getIdea() {}
+  function openDeleteIdeaModal(ideaId) {
+    currentIdeaId = ideaId;
+    showDeleteIdeaModal = true;
+  }
 
   function handleSearchIdea(event) {
     const searchTitleName = event.target.value.toLowerCase();
@@ -62,15 +55,35 @@
       {#each filteredIdeas as idea}
         <div class="idea-cards-container">
           <Card size="xs" class="idea-card">
-            <h5 class="idea-card-title">{idea.ideaData.title}</h5>
-            <p class="idea-card-content">{idea.ideaData.logline}</p>
+            <h5 class="idea-card-title">{idea.title}</h5>
+            <p class="idea-card-content">{idea.logline}</p>
             <div>
-              <Button class="idea-card-button" on:click{}>Edit</Button>
-              <Button class="idea-card-button">Delete</Button>
+              <Button
+                class="idea-card-button"
+                on:click={() => handleEditIdea(idea.id)}>Edit</Button
+              >
+              <Button
+                class="idea-card-button"
+                on:click={() => openDeleteIdeaModal(idea.id)}>Delete</Button
+              >
             </div>
           </Card>
         </div>
       {/each}
     {/if}
   </div>
+  <Modal bind:open={showDeleteIdeaModal} size="xs" autoclose>
+    <div class="remove-ref-modal-container">
+      <ExclamationCircleOutline class="modal-exclamation-icon" />
+      <h3 class="modal-text">Are you sure you want to delete this idea?</h3>
+      <Button
+        color="red"
+        class="me-2"
+        on:click={() => deleteIdea(currentIdeaId)}>Yes, I'm sure</Button
+      >
+      <Button color="alternative" on:click={() => (showDeleteIdeaModal = false)}
+        >No, cancel</Button
+      >
+    </div>
+  </Modal>
 </main>

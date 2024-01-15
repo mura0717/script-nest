@@ -20,21 +20,18 @@
   }
 
   async function handleLogin() {
-    console.log("handleLogin is hit.")
     if(!inputCheck()) return;
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const idToken = await userCredential.user.getIdToken();
       const response = await postRequest("/api/auth/login", { idToken });
       if (response.success) {
-        console.log("idToken:", idToken);
         toast.success("Login successful!");
         navigate("/auth/user/profile", {replace: true});
       } else {
         toast.error(response.message || "Login failed. Please try again.");
       }
     } catch (error) {
-      console.error("Error during login:", error);
       toast.error(error.message || "An error occurred during login.");
     }
   }

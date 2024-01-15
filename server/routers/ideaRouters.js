@@ -18,10 +18,9 @@ router.get(
 
 // GET A SINGLE IDEA
 router.get(
-  "/api/auth/ideas/{ideaId}",
+  "/api/auth/ideas/:ideaId",
   isAuthenticated,
   catchAsync(async (req, res) => {
-    console.log("ideaRouters/ getIdea is hit.");
     const userId = req.user.uid;
     const ideaId = req.params.ideaId;
     console.log("ideaRouters/getIdea userId:", userId);
@@ -30,7 +29,7 @@ router.get(
     if (idea) {
       res.json(idea);
     } else {
-      res.status(404).send("Idea not found");
+      res.status(404).send("Idea not found.");
     }
   })
 );

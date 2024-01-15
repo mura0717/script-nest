@@ -5,9 +5,6 @@
     NavLi,
     NavUl,
     NavHamburger,
-    Dropdown,
-    DropdownItem,
-    DropdownDivider,
   } from "flowbite-svelte";
   import { BellSolid } from "flowbite-svelte-icons";
   import "./navbar.css";

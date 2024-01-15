@@ -17,11 +17,10 @@
   import SideBar from "./components/SideBar/SideBar.svelte";
   import Idea from "./pages/Idea/Idea.svelte";
   import SharedWithMe from "./pages/SharedWithMe/SharedWithMe.svelte";
-  import Settingd from "./pages/Settings/Settings.svelte";
+  import Settings from "./pages/Settings/Settings.svelte";
   import Contact from "./pages/Contact/Contact.svelte";
   import AdminProfile from "./pages/AdminProfile/AdminProfile.svelte";
   import { DarkMode } from "flowbite-svelte";
-  import Settings from "./pages/Settings/Settings.svelte";
 </script>
 
 <!-- <DarkMode /> -->
@@ -50,7 +49,7 @@
         <PrivateRoute path="/auth/user/profile" let:location>
           <UserProfile></UserProfile>
         </PrivateRoute>
-        <PrivateRoute path="/auth/user/newidea" let:location>
+        <PrivateRoute path="/auth/user/ideas/:ideaId" let:location>
           <Idea></Idea>
         </PrivateRoute>
         <PrivateRoute path="/auth/user/sharedwithme" let:location>

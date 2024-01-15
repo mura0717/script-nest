@@ -1,5 +1,6 @@
 <script>
   import "./api-refs.css";
+  import "../../../styles/global.css";
   import "../../../pages/Idea/idea.css";
   import {
     Search,

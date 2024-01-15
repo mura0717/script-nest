@@ -1,7 +1,4 @@
 import { writable } from "svelte/store";
-import { userStore } from "./userStore.js";
-import { AppError } from "../utils/ErrorHandling/AppError.js";
-import { handleError } from "../utils/ErrorHandling/GlobalErrorHandlerClient.js";
 
 const createIdeaStore = () => {
   const defaultIdeaState = {

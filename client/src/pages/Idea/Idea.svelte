@@ -1,10 +1,11 @@
 <script>
-  import debounce from "debounce";
   import { onMount } from "svelte";
+  import { useParams } from "svelte-navigator";
   import { userStore } from "../../store/userStore";
   import { ideaStore } from "../../store/ideaStore.js";
-  import { getPageId } from "../../utils/ideaPageHandling/getPageId.js";
-  import { fetchIdeaDetails } from "../../utils/ideaPageHandling/ideaPageDetails.js";
+  import { fetchIdea } from "../../store/ideaFetchStore.js";
+  import { AppError } from "../../utils/ErrorHandling/AppError.js";
+  import { handleError } from "../../utils/ErrorHandling/GlobalErrorHandlerClient.js";
   import * as fetchStore from "../../store/fetchStore";
   import TextElement from "../../components/IdeaFormElements/TextElement/TextElement.svelte";
   import CheckboxElement from "../../components/IdeaFormElements/CheckBox/CheckboxElement.svelte";
@@ -13,9 +14,16 @@
   import MovieReferences from "../../components/IdeaFormElements/API/MovieReferences.svelte";
   import Comments from "../../components/IdeaFormElements/CommentElement/Comments.svelte";
   import Collaborators from "../../components/IdeaFormElements/CollaboratorElement/Collaborators.svelte";
+  import debounce from "debounce";
   import "./idea.css";
   import "../../styles/global.css";
   import { Label } from "flowbite-svelte";
+
+  const params = useParams();
+  console.log("params:", params);
+  console.log("params.ideaId:", params.ideaId);
+  let ideaId = params.ideaId;
+  console.log("params.ideaId:", ideaId);
 
   let owner = {
     photoURL: $userStore.user.photoURL,
@@ -73,12 +81,12 @@
     "Western",
   ];
 
+  export function getIdeaPageId() {}
+
   onMount(async () => {
-    const ideaId = getPageId();
     if (ideaId) {
-      const ideaData = await fetchIdeaDetails(ideaId);
-      ideaStore.setIdea(ideaData);
-      idea = ideaData;
+      idea = await fetchIdea(ideaId);
+      ideaStore.setIdea(idea);
     } else {
       throw new AppError(`Error reading the idea with id:${ideaId}`, 400);
     }
@@ -101,27 +109,11 @@
   }
 
   function handleLitRefsUpdate(updatedLitRefs) {
-    console.log(
-      "Idea Page - Before handleLitRefsUpdate:",
-      idea.literatureReferences
-    );
     idea.literatureReferences = updatedLitRefs;
-    console.log(
-      "Idea Page - After handleLitRefsUpdate:",
-      idea.literatureReferences
-    );
   }
 
   function handleMovieRefsUpdate(updatedMovieRefs) {
-    console.log(
-      "Idea Page - Before handleMovieRefsUpdate:",
-      idea.movieReferences
-    );
     idea.movieReferences = updatedMovieRefs;
-    console.log(
-      "Idea Page - After handleMovieRefsUpdate:",
-      idea.movieReferences
-    );
   }
 
   function handleCommentsUpdate(updatedComments) {
@@ -131,10 +123,13 @@
   }
 
   async function saveIdea(ideaId) {
+    if(!ideaId){
+      console.error("Idea ID is undefined");
+    }
     console.log("IdeaPage/Auto-saving Idea:", idea);
     try {
       const saveIdeaResponse = await fetchStore.patchRequest(
-        `/api/auth/ideas/${ideaId}`
+        `/api/auth/ideas/${ideaId}`, idea
       );
       if (saveIdeaResponse) {
         autoSavingMessageDisplay();
@@ -190,16 +185,16 @@
             />
           </div>
           <!-- LOGLINE -->
-           <div class="idea-form-element">
-              <TextElement
-                id="logline-input"
-                label="Logline"
-                bind:value={idea.logline}
-                rows={1}
-                cols={50}
-                placeholder="Ex: When two young members of feuding families meet, forbidden love ensues."
-              />
-            </div>
+          <div class="idea-form-element">
+            <TextElement
+              id="logline-input"
+              label="Logline"
+              bind:value={idea.logline}
+              rows={2}
+              cols={50}
+              placeholder="Ex: When two young members of feuding families meet, forbidden love ensues."
+            />
+          </div>
           <!-- ORIGIN -->
           <div class="idea-form-element">
             <Label class="idea-element-label">Origin:</Label>

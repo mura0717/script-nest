@@ -7,22 +7,23 @@ import {
 
 export const ideaServices = {
   getIdea: async (ideaId, userId) => {
-    console.log("ideaServices get idea is hit.");
     const ideaDocRef = db.collection("ideas").doc(ideaId);
     const ideaSnapshot = await ideaDocRef.get();
     if (ideaSnapshot.exists) {
+      console.log("ideaServics/getIdea, ideaSnapshot:", ideaSnapshot.data());
       const ideaData = ideaSnapshot.data();
+      console.log("ideaServics/getIdea, ideaData:", ideaData);
       if (
         ideaData.owner.uid === userId ||
         ideaData.collaborators.some((collab) => collab.uid === userId)
       ) {
         return { id: ideaSnapshot.id, ...ideaData };
       } else {
-        console.log("ideaServices-getIdea Error: not authorized");
+        console.log("Not authorized to see this idea.");
         throw new AppError("Access unauthorized", 401);
       }
     } else {
-      console.log("ideaServices-getIdea Error: Idea not found");
+      console.log("Idea not found.");
       throw new AppError("Idea not found", 404);
     }
   },
@@ -35,8 +36,8 @@ export const ideaServices = {
       let ideas = [];
       if (!ideasListSnapshot.empty) {
         ideasListSnapshot.forEach((doc) => {
-          const ideaData = doc.data();
-          ideas.push({ id: doc.id, ideaData });
+          //const ideaData = doc.data();
+          ideas.push({ id: doc.id, ...doc.data() });
         });
         return ideas;
       } else {

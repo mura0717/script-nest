@@ -23,8 +23,7 @@ const createUserStore = () => {
 
         console.log("userStore-idTokenResult:", idTokenResult);
         console.log("userStore-idTokenResult claims:", idTokenResult.claims);
-        console.log("userStore-type idTokenResult claims:",typeof !!idTokenResult.claims.isAdmin);
-        // set token in Local Storage
+  
         const token = await firebaseUser.getIdToken();
         localStorage.setItem("firebaseAuthToken", token);
 
@@ -35,17 +34,6 @@ const createUserStore = () => {
           isAdmin: isAdminStatus,
           isAuthInitialized: true,
         });
-
-        console.log("userStore-Store set:", {
-          user: firebaseUser,
-          isAdmin: isAdminStatus,
-          isAuthInitialized: true,
-        });
-
-        console.log(
-          "userStore-idTokenResult.claims.isAdmin:",
-          !!idTokenResult.claims.isAdmin
-        );
         console.log("userStore-isAdminStatus:", isAdminStatus);
       } else {
         set({ user: null, isAdmin: false, isAuthInitialized: false });

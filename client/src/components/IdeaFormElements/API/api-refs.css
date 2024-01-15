@@ -56,18 +56,3 @@
   font-family: Calibri, sans-serif;
   @apply absolute top-1 right-0 bg-red-500 text-sm text-white p-1 rounded-lg;
 }
-
-.remove-ref-modal-container {
-  @apply text-center;
-
-}
-
-.modal-exclamation-icon {
-  @apply w-8 h-8 mx-auto mb-4 text-gray-400 dark:text-gray-200;
-
-}
-
-.modal-text {
-  @apply mb-5 text-base font-normal text-gray-500 dark:text-gray-400;
-
-}

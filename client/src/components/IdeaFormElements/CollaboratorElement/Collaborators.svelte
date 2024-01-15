@@ -1,5 +1,6 @@
 <script>
   import "./collaborators.css";
+  import "../../../styles/global.css";
   import "../../../pages/Idea/idea.css";
   import "../../../styles/global.css";
   import {
@@ -201,7 +202,7 @@
       <ExclamationCircleOutline
         class="modal-exclamation-icon"
       />
-      <h3 class="remove-collaborator-modal-text">
+      <h3 class="modal-text">
         Are you sure you want to remove collaborator?
       </h3>
       <Button color="red" class="me-2" on:click={() => removeCollaborator(currentCollaboratorIndex)} >Yes, I'm sure</Button>
