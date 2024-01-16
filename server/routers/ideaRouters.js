@@ -11,6 +11,7 @@ router.get(
   isAuthenticated,
   catchAsync(async (req, res) => {
     const userId = req.user.uid;
+    console.log("userId:", userId)
     const ideas = await ideaServices.getAllIdeas(userId);
     res.json(ideas);
   })

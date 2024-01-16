@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { userStore } from "../../store/userStore";
   import { fetchIdea } from "../../store/ideaFetchStore.js";
-  import { editIdea } from "../../store/ideaFetchStore.js";
+  import { fetchUpdate } from "../../store/ideaFetchStore.js";
   import { AppError } from "../../utils/ErrorHandling/AppError.js";
   import { handleError } from "../../utils/ErrorHandling/GlobalErrorHandlerClient.js";
   import * as fetchStore from "../../store/fetchStore";
@@ -86,15 +86,14 @@
     console.log("Idea Page - After handleCommentsUpdate:", idea.comments);
   }
 
-  async function saveIdea(currentIdeaId) {
+  async function handleSaveIdea(currentIdeaId) {
     console.log("IdeaPage/ Saved IdeaId:", currentIdeaId);
     console.log("IdeaPage/ Saved Idea:", idea);
     savingMessageDisplay();
     if (currentIdeaId && idea) {
       try {
-        const updatedIdea = await editIdea(ideaId, idea);
+        const updatedIdea = await fetchUpdate(ideaId, idea);
         if (updatedIdea) {
-          //idea = _.merge(idea, updatedIdea);
           idea = { ...idea, ...updatedIdea };
         } else {
           throw new AppError("Couldn't update idea", { ideaId });
@@ -124,7 +123,7 @@
       <div>
         <p class="idea-title">{ideaTitle || "Untitled New Idea"}</p>
         <div class="save-container">
-          <Button class="save-idea-button" on:click={saveIdea}>Save</Button>
+          <Button class="save-idea-button" on:click={handleSaveIdea}>Save</Button>
           <p class="saving-text">{savingText}</p>
         </div>
       </div>
@@ -201,14 +200,14 @@
             />
           </div>
           <!-- LITERATURE REFERENCES -->
-         <!--  <div class="idea-form-element" id="lit-ref-input">
+          <!--  <div class="idea-form-element" id="lit-ref-input">
             <LiteratureReferences
               bind:literatureReferences={idea.literatureReferences}
               on:updateLitRefs={handleLitRefsUpdate}
             />
           </div> -->
           <!-- FILM REFERENCES -->
-         <!--  <div class="idea-form-element" id="film-ref-input">
+          <!--  <div class="idea-form-element" id="film-ref-input">
             <MovieReferences
               bind:movieReferences={idea.movieReferences}
               on:updateMovieRefs={handleMovieRefsUpdate}

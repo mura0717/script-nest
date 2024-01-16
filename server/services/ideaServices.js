@@ -28,11 +28,11 @@ export const ideaServices = {
     }
   },
 
-  getAllIdeas: async (ownerId) => {
+  getAllIdeas: async (userId) => {
     try {
       const ideasCollectionRef = db.collection("ideas");
-      const query = ideasCollectionRef.where("owner.uid", "==", ownerId);
-      console.log("owner id:", ownerId);
+      const query = ideasCollectionRef.where("ownerId", "==", userId);
+      console.log("owner id:", userId);
       const ideasListSnapshot = await query.get();
       let ideas = [];
       if (!ideasListSnapshot.empty) {

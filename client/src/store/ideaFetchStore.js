@@ -36,26 +36,7 @@ export async function fetchAllIdeas() {
   }
 }
 
-export async function deleteIdea(ideaId) {
-  try {
-    const response = await fetchStore.deleteRequest(
-      `/api/auth/ideas/${ideaId}`
-    );
-    if (response) {
-      console.log("delete response:", response);
-      window.location.href = "/auth/user/profile";
-      navigate("/auth/user/profile");
-      return await response;
-    }
-  } catch (error) {
-    throw new AppError(`An error occured: ${error.message}`, {
-      initialError: error,
-      statusCode: error.statusCode || 500,
-    });
-  }
-}
-
-export async function editIdea(ideaId, updatedIdeaData) {
+export async function fetchUpdate(ideaId, updatedIdeaData) {
   try {
     const response = await fetchStore.patchRequest(
       `/api/auth/ideas/${ideaId}`,
