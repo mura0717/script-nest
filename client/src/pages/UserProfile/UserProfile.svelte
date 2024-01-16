@@ -15,18 +15,23 @@
   let filteredIdeas = [];
   let showDeleteIdeaModal = false;
   let currentIdeaId;
+  let refreshTrigger = 0;
 
-  onMount(async () => {
+  async function fetchIdeas() {
     const ideas = await fetchAllIdeas();
     console.log("all ideas:", ideas);
     userIdeas = ideas;
     filteredIdeas = ideas;
-  });
+  }
+  onMount(fetchIdeas);
+
+  $: if (refreshTrigger) {
+    fetchIdeas();
+  }
 
   function handleEditIdea(ideaId) {
     console.log("userprofile/handleEdit, ideaId:", ideaId);
-    navigate(`/auth/user/ideas/${ideaId}`, {replace: true});
-    //window.location.href=`/auth/user/ideas/${ideaId}`;
+    navigate(`/auth/user/ideas/${ideaId}`, { replace: true });
   }
 
   function openDeleteIdeaModal(ideaId) {
@@ -35,23 +40,22 @@
   }
 
   async function deleteIdea(ideaId) {
-  try {
-    const response = await fetchStore.deleteRequest(
-      `/api/auth/ideas/${ideaId}`
-    );
-    if (response) {
-      console.log("delete response:", response);
-      window.location.reload();
-      //navigate("/auth/user/profile", {replace: true});
-      return await response;
+    try {
+      const response = await fetchStore.deleteRequest(
+        `/api/auth/ideas/${ideaId}`
+      );
+      if (response) {
+        console.log("delete response:", response);
+        refreshTrigger++;
+        return await response;
+      }
+    } catch (error) {
+      throw new AppError(`An error occured: ${error.message}`, {
+        initialError: error,
+        statusCode: error.statusCode || 500,
+      });
     }
-  } catch (error) {
-    throw new AppError(`An error occured: ${error.message}`, {
-      initialError: error,
-      statusCode: error.statusCode || 500,
-    });
   }
-}
 
   function handleSearchIdea(event) {
     const searchTitleName = event.target.value.toLowerCase();
@@ -98,7 +102,7 @@
   </div>
   <Modal bind:open={showDeleteIdeaModal} size="xs" autoclose>
     <div class="remove-ref-modal-container">
-      <ExclamationCircleOutline class="modal-exclamation-icon" />
+      <ExclamationCircleOutline size="lg" class="modal-exclamation-icon" />
       <h3 class="modal-text">Are you sure you want to delete this idea?</h3>
       <Button
         color="red"
