@@ -16,7 +16,7 @@
   import debounce from "debounce";
   import { AppError } from "../../../utils/ErrorHandling/AppError";
   import { handleError } from "../../../utils/ErrorHandling/GlobalErrorHandlerClient";
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
 
   let searchBookName = "";
   let bookSearchResults = [];
@@ -24,12 +24,24 @@
   let showDropdown = false;
   let currentBookIndex;
   let showRemoveBookModal = false;
+  export let literatureReferences = [];
+
   const litRefDispatch = createEventDispatcher();
+
+  onMount(() => {
+    if (literatureReferences && literatureReferences.length > 0) {
+      selectedBooks = [...literatureReferences];
+    }
+  });
+
+  $: if (literatureReferences) {
+    selectedBooks = literatureReferences;
+  }
 
   async function fetchBooks(searchQuery) {
     try {
       const response = await getRequest(
-        `/api/auth/ideas/books?q=${encodeURIComponent(searchQuery)}`
+        `/api/auth/books/search?q=${encodeURIComponent(searchQuery)}`
       );
       if (response && response.bookId && response.bookId.items) {
         console.log("LitRef-google book api response:", response);
@@ -49,21 +61,27 @@
         });
       }
     } catch (error) {
-      handleError(error);
       throw new AppError(`An error occured: ${error.message}`, {
         initialError: error,
       });
     }
   }
 
+  $: {
+    if (bookSearchResults.length > 0) {
+      showDropdown = true;
+    }
+  }
+  $: showDropdown = bookSearchResults.length > 0;
+
   async function searchBooks(bookName) {
     if (bookName.length > 0) {
       try {
+        console.log(bookName);
         const results = await fetchBooks(bookName);
         bookSearchResults = results;
         showDropdown = true;
       } catch (error) {
-        handleError(error);
         throw new AppError(`An error occured: ${error.message}`, {
           initialError: error,
         });
@@ -85,11 +103,15 @@
           authors: book.authors.join(", "),
           publishedDate: book.publishedDate,
         };
-
-        selectedBooks = [...selectedBooks, book];
+        if (Array.isArray(selectedMovies)) {
+          selectedBooks = [...selectedBooks, book];
         litRefDispatch("updateLitRefs", selectedBooks);
         bookSearchResults = [];
         searchBookName = "";
+
+}
+
+        
       }
     } catch (error) {
       handleError(error);
@@ -114,11 +136,13 @@
     >Literature References:</Label
   >
   <form class="search-bar">
-    <Search
+  <!--   <Search
       size="md"
       on:input={(event) => debouncedSearchBooks(event.target.value)}
       bind:value={searchBookName}
-    />
+    /> -->
+    <Search on:input={(event) => searchBooks(event.target.value)} bind:value={searchBookName} />
+
     {#if bookSearchResults.length > 0}
       <Dropdown class="dropdown" size="md" bind:open={showDropdown}>
         {#each bookSearchResults as book}

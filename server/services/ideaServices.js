@@ -88,6 +88,7 @@ export const ideaServices = {
     console.log("ideaServices edit idea is hit.");
     const ideaDocRef = db.collection("ideas").doc(ideaId);
     console.log("ideaServices edit, ideaDocRef:", ideaDocRef);
+    console.log("updatedIdeaData:", updatedIdeaData);
     await ideaDocRef.update(updatedIdeaData);
     return ideaId;
   },

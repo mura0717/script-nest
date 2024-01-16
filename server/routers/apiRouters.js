@@ -7,7 +7,7 @@ import isAuthenticated from "../middleware/isAuthenticated.js";
 // import { booksServices } from "../services/apiServices.js";
 
 router.get(
-  "/api/auth/ideas/books",
+  "/api/auth/books/search",
   isAuthenticated,
   catchAsync(async (req, res, next) => {
     console.log("apiRouters-getBook is hit.");
@@ -42,7 +42,7 @@ router.get(
 
 
 router.get(
-  "/api/auth/ideas/movies",
+  "/api/auth/movies/search",
   isAuthenticated,
   catchAsync(async (req, res, next) => {
     console.log("apiRouters-getFilm is hit.");
@@ -59,6 +59,5 @@ router.get(
     res.status(200).send({ filmId, message: "Films fetch successful." });
   })
 );
-
 
 export default router;

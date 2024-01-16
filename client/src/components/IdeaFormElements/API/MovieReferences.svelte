@@ -16,7 +16,7 @@
   import debounce from "debounce";
   import { AppError } from "../../../utils/ErrorHandling/AppError";
   import { handleError } from "../../../utils/ErrorHandling/GlobalErrorHandlerClient";
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
 
   let searchMovieName = "";
   let movieSearchResults = [];
@@ -24,12 +24,23 @@
   let showDropdown = false;
   let currentMovieIndex;
   let showRemoveMovieModal = false;
+  export let movieReferences = [];
   const movieRefDispatch = createEventDispatcher();
+
+  onMount(() => {
+    if (movieReferences && movieReferences.length > 0) {
+      selectedMovies = [...movieReferences];
+    }
+  });
+
+  $: if (movieReferences) {
+    selectedMovies = movieReferences;
+  }
 
   async function fetchMovies(query) {
     try {
       const response = await getRequest(
-        `/api/auth/ideas/movies?q=${encodeURIComponent(query)}`
+        `/api/auth/movies/search?q=${encodeURIComponent(query)}`
       );
       if (response && response.filmId && response.filmId.results) {
         console.log("MovieRef- TMDB api response:", response);
@@ -50,6 +61,12 @@
       throw new AppError(`An error occured: ${error.message}`, {
         initialError: error,
       });
+    }
+  }
+
+  $: {
+    if (movieSearchResults.length > 0) {
+      showDropdown = true;
     }
   }
 
@@ -98,7 +115,7 @@
     selectedMovies = selectedMovies.filter((_, i) => i !== movieIndex);
   }
 
-  function openRemoveMovieModal(movieIndex){
+  function openRemoveMovieModal(movieIndex) {
     currentMovieIndex = movieIndex;
     showRemoveMovieModal = true;
   }
@@ -162,14 +179,19 @@
 
   <Modal bind:open={showRemoveMovieModal} size="xs" autoclose>
     <div class="remove-ref-modal-container">
-      <ExclamationCircleOutline
-        class="modal-exclamation-icon"
-      />
+      <ExclamationCircleOutline class="modal-exclamation-icon" />
       <h3 class="modal-text">
         Are you sure you want to remove this film reference?
       </h3>
-      <Button color="red" class="me-2" on:click={() => removeMovie(currentMovieIndex)} >Yes, I'm sure</Button>
-      <Button color="alternative" on:click={() => (showRemoveMovieModal = false)}>No, cancel</Button>
+      <Button
+        color="red"
+        class="me-2"
+        on:click={() => removeMovie(currentMovieIndex)}>Yes, I'm sure</Button
+      >
+      <Button
+        color="alternative"
+        on:click={() => (showRemoveMovieModal = false)}>No, cancel</Button
+      >
     </div>
   </Modal>
 </div>

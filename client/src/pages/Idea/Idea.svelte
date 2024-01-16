@@ -14,6 +14,7 @@
   import Comments from "../../components/IdeaFormElements/CommentElement/Comments.svelte";
   import Collaborators from "../../components/IdeaFormElements/CollaboratorElement/Collaborators.svelte";
   import debounce from "debounce";
+  import _ from "lodash";
   import { Button } from "flowbite-svelte";
   import "./idea.css";
   import "../../styles/global.css";
@@ -73,11 +74,11 @@
   }
 
   function handleLitRefsUpdate(updatedLitRefs) {
-    idea.literatureReferences = updatedLitRefs;
+    idea.literatureReferences = updatedLitRefs.detail;
   }
 
   function handleMovieRefsUpdate(updatedMovieRefs) {
-    idea.movieReferences = updatedMovieRefs;
+    idea.movieReferences = updatedMovieRefs.detail;
   }
 
   function handleCommentsUpdate(updatedComments) {
@@ -87,13 +88,14 @@
   }
 
   async function saveIdea(currentIdeaId) {
-    console.log("IdeaPage/Auto-saving IdeaId:", currentIdeaId);
-    console.log("IdeaPage/Auto-saving Idea:", idea);
+    console.log("IdeaPage/ Saved IdeaId:", currentIdeaId);
+    console.log("IdeaPage/ Saved Idea:", idea);
     savingMessageDisplay();
     if (currentIdeaId && idea) {
       try {
         const updatedIdea = await editIdea(ideaId, idea);
         if (updatedIdea) {
+          //idea = _.merge(idea, updatedIdea);
           idea = { ...idea, ...updatedIdea };
         } else {
           throw new AppError("Couldn't update idea", { ideaId });
@@ -123,10 +125,7 @@
       <div>
         <p class="idea-title">{ideaTitle || "Untitled New Idea"}</p>
         <div class="save-container">
-          <Button
-            class="save-idea-button"
-            on:click={saveIdea}>Save</Button
-          >
+          <Button class="save-idea-button" on:click={saveIdea}>Save</Button>
           <p class="saving-text">{savingText}</p>
         </div>
       </div>
@@ -204,11 +203,17 @@
           </div>
           <!-- LITERATURE REFERENCES -->
           <div class="idea-form-element" id="lit-ref-input">
-            <LiteratureReferences on:updateLitRefs={handleLitRefsUpdate} />
+            <LiteratureReferences
+              bind:literatureReferences={idea.literatureReferences}
+              on:updateLitRefs={handleLitRefsUpdate}
+            />
           </div>
           <!-- FILM REFERENCES -->
           <div class="idea-form-element" id="film-ref-input">
-            <MovieReferences on:updateMovieRefs={handleMovieRefsUpdate} />
+            <MovieReferences
+              bind:movieReferences={idea.movieReferences}
+              on:updateMovieRefs={handleMovieRefsUpdate}
+            />
           </div>
           <!-- COMMENTS -->
           <div class="idea-form-element">
