@@ -6,6 +6,13 @@
   @apply flex ml-8;
 }
 
+.idea-container {
+}
+
+.idea-title-container {
+  @apply flex;
+}
+
 .idea-title {
   margin-top: 1em;
   margin-bottom: 1rem;
@@ -13,9 +20,14 @@
   font-weight: bold;
 }
 
-.idea-container {
-  
+.save-idea-button{
+  @apply text-base;
 }
+
+/* .auto-save-text{
+  @apply mt-3 text-sm text-gray-500;
+} */
+
 .idea-form-container {
   flex-direction: column;
   display: grid;
@@ -25,7 +37,7 @@
 }
 
 .idea-form-elements-container {
-  flex-direction: column;;
+  flex-direction: column;
 }
 
 .idea-form-element {

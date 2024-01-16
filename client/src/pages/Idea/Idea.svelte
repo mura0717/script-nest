@@ -14,6 +14,7 @@
   import Comments from "../../components/IdeaFormElements/CommentElement/Comments.svelte";
   import Collaborators from "../../components/IdeaFormElements/CollaboratorElement/Collaborators.svelte";
   import debounce from "debounce";
+  import { Button } from "flowbite-svelte";
   import "./idea.css";
   import "../../styles/global.css";
   import { Label } from "flowbite-svelte";
@@ -69,8 +70,10 @@
     "Film",
   ];
 
-  let localOriginValue = idea.selectedOrigin;
-  localOriginValue = "Original Idea";
+  $: localOriginValue = idea.selectedOrigin || "Original Idea";
+  function handleOriginChange(event) {
+    idea.selectedOrigin = event.target.value;
+  }
 
   const genreOptions = [
     "Action",
@@ -88,12 +91,6 @@
     "Thriller",
     "Western",
   ];
-
-  export function getIdeaPageId() {}
-
-  function handleOriginChange(event) {
-    localOriginValue = event.currentTarget.value;
-  }
 
   function handleCollaboratorsUpdate(updateCollaborators) {
     console.log(
@@ -129,7 +126,6 @@
         const updatedIdea = await editIdea(ideaId, idea);
         idea = updatedIdea;
         if (updatedIdea) {
-          autoSavingMessageDisplay();
         } else {
           throw new AppError("Couldn't update idea", { ideaId });
         }
@@ -140,32 +136,15 @@
       }
     }
   }
-
-  $: autoSavingText = "";
-  $: console.log("Reactive ideaId:", ideaId);
-
-  function autoSavingMessageDisplay() {
-    autoSavingText = "(Saving...)";
-    setTimeout(() => {
-      autoSavingText = "";
-    }, 3000);
-  }
-
-  const debouncedSaveIdea = debounce((id) => saveIdea(id), 5000);
-
-  $: if (idea) {
-    debouncedSaveIdea(ideaId);
-  }
 </script>
 
 <main class="idea-page-container global-font">
   <!-- IDEA TITLE -->
+
   <div class="idea-container">
     <div class="idea-title">
       <p>{ideaTitle || "Untitled New Idea"}</p>
-    </div>
-    <div>
-      <p size="xs">{autoSavingText}</p>
+      <Button class="save-idea-button" on:click={saveIdea}>Save</Button>
     </div>
     <!-- FORM -->
     <div class="idea-form-container">
@@ -281,7 +260,7 @@
             <!-- SYNOPSIS -->
             <div class="idea-form-element">
               <TextElement
-                id="synopis-input"
+                id="synopsis-input"
                 label="Synopsis"
                 bind:value={idea.synopsis}
                 rows={15}

@@ -30,7 +30,6 @@ async function getRequest(endpoint) {
 }
 
 async function postRequest(endpoint, data) {
-  console.log("url:", API_BASE_URL_JS + endpoint);
   const firebaseToken = localStorage.getItem("firebaseAuthToken");
   try {
     const response = await fetch(API_BASE_URL_JS + endpoint, {
@@ -51,6 +50,7 @@ async function postRequest(endpoint, data) {
       handleError(error);
       throw error;
     }
+    console.log("new idea response:", response)
     return responseData;
   } catch (error) {
     handleError(error);
@@ -91,12 +91,14 @@ async function patchRequest(endpoint, data) {
 }
 
 async function deleteRequest(endpoint) {
+  const firebaseToken = localStorage.getItem("firebaseAuthToken");
   try {
     const response = await fetch(API_BASE_URL_JS + endpoint, {
       credentials: "include",
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${firebaseToken}`,
       },
     });
     if (!response.ok) {

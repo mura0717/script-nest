@@ -1,13 +1,13 @@
 import * as fetchStore from "./fetchStore";
 import { handleError } from "../utils/ErrorHandling/GlobalErrorHandlerClient";
 import { AppError } from "../utils/ErrorHandling/AppError.js";
+import { navigate } from "svelte-navigator";
 
 export async function fetchIdea(ideaId) {
   try {
     const response = await fetchStore.getRequest(`/api/auth/ideas/${ideaId}`);
     console.log("fetchidea response:", response);
-    console.log("fetchidea response id:", response.id);
-    if (response && response.id) {
+    if (response) {
       return response;
     } else {
       throw new AppError("Error fetching idea", 400);
@@ -42,6 +42,9 @@ export async function deleteIdea(ideaId) {
       `/api/auth/ideas/${ideaId}`
     );
     if (response) {
+      console.log("delete response:", response);
+      window.location.href = "/auth/user/profile";
+      navigate("/auth/user/profile");
       return await response;
     }
   } catch (error) {

@@ -14,7 +14,7 @@ export const ideaServices = {
       const ideaData = ideaSnapshot.data();
       console.log("ideaServics/getIdea, ideaData:", ideaData);
       if (
-        ideaData.owner.uid === userId ||
+        ideaData.ownerId === userId ||
         ideaData.collaborators.some((collab) => collab.uid === userId)
       ) {
         return { id: ideaSnapshot.id, ...ideaData };
@@ -32,11 +32,12 @@ export const ideaServices = {
     try {
       const ideasCollectionRef = db.collection("ideas");
       const query = ideasCollectionRef.where("owner.uid", "==", ownerId);
+      console.log("owner id:", ownerId);
       const ideasListSnapshot = await query.get();
       let ideas = [];
       if (!ideasListSnapshot.empty) {
         ideasListSnapshot.forEach((doc) => {
-          //const ideaData = doc.data();
+          console.log("docs:", doc.id);
           ideas.push({ id: doc.id, ...doc.data() });
         });
         return ideas;

@@ -6,10 +6,8 @@
   export let path;
 </script>
 
-<Route {path} let:params let:location let:navigate>
+<Route {path} primary={false} let:params let:location let:navigate>
   <PrivateRouteGuard>
-    {#if $userStore.user}
       <slot {params} {location} {navigate} />
-    {/if}
   </PrivateRouteGuard>
 </Route>

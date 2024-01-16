@@ -29,3 +29,7 @@
 .sidebar-item-icon {
   @apply w-6 h-6 ml-2;
 }
+
+.sidebar-new-idea-button {
+  @apply flex flex-row space-x-3 items-center pl-[8px] pt-3 pb-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer;
+}

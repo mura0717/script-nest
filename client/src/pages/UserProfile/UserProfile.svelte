@@ -4,8 +4,10 @@
   import "./userprofile.css";
   import { Card, Button, Modal } from "flowbite-svelte";
   import { navigate } from "svelte-navigator";
+  import { AppError } from "../../utils/ErrorHandling/AppError.js";
+  import * as fetchStore from "../../store/fetchStore.js";
   import { ExclamationCircleOutline } from "flowbite-svelte-icons";
-  import { fetchAllIdeas, deleteIdea } from "../../store/ideaFetchStore.js";
+  import { fetchAllIdeas } from "../../store/ideaFetchStore.js";
   import IdeasSearchBar from "../../components/IdeasSearchBar/IdeasSearchBar.svelte";
   import debounce from "debounce";
 
@@ -16,19 +18,40 @@
 
   onMount(async () => {
     const ideas = await fetchAllIdeas();
+    console.log("all ideas:", ideas);
     userIdeas = ideas;
     filteredIdeas = ideas;
   });
 
   function handleEditIdea(ideaId) {
-    console.log("userprofile/handleEdit, ideaId:", ideaId)
-    navigate(`/auth/user/ideas/${ideaId}`, { replace: true });
+    console.log("userprofile/handleEdit, ideaId:", ideaId);
+    navigate(`/auth/user/ideas/${ideaId}`, {replace: true});
+    //window.location.href=`/auth/user/ideas/${ideaId}`;
   }
 
   function openDeleteIdeaModal(ideaId) {
     currentIdeaId = ideaId;
     showDeleteIdeaModal = true;
   }
+
+  async function deleteIdea(ideaId) {
+  try {
+    const response = await fetchStore.deleteRequest(
+      `/api/auth/ideas/${ideaId}`
+    );
+    if (response) {
+      console.log("delete response:", response);
+      window.location.reload();
+      //navigate("/auth/user/profile", {replace: true});
+      return await response;
+    }
+  } catch (error) {
+    throw new AppError(`An error occured: ${error.message}`, {
+      initialError: error,
+      statusCode: error.statusCode || 500,
+    });
+  }
+}
 
   function handleSearchIdea(event) {
     const searchTitleName = event.target.value.toLowerCase();
@@ -53,8 +76,8 @@
         <p class="no-ideas-yet-text">You don't have any ideas yet.</p>
       </div>
     {:else}
-      {#each filteredIdeas as idea}
-        <div class="idea-cards-container">
+      <div class="idea-cards-container">
+        {#each filteredIdeas as idea}
           <Card size="xs" class="idea-card">
             <h5 class="idea-card-title">{idea.title}</h5>
             <p class="idea-card-content">{idea.logline}</p>
@@ -69,8 +92,8 @@
               >
             </div>
           </Card>
-        </div>
-      {/each}
+        {/each}
+      </div>
     {/if}
   </div>
   <Modal bind:open={showDeleteIdeaModal} size="xs" autoclose>

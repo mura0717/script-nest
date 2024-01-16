@@ -34,7 +34,7 @@
 }
 
 .idea-card {
-  @apply ml-14 mr-12 border-2;
+  @apply border-2;
 }
 
 .idea-card-title {

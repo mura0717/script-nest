@@ -37,7 +37,7 @@
       {/if}
 
       <main class="main-content">
-        
+
         <!-- Public Routes -->
         <Route path="/" component={Index}></Route>
         <Route path="/auth/signup" component={Signup}></Route>
@@ -49,8 +49,8 @@
         <PrivateRoute path="/auth/user/profile" let:location>
           <UserProfile></UserProfile>
         </PrivateRoute>
-        <PrivateRoute path="/auth/user/ideas/:ideaId" primary={false} let:location>
-          <Idea />
+        <PrivateRoute path="/auth/user/ideas/:ideaId" let:location>
+          <Idea></Idea>
         </PrivateRoute>
         <PrivateRoute path="/auth/user/sharedwithme" let:location>
           <SharedWithMe></SharedWithMe>

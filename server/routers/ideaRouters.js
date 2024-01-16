@@ -27,6 +27,7 @@ router.get(
     console.log("ideaRouters/getIdea ideaId:", ideaId);
     const idea = await ideaServices.getIdea(ideaId, userId);
     if (idea) {
+      console.log("idea single get:", idea);
       res.json(idea);
     } else {
       res.status(404).json({ message: "Idea not found." });
@@ -39,12 +40,14 @@ router.post(
   "/api/auth/ideas",
   isAuthenticated,
   catchAsync(async (req, res) => {
+    console.log("ideaRouter/post is hit.")
     const userId = req.user.uid;
     const ideaData = req.body;
     const newIdeaId = await ideaServices.createIdea({
       ...ideaData,
       ownerId: userId,
     });
+    console.log("new idea data:", ideaData)
     res.status(201).json({ id: newIdeaId });
   })
 );
