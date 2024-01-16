@@ -1,5 +1,5 @@
 <script>
-	import Collaborators from './Collaborators.svelte';
+  import Collaborators from "./Collaborators.svelte";
   import "./collaborators.css";
   import "../../../styles/global.css";
   import "../../../pages/Idea/idea.css";
@@ -11,6 +11,7 @@
     ListgroupItem,
     Label,
     Button,
+    P,
   } from "flowbite-svelte";
   import {
     SearchOutline,
@@ -34,9 +35,14 @@
   let showRemoveCollaboratorModal = false;
   export let ideaTitle;
   export let collaborators = [];
+  export let ideaId;
+  export let inviterName;
+
   const collaboratorDispatch = createEventDispatcher();
 
-  $: addedCollaborators = [...collaborators];
+  $: if (Array.isArray(collaborators)) {
+    addedCollaborators = [...collaborators];
+  }
 
   async function inviteUserByEmail(userEmail) {
     try {
@@ -79,7 +85,6 @@
         userSearchResult = result;
         showDropdown = true;
       } catch (error) {
-        handleError(error);
         throw new AppError(`An error occured: ${error.message}`, {
           initialError: error,
         });
@@ -93,19 +98,31 @@
     console.log("Collaborator Element - Add Collaborator:", collaborator);
     try {
       if (collaborator) {
-        const collaboratorReference = {
+        const collabData = {
           photoURL: collaborator.photoURL,
           displayName: collaborator.displayName,
           uid: collaborator.uid,
+          ideaTitle: ideaTitle,
+          inviterName: inviterName,
         };
-
-        addedCollaborators = [...addedCollaborators, collaborator];
-        collaboratorDispatch("updateCollaborators", addedCollaborators);
-        searchEmail = "";
-        userSearchResult = "";
+        const response = postRequest(
+          `/api/auth/ideas/${ideaId}/collaborators`,
+          collabData
+        );
+        
+        if (response) {
+          console.log("adduser as collabresponse:", response)
+          addedCollaborators = [...addedCollaborators, collaborator];
+          collaboratorDispatch("updateCollaborators", addedCollaborators);
+          searchEmail = "";
+          userSearchResult = "";
+        } else {
+          throw new AppError(`An error occured: ${error.message}`, {
+            initialError: error,
+          });
+        }
       }
     } catch (error) {
-      handleError(error);
       throw new AppError(`An error occured: ${error.message}`, {
         initialError: error,
       });
@@ -113,10 +130,12 @@
   }
 
   function removeCollaborator(collaboratorIndex) {
-    addedCollaborators = addedCollaborators.filter((_, i) => i !== collaboratorIndex);
+    addedCollaborators = addedCollaborators.filter(
+      (_, i) => i !== collaboratorIndex
+    );
   }
 
-  function openRemoveCollaboratorModal(collaboratorIndex){
+  function openRemoveCollaboratorModal(collaboratorIndex) {
     currentCollaboratorIndex = collaboratorIndex;
     showRemoveCollaboratorModal = true;
   }
@@ -131,31 +150,38 @@
     <GlobeSolid />
     <p>Share</p>
   </Button>
-
-  {#if addedCollaborators.length > 0}
-    <div class="collaborators-display">
-      <Label class="collaborator-element-label">Collaborators:</Label>
-      {#each addedCollaborators as collaborator, collaboratorIndex}
-        <Listgroup active class="collaborators-list-group">
-          <ListgroupItem class="collaborators-list-group-item">
-            <div class="collaborators-list-group-item-display">
-              <img
-                class="collaborator-avatar-image"
-                src={collaborator.photoURL}
-                alt={collaborator.displayName}
-              />
-              <p>{collaborator.displayName}</p>
-              <button class="remove-collaborator-button" on:click={() => openRemoveCollaboratorModal(collaboratorIndex)}>
-                <TrashBinSolid class="remove-collaborator-icon" />
-              </button>
-            </div>
-          </ListgroupItem>
-        </Listgroup>
-      {/each}
-    </div>
-  {/if}
+  <div>
+    {#if addedCollaborators.length > 0}
+      <div class="collaborators-display">
+        <Label class="collaborator-element-label">Collaborators:</Label>
+        {#each addedCollaborators as collaborator, collaboratorIndex}
+          <Listgroup active class="collaborators-list-group">
+            <ListgroupItem class="collaborators-list-group-item">
+              <div class="collaborators-list-group-item-display">
+                <img
+                  class="collaborator-avatar-image"
+                  src={collaborator.photoURL}
+                  alt={collaborator.displayName}
+                />
+                <p>{collaborator.displayName}</p>
+                <button
+                  class="remove-collaborator-button"
+                  on:click={() =>
+                    openRemoveCollaboratorModal(collaboratorIndex)}
+                >
+                  <TrashBinSolid class="remove-collaborator-icon" />
+                </button>
+              </div>
+            </ListgroupItem>
+          </Listgroup>
+        {/each}
+      </div>
+    {:else}
+      <p class="mt-3 ml-5 text-center">No collaborators yet.</p>
+    {/if}
+  </div>
   <Modal bind:open={showShareModal} size="xs" autoclose={false}>
-    <h3>Share "{ideaTitle || "Untitled New Idea" }"</h3>
+    <h3>Share "{ideaTitle || "Untitled New Idea"}"</h3>
     <form class="searchbar-collaborators-container">
       <Search
         size="sm"
@@ -174,7 +200,7 @@
         bind:open={showDropdown}
       >
         {#each userSearchResult as user}
-          <ListgroupItem >
+          <ListgroupItem>
             <div class="user-search-dropdown-item">
               <img
                 class="user-avatar-thumbnail"
@@ -194,16 +220,21 @@
       </Listgroup>
     {/if}
   </Modal>
-    <Modal bind:open={showRemoveCollaboratorModal} size="xs" autoclose>
+  <Modal bind:open={showRemoveCollaboratorModal} size="xs" autoclose>
     <div class="remove-collaborator-modal-container">
-      <ExclamationCircleOutline
-        class="modal-exclamation-icon"
-      />
-      <h3 class="modal-text">
-        Are you sure you want to remove collaborator?
-      </h3>
-      <Button color="red" class="me-2" on:click={() => removeCollaborator(currentCollaboratorIndex)} >Yes, I'm sure</Button>
-      <Button color="alternative" on:click={() => (showRemoveCollaboratorModal = false)}>No, cancel</Button>
+      <ExclamationCircleOutline class="modal-exclamation-icon" />
+      <h3 class="modal-text">Are you sure you want to remove collaborator?</h3>
+      <Button
+        color="red"
+        class="me-2"
+        on:click={() => removeCollaborator(currentCollaboratorIndex)}
+        >Yes, I'm sure</Button
+      >
+      <Button
+        color="alternative"
+        on:click={() => (showRemoveCollaboratorModal = false)}
+        >No, cancel</Button
+      >
     </div>
   </Modal>
 </div>

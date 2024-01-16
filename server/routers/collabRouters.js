@@ -1,32 +1,40 @@
-// ... Collaborator addition logic ...
+import { Router } from "express";
+import collabServices from "../services/collabServices.js";
+import notificationServices from "../services/notificationServices.js";
+import { catchAsync } from "../utils/ErrorHandling/GlobalErrorHandler.js";
+import { io } from "../app.js";
 
-// Example of adding a collaborator within ideaRouters
+const router = Router();
+
 router.post(
   "/api/auth/ideas/:ideaId/collaborators",
   catchAsync(async (req, res) => {
     const ideaId = req.params.ideaId;
-    const collaboratorData = req.body;
-    await collaboratorServices.addCollaborator(ideaId, collaboratorData);
-    res.status(201).json({ message: "Collaborator added successfully" });
+    console.log("ideaId", ideaId)
+    const collabData = req.body;
+
+    await collabServices.addCollaborator(ideaId, collabData);
+
+    const notificationInfo = {
+      type: "new_collaborator_invite",
+      targetUserId: collabData.uid,
+      relatedIdeaId: ideaId,
+      message: `${collabData.inviterName} invited you to ${collabData.ideaTitle}. `,
+      timestamp: new Date().toISOString(),
+    };
+
+    await notificationServices.addNotification(
+      collabData.uid,
+      notificationInfo
+    );
+
+    io.to(collabData.uid).emit("notification", notificationInfo);
+
+    res
+      .status(201)
+      .json({ message: "Collaborator added and notification sent" });
   })
 );
 
-// Create and emit a notification
-const notificationInfo = {
-  type: "new_collaborator_invite",
-  // other details
-};
-await notificationServices.createNotification(notificationInfo);
-io.emit("notification", notificationInfo); // Using Socket.io to emit the notification
-
-// Return response
-res.status(201).json({ message: "Collaborator added and notification sent" });
-
-// Notification collection example:
-/* {
-  "type": "new_collaborator_invitation",
-  "targetUserId": "user123",
-  "relatedIdeaId": "idea456",
-  "message": "You have been invited to collaborate on Idea XYZ",
-  "timestamp": "2021-01-01T00:00:00Z"
-} */
+// Export the router
+export default router;

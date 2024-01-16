@@ -43,23 +43,34 @@ const wrap = (middleware) => (socket, next) =>
   middleware(socket.request, {}, next);
 io.use(wrap(sessionMiddleware));
 
-import { eventEmitter } from "./events/eventEmitter.js";
-io.on("connection", (socket) => {
-  console.log("Socket connected with id:", socket.id);
-  /*   eventEmitter.on("new-notification", (data) => {
-    socket.emit("new-notification", data);
-  }); */
+io.on("connect", (socket) => {
+  console.log("A user connected with id:", socket.id);
 
-  socket.on("client-choose-a-color", (data) => {
-    console.log("Received data:", data); // Debugging
-    io.emit("server-sent-a-color", data);
-  });
+  // Handle other events...
 
-  // Don't forget to handle disconnection
   socket.on("disconnect", () => {
-    console.log("Socket disconnected", socket.id);
+    console.log("User disconnected", socket.id);
   });
 });
+
+export { io };
+
+// io.on("connection", (socket) => {
+//   console.log("Socket connected with id:", socket.id);
+//   /*   eventEmitter.on("new-notification", (data) => {
+//     socket.emit("new-notification", data);
+//   }); */
+
+//   socket.on("client-choose-a-color", (data) => {
+//     console.log("Received data:", data); // Debugging
+//     io.emit("server-sent-a-color", data);
+//   });
+
+//   // Don't forget to handle disconnection
+//   socket.on("disconnect", () => {
+//     console.log("Socket disconnected", socket.id);
+//   });
+// });
 
 //===================CORS SETUP=====================//
 import cors from "cors";
@@ -76,13 +87,6 @@ app.use(
   })
 );
 
-// Firestore DB test
-/* import { testDB } from "./services/userServices.js";
-app.get("/createdummyusers", (req, res) => {
-    testDB();
-    res.send("200");
-}) */
-
 //===================ROUTERS=====================//
 import authRouters from "./routers/authRouters.js";
 app.use(authRouters);
@@ -98,6 +102,9 @@ app.use(ideaRouters);
 
 import apiRouters from "./routers/apiRouters.js";
 app.use(apiRouters);
+
+import collabRouters from "./routers/collabRouters.js";
+app.use(collabRouters);
 
 //Server Endpoint Test
 app.get("/test", (req, res) => {

@@ -1,14 +1,14 @@
 import { db } from "../config/firebaseAdmin.js";
-import AppError from "../utils/ErrorHandling/AppError.js";
-import { catchAsync } from "../utils/ErrorHandling/GlobalErrorHandler.js";
 
 export const collabServices = {
-  addCollaborator: async (ideaId, collaboratorData) => {
+  addCollaborator: async (ideaId, collabData) => {
+    console.log("Received notification ideaId:", ideaId);
+    console.log("Received notification collabData:", collabData);
     const collaboratorRef = db
       .collection("ideas")
       .doc(ideaId)
       .collection("collaborators");
-    await collaboratorRef.add(collaboratorData);
+    await collaboratorRef.add(collabData);
   },
 
   getCollaborators: async (ideaId) => {
@@ -31,7 +31,7 @@ export const collabServices = {
       .collection("collaborators")
       .doc(collaboratorDocId);
     await collaboratorDocRef.delete();
-    return collaboratorDocId; // Optionally, return the ID of the removed collaborator
+    return collaboratorDocId;
   },
 };
 

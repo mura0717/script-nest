@@ -10,6 +10,24 @@
   import "./navbar.css";
   import scriptnestLogo from "../../assets/logos/scriptnest_logo.png";
   import Notifications from "../Notifications/Notifications.svelte";
+  import io from "socket.io-client";
+
+  let notifications = [];
+  let hasUnreadNotifications = false;
+  const socket = io("http://localhost:3000");
+
+  socket.on("connect", () => {
+    console.log("Connected to server.");
+  });
+
+  socket.on("notification", (newNotification) => {
+    hasUnreadNotifications = true;
+    notifications.push(newNotification);
+  });
+
+  function resetNotificationIndicator() {
+    hasUnreadNotifications = false;
+  }
 </script>
 
 <div class="navbar-container">
@@ -23,15 +41,22 @@
     </NavBrand>
     <NavHamburger />
     <NavUl>
-      <NavLi class="navbar-elements-style" href="/auth/sockettest">SocketTest</NavLi>
+      <NavLi class="navbar-elements-style" href="/auth/sockettest"
+        >SocketTest</NavLi
+      >
       <NavLi class="navbar-elements-style" href="/auth/login">Login</NavLi>
       <NavLi class="navbar-elements-style" href="/auth/signup">Signup</NavLi>
       <NavLi class="navbar-elements-style" href="/auth/contact">Contact</NavLi>
-      <div id="bell" class="notification-bell">
+      <div
+        id="bell"
+        class="notification-bell"
+        on:click={resetNotificationIndicator}
+        on:keydown={resetNotificationIndicator}
+      >
         <BellSolid class="notification-bell-solid" />
-        <div class="flex relative">
-          <div class="notification-alert-dot dark:border-gray-90" />
-        </div>
+        {#if hasUnreadNotifications}
+          <div class="notification-alert-dot dark:border-gray-90"></div>
+        {/if}
       </div>
       <div>
         <Notifications />

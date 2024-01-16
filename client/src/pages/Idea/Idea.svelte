@@ -5,11 +5,7 @@
   import { fetchIdea } from "../../store/ideaFetchStore.js";
   import { fetchUpdate } from "../../store/ideaFetchStore.js";
   import { AppError } from "../../utils/ErrorHandling/AppError.js";
-  import { handleError } from "../../utils/ErrorHandling/GlobalErrorHandlerClient.js";
-  import * as fetchStore from "../../store/fetchStore";
   import TextElement from "../../components/IdeaFormElements/TextElement/TextElement.svelte";
-  import CheckboxElement from "../../components/IdeaFormElements/CheckBox/CheckboxElement.svelte";
-  import RadioButtonElement from "../../components/IdeaFormElements/RadioButton/RadioButtonElement.svelte";
   import LiteratureReferences from "../../components/IdeaFormElements/API/LiteratureReferences.svelte";
   import MovieReferences from "../../components/IdeaFormElements/API/MovieReferences.svelte";
   import Comments from "../../components/IdeaFormElements/CommentElement/Comments.svelte";
@@ -17,7 +13,6 @@
   import { Button } from "flowbite-svelte";
   import "./idea.css";
   import "../../styles/global.css";
-  import { Label } from "flowbite-svelte";
 
   let ideaId;
   let owner = {
@@ -25,15 +20,14 @@
     displayName: $userStore.user.displayName,
     uid: $userStore.user.uid,
   };
+  let creationTimestamp = new Date().toISOString();
 
   let idea = {
     owner: owner,
+    creationTimestamp: creationTimestamp,
     title: "",
     logline: "",
-    selectedOrigin: "",
-    sourceMaterial: "",
-    authors: "",
-    selectedGenres: [],
+    genre: "",
     timePeriod: "",
     setting: "",
     movieReferences: [],
@@ -45,6 +39,15 @@
   };
 
   $: ideaTitle = idea.title;
+
+  /*   let isNewIdea = true; // Flag to check if it's a new idea
+  let isInitialLoad = true;
+
+  const debounceSave = debounce(() => handleSaveIdea(ideaId), 2000);
+
+   $: if (!isInitialLoad && !isNewIdea) {
+    debounceSave();
+  } */
 
   onMount(async () => {
     const pathSegments = window.location.pathname.split("/");
@@ -65,7 +68,6 @@
     idea = { ...idea, collaborators: updateCollaborators.detail };
   }
 
-  $: literatureReferences = idea.literatureReferences;
   function handleLitRefsUpdate(updatedLitRefs) {
     idea = { ...idea, literatureReferences: updatedLitRefs.detail };
   }
@@ -111,7 +113,6 @@
 
 <main class="idea-page-container global-font">
   <!-- IDEA TITLE -->
-
   <div class="idea-container">
     <div class="idea-title-container">
       <div>
@@ -151,6 +152,27 @@
             />
           </div>
           <!-- GENRE -->
+          <div class="idea-form-element">
+            <TextElement
+              id="genre-input"
+              label="Genre"
+              bind:value={idea.genre}
+              rows={1}
+              cols={50}
+              placeholder="Ex: Romance, Drama..."
+            />
+          </div>
+          <!-- PREMISE -->
+          <div class="idea-form-element">
+            <TextElement
+              id="premise-input"
+              label="Premise"
+              bind:value={idea.premise}
+              rows={1}
+              cols={50}
+              placeholder="Ex: Love conquers all."
+            />
+          </div>
           <!-- TIME PERIOD -->
           <div class="idea-form-element">
             <TextElement
@@ -171,17 +193,6 @@
               rows={1}
               cols={50}
               placeholder="Ex: Verona, Italy"
-            />
-          </div>
-          <!-- PREMISE -->
-          <div class="idea-form-element">
-            <TextElement
-              id="premise-input"
-              label="Premise"
-              bind:value={idea.premise}
-              rows={1}
-              cols={50}
-              placeholder="Ex: Love conquers all."
             />
           </div>
           <!-- SYNOPSIS -->
@@ -222,6 +233,8 @@
     <Collaborators
       {ideaTitle}
       {collaborators}
+      ideaId={ideaId} 
+      inviterName={owner}
       on:updateCollaborators={handleCollaboratorsUpdate}
     />
   </div>
