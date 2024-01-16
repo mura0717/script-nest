@@ -14,7 +14,6 @@
   import Comments from "../../components/IdeaFormElements/CommentElement/Comments.svelte";
   import Collaborators from "../../components/IdeaFormElements/CollaboratorElement/Collaborators.svelte";
   import debounce from "debounce";
-  import _ from "lodash";
   import { Button } from "flowbite-svelte";
   import "./idea.css";
   import "../../styles/global.css";
@@ -202,19 +201,19 @@
             />
           </div>
           <!-- LITERATURE REFERENCES -->
-          <div class="idea-form-element" id="lit-ref-input">
+         <!--  <div class="idea-form-element" id="lit-ref-input">
             <LiteratureReferences
               bind:literatureReferences={idea.literatureReferences}
               on:updateLitRefs={handleLitRefsUpdate}
             />
-          </div>
+          </div> -->
           <!-- FILM REFERENCES -->
-          <div class="idea-form-element" id="film-ref-input">
+         <!--  <div class="idea-form-element" id="film-ref-input">
             <MovieReferences
               bind:movieReferences={idea.movieReferences}
               on:updateMovieRefs={handleMovieRefsUpdate}
             />
-          </div>
+          </div> -->
           <!-- COMMENTS -->
           <div class="idea-form-element">
             <Comments on:updateComments={handleCommentsUpdate} />

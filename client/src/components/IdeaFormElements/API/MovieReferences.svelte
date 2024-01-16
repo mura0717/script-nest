@@ -31,11 +31,14 @@
     if (movieReferences && movieReferences.length > 0) {
       selectedMovies = [...movieReferences];
     }
+    
   });
 
   $: if (movieReferences) {
     selectedMovies = movieReferences;
   }
+
+  $: showDropdown = movieSearchResults.length > 0;
 
   async function fetchMovies(query) {
     try {
@@ -61,12 +64,6 @@
       throw new AppError(`An error occured: ${error.message}`, {
         initialError: error,
       });
-    }
-  }
-
-  $: {
-    if (movieSearchResults.length > 0) {
-      showDropdown = true;
     }
   }
 
@@ -99,7 +96,7 @@
           releaseDate: movie.releaseDate,
         };
         selectedMovies = [...selectedMovies, movie];
-        movieRefDispatch("updateMovieRefs", selectedMovies);
+        movieRefDispatch("updateMovieRefs", selectedBooks);
         movieSearchResults = [];
         searchMovieName = "";
       }
@@ -126,11 +123,12 @@
     >Film References:</Label
   >
   <form class="search-bar">
-    <Search
+     <Search
       size="md"
       on:input={(event) => debouncedSearchMovies(event.target.value)}
       bind:value={searchMovieName}
     />
+ 
     {#if movieSearchResults.length > 0}
       <Dropdown class="dropdown" size="md" bind:open={showDropdown}>
         {#each movieSearchResults as movie}

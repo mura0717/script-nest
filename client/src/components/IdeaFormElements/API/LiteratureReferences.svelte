@@ -25,19 +25,10 @@
   let currentBookIndex;
   let showRemoveBookModal = false;
   export let literatureReferences = [];
-
   const litRefDispatch = createEventDispatcher();
 
-  onMount(() => {
-    if (literatureReferences && literatureReferences.length > 0) {
-      selectedBooks = [...literatureReferences];
-    }
-  });
-
-  $: if (literatureReferences) {
-    selectedBooks = literatureReferences;
-  }
-
+  $: selectedBooks = literatureReferences;
+  
   async function fetchBooks(searchQuery) {
     try {
       const response = await getRequest(
@@ -67,13 +58,6 @@
     }
   }
 
-  $: {
-    if (bookSearchResults.length > 0) {
-      showDropdown = true;
-    }
-  }
-  $: showDropdown = bookSearchResults.length > 0;
-
   async function searchBooks(bookName) {
     if (bookName.length > 0) {
       try {
@@ -81,6 +65,7 @@
         const results = await fetchBooks(bookName);
         bookSearchResults = results;
         showDropdown = true;
+        console.log("showDropdown:", showDropdown);
       } catch (error) {
         throw new AppError(`An error occured: ${error.message}`, {
           initialError: error,
@@ -103,15 +88,12 @@
           authors: book.authors.join(", "),
           publishedDate: book.publishedDate,
         };
-        if (Array.isArray(selectedMovies)) {
+        if (Array.isArray(selectedBooks)) {
           selectedBooks = [...selectedBooks, book];
-        litRefDispatch("updateLitRefs", selectedBooks);
-        bookSearchResults = [];
-        searchBookName = "";
-
-}
-
-        
+          litRefDispatch("updateLitRefs", selectedBooks);
+          bookSearchResults = [];
+          searchBookName = "";
+        }
       }
     } catch (error) {
       handleError(error);
@@ -136,13 +118,11 @@
     >Literature References:</Label
   >
   <form class="search-bar">
-  <!--   <Search
+    <Search
       size="md"
       on:input={(event) => debouncedSearchBooks(event.target.value)}
       bind:value={searchBookName}
-    /> -->
-    <Search on:input={(event) => searchBooks(event.target.value)} bind:value={searchBookName} />
-
+    />
     {#if bookSearchResults.length > 0}
       <Dropdown class="dropdown" size="md" bind:open={showDropdown}>
         {#each bookSearchResults as book}
