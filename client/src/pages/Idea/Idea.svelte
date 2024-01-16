@@ -93,8 +93,8 @@
     if (currentIdeaId && idea) {
       try {
         const updatedIdea = await editIdea(ideaId, idea);
-        idea = { ...idea, ...updatedIdea };
         if (updatedIdea) {
+          idea = { ...idea, ...updatedIdea };
         } else {
           throw new AppError("Couldn't update idea", { ideaId });
         }
@@ -123,103 +123,106 @@
       <div>
         <p class="idea-title">{ideaTitle || "Untitled New Idea"}</p>
         <div class="save-container">
-          <Button class="save-idea-button" on:click={saveIdea}>Save</Button>
+          <Button
+            class="save-idea-button"
+            on:click={saveIdea}>Save</Button
+          >
           <p class="saving-text">{savingText}</p>
         </div>
       </div>
-      </div>
-      <!-- FORM -->
-      <div class="idea-form-container">
-        <form on:submit|preventDefault>
-          <div class="idea-form-elements-container">
-            <!-- TITLE -->
-            <div class="idea-form-element">
-              <TextElement
-                id="title-input"
-                label="Title"
-                bind:value={idea.title}
-                rows={1}
-                cols={50}
-                placeholder=""
-              />
-            </div>
-            <!-- LOGLINE -->
-            <div class="idea-form-element">
-              <TextElement
-                id="logline-input"
-                label="Logline"
-                bind:value={idea.logline}
-                rows={2}
-                cols={50}
-                placeholder="Ex: When two young members of feuding families meet, forbidden love ensues."
-              />
-            </div>
-            <!-- GENRE -->
-            <!-- TIME PERIOD -->
-            <div class="idea-form-element">
-              <TextElement
-                id="time-input"
-                label="Time Period"
-                bind:value={idea.timePeriod}
-                rows={1}
-                cols={50}
-                placeholder="Ex: Sometime in 14th Century"
-              />
-            </div>
-            <!-- SETTING -->
-            <div class="idea-form-element">
-              <TextElement
-                id="setting-input"
-                label="Setting"
-                bind:value={idea.setting}
-                rows={1}
-                cols={50}
-                placeholder="Ex: Verona, Italy"
-              />
-            </div>
-            <!-- PREMISE -->
-            <div class="idea-form-element">
-              <TextElement
-                id="premise-input"
-                label="Premise"
-                bind:value={idea.premise}
-                rows={1}
-                cols={50}
-                placeholder="Ex: Love conquers all."
-              />
-            </div>
-            <!-- SYNOPSIS -->
-            <div class="idea-form-element">
-              <TextElement
-                id="synopsis-input"
-                label="Synopsis"
-                bind:value={idea.synopsis}
-                rows={15}
-                cols={50}
-                placeholder="A detailed description of the plot goes here..."
-              />
-            </div>
-            <!-- LITERATURE REFERENCES -->
-            <div class="idea-form-element" id="lit-ref-input">
-              <LiteratureReferences on:updateLitRefs={handleLitRefsUpdate} />
-            </div>
-            <!-- FILM REFERENCES -->
-            <div class="idea-form-element" id="film-ref-input">
-              <MovieReferences on:updateMovieRefs={handleMovieRefsUpdate} />
-            </div>
-            <!-- COMMENTS -->
-            <div class="idea-form-element">
-              <Comments on:updateComments={handleCommentsUpdate} />
-            </div>
+    </div>
+    <!-- FORM -->
+    <div class="idea-form-container">
+      <form on:submit|preventDefault>
+        <div class="idea-form-elements-container">
+          <!-- TITLE -->
+          <div class="idea-form-element">
+            <TextElement
+              id="title-input"
+              label="Title"
+              bind:value={idea.title}
+              rows={1}
+              cols={50}
+              placeholder=""
+            />
           </div>
-        </form>
-      </div>
+          <!-- LOGLINE -->
+          <div class="idea-form-element">
+            <TextElement
+              id="logline-input"
+              label="Logline"
+              bind:value={idea.logline}
+              rows={2}
+              cols={50}
+              placeholder="Ex: When two young members of feuding families meet, forbidden love ensues."
+            />
+          </div>
+          <!-- GENRE -->
+          <!-- TIME PERIOD -->
+          <div class="idea-form-element">
+            <TextElement
+              id="time-input"
+              label="Time Period"
+              bind:value={idea.timePeriod}
+              rows={1}
+              cols={50}
+              placeholder="Ex: Sometime in 14th Century"
+            />
+          </div>
+          <!-- SETTING -->
+          <div class="idea-form-element">
+            <TextElement
+              id="setting-input"
+              label="Setting"
+              bind:value={idea.setting}
+              rows={1}
+              cols={50}
+              placeholder="Ex: Verona, Italy"
+            />
+          </div>
+          <!-- PREMISE -->
+          <div class="idea-form-element">
+            <TextElement
+              id="premise-input"
+              label="Premise"
+              bind:value={idea.premise}
+              rows={1}
+              cols={50}
+              placeholder="Ex: Love conquers all."
+            />
+          </div>
+          <!-- SYNOPSIS -->
+          <div class="idea-form-element">
+            <TextElement
+              id="synopsis-input"
+              label="Synopsis"
+              bind:value={idea.synopsis}
+              rows={15}
+              cols={50}
+              placeholder="A detailed description of the plot goes here..."
+            />
+          </div>
+          <!-- LITERATURE REFERENCES -->
+          <div class="idea-form-element" id="lit-ref-input">
+            <LiteratureReferences on:updateLitRefs={handleLitRefsUpdate} />
+          </div>
+          <!-- FILM REFERENCES -->
+          <div class="idea-form-element" id="film-ref-input">
+            <MovieReferences on:updateMovieRefs={handleMovieRefsUpdate} />
+          </div>
+          <!-- COMMENTS -->
+          <div class="idea-form-element">
+            <Comments on:updateComments={handleCommentsUpdate} />
+          </div>
+        </div>
+      </form>
     </div>
-    <!-- COLLABORATORS -->
-    <div>
-      <Collaborators
-        {ideaTitle}
-        on:updateCollaborators={handleCollaboratorsUpdate}
-      />
-    </div>
+  </div>
+  <!-- COLLABORATORS -->
+  <div>
+    <Collaborators
+      {ideaTitle}
+      on:updateCollaborators={handleCollaboratorsUpdate}
+    />
+  </div>
 </main>
