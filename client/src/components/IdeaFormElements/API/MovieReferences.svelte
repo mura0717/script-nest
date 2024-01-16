@@ -27,18 +27,9 @@
   export let movieReferences = [];
   const movieRefDispatch = createEventDispatcher();
 
-  onMount(() => {
-    if (movieReferences && movieReferences.length > 0) {
-      selectedMovies = [...movieReferences];
-    }
-    
-  });
-
-  $: if (movieReferences) {
-    selectedMovies = movieReferences;
+  $: if (Array.isArray(movieReferences)) {
+    selectedMovies = [...movieReferences];
   }
-
-  $: showDropdown = movieSearchResults.length > 0;
 
   async function fetchMovies(query) {
     try {
@@ -96,7 +87,7 @@
           releaseDate: movie.releaseDate,
         };
         selectedMovies = [...selectedMovies, movie];
-        movieRefDispatch("updateMovieRefs", selectedBooks);
+        movieRefDispatch("updateMovieRefs", selectedMovies);
         movieSearchResults = [];
         searchMovieName = "";
       }
@@ -177,7 +168,7 @@
 
   <Modal bind:open={showRemoveMovieModal} size="xs" autoclose>
     <div class="remove-ref-modal-container">
-      <ExclamationCircleOutline class="modal-exclamation-icon" />
+      <ExclamationCircleOutline size="lg" class="modal-exclamation-icon" />
       <h3 class="modal-text">
         Are you sure you want to remove this film reference?
       </h3>

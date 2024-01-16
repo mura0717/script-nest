@@ -1,4 +1,5 @@
 <script>
+  import Collaborators from "./../../components/IdeaFormElements/CollaboratorElement/Collaborators.svelte";
   import { onMount } from "svelte";
   import { userStore } from "../../store/userStore";
   import { fetchIdea } from "../../store/ideaFetchStore.js";
@@ -12,7 +13,6 @@
   import LiteratureReferences from "../../components/IdeaFormElements/API/LiteratureReferences.svelte";
   import MovieReferences from "../../components/IdeaFormElements/API/MovieReferences.svelte";
   import Comments from "../../components/IdeaFormElements/CommentElement/Comments.svelte";
-  import Collaborators from "../../components/IdeaFormElements/CollaboratorElement/Collaborators.svelte";
   import debounce from "debounce";
   import { Button } from "flowbite-svelte";
   import "./idea.css";
@@ -44,7 +44,6 @@
     collaborators: [],
   };
 
-  let ideaTitle = idea.title;
   $: ideaTitle = idea.title;
 
   onMount(async () => {
@@ -60,24 +59,19 @@
     }
   });
 
+  $: collaborators = idea.collaborators;
+
   function handleCollaboratorsUpdate(updateCollaborators) {
-    console.log(
-      "Idea Page - Before handleCollaboratorsUpdate:",
-      idea.collaborators
-    );
-    idea.collaborators = updateCollaborators;
-    console.log(
-      "Idea Page - After handleCollaboratorsUpdate:",
-      idea.collaborators
-    );
+    idea = { ...idea, collaborators: updateCollaborators.detail };
   }
 
+  $: literatureReferences = idea.literatureReferences;
   function handleLitRefsUpdate(updatedLitRefs) {
-    idea.literatureReferences = updatedLitRefs.detail;
+    idea = { ...idea, literatureReferences: updatedLitRefs.detail };
   }
 
   function handleMovieRefsUpdate(updatedMovieRefs) {
-    idea.movieReferences = updatedMovieRefs.detail;
+    idea = { ...idea, movieReferences: updatedMovieRefs.detail };
   }
 
   function handleCommentsUpdate(updatedComments) {
@@ -123,7 +117,9 @@
       <div>
         <p class="idea-title">{ideaTitle || "Untitled New Idea"}</p>
         <div class="save-container">
-          <Button class="save-idea-button" on:click={handleSaveIdea}>Save</Button>
+          <Button class="save-idea-button" on:click={handleSaveIdea}
+            >Save</Button
+          >
           <p class="saving-text">{savingText}</p>
         </div>
       </div>
@@ -200,19 +196,19 @@
             />
           </div>
           <!-- LITERATURE REFERENCES -->
-          <!--  <div class="idea-form-element" id="lit-ref-input">
+          <div class="idea-form-element" id="lit-ref-input">
             <LiteratureReferences
               bind:literatureReferences={idea.literatureReferences}
               on:updateLitRefs={handleLitRefsUpdate}
             />
-          </div> -->
+          </div>
           <!-- FILM REFERENCES -->
-          <!--  <div class="idea-form-element" id="film-ref-input">
+          <div class="idea-form-element" id="film-ref-input">
             <MovieReferences
               bind:movieReferences={idea.movieReferences}
               on:updateMovieRefs={handleMovieRefsUpdate}
             />
-          </div> -->
+          </div>
           <!-- COMMENTS -->
           <div class="idea-form-element">
             <Comments on:updateComments={handleCommentsUpdate} />
@@ -225,6 +221,7 @@
   <div>
     <Collaborators
       {ideaTitle}
+      {collaborators}
       on:updateCollaborators={handleCollaboratorsUpdate}
     />
   </div>

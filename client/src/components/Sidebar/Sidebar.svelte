@@ -37,20 +37,8 @@
       handleError(error);
       return;
     }
-    // Additional check if route requires admin access
-    /* if (routeRequiresAdmin(route) && !$userStore.isAdmin) {
-        const error = new AppError("Unauthorized access. Admin only.", { status: "Unauthorized" });
-        handleError(error);
-        return;
-    } */
     navigate(route, { replace: true });
   }
-
-  /*   function routeRequiresAdmin(route) {
-    // Define logic to determine if a route requires admin access
-    // For example:
-    return route.startsWith('/auth/admin');
-} */
 
   async function handleNewIdea() {
     console.log("Sidebar/Create New Idea is clicked.");
@@ -117,14 +105,6 @@
         >
           <svelte:fragment slot="icon">
             <UserSettingsOutline class="sidebar-item-icon" />
-          </svelte:fragment>
-        </SidebarItem>
-        <SidebarItem
-          label="Trash"
-          on:click={() => navigateToRoute("/auth/user/trash")}
-        >
-          <svelte:fragment slot="icon">
-            <TrashBinOutline class="sidebar-item-icon" />
           </svelte:fragment>
         </SidebarItem>
         <SidebarItem label="Sign Out" on:click={handleLogout}>

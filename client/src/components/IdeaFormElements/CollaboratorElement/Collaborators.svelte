@@ -1,4 +1,5 @@
 <script>
+	import Collaborators from './Collaborators.svelte';
   import "./collaborators.css";
   import "../../../styles/global.css";
   import "../../../pages/Idea/idea.css";
@@ -9,25 +10,18 @@
     Listgroup,
     ListgroupItem,
     Label,
-    Avatar,
     Button,
-    Indicator,
-    Dropdown,
-    DropdownItem,
   } from "flowbite-svelte";
   import {
     SearchOutline,
     UserAddOutline,
     TrashBinSolid,
     GlobeSolid,
-    GlobeOutline,
     ExclamationCircleOutline,
   } from "flowbite-svelte-icons";
   import default_image_thumbnail from "../../../assets/defaultImages/default_image_thumbnail.jpeg";
   import { createEventDispatcher, onMount } from "svelte";
-  import { userStore } from "../../../store/userStore.js";
   import { getRequest, postRequest } from "../../../store/fetchStore";
-  import debounce from "debounce";
   import { AppError } from "../../../utils/ErrorHandling/AppError";
   import { handleError } from "../../../utils/ErrorHandling/GlobalErrorHandlerClient";
 
@@ -39,7 +33,10 @@
   let currentCollaboratorIndex;
   let showRemoveCollaboratorModal = false;
   export let ideaTitle;
+  export let collaborators = [];
   const collaboratorDispatch = createEventDispatcher();
+
+  $: addedCollaborators = [...collaborators];
 
   async function inviteUserByEmail(userEmail) {
     try {

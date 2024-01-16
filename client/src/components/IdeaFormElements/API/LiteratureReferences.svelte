@@ -27,7 +27,9 @@
   export let literatureReferences = [];
   const litRefDispatch = createEventDispatcher();
 
-  $: selectedBooks = literatureReferences;
+  $: if (Array.isArray(literatureReferences)) {
+    selectedBooks = [...literatureReferences];
+  }
   
   async function fetchBooks(searchQuery) {
     try {
@@ -85,7 +87,7 @@
         const bookReference = {
           coverImageUrl: book.thumbnail,
           title: book.title,
-          authors: book.authors.join(", "),
+          authors: Array.isArray(book.authors) ? book.authors.join(", ") : "Unknown author(s)",
           publishedDate: book.publishedDate,
         };
         if (Array.isArray(selectedBooks)) {
@@ -150,7 +152,7 @@
           <!-- DETAILS on HOVER -->
           <div class="ref-details">
             <p>{book.title}</p>
-            <p>({book.authors.join(", ")},</p>
+            <p>({Array.isArray(book.authors) ? book.authors.join(", ") : "Unknown author(s)"},</p>
             <p>{book.publishedDate})</p>
           </div>
           <button
@@ -165,7 +167,7 @@
 
   <Modal bind:open={showRemoveBookModal} size="xs" autoclose>
     <div class="remove-ref-modal-container">
-      <ExclamationCircleOutline class="modal-exclamation-icon" />
+      <ExclamationCircleOutline size="lg" class="modal-exclamation-icon" />
       <h3 class="modal-text">
         Are you sure you want to remove this literature reference?
       </h3>
