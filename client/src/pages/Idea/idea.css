@@ -10,23 +10,29 @@
 }
 
 .idea-title-container {
-  @apply flex;
+   display: flex;
+    flex-direction: column;
 }
 
 .idea-title {
-  margin-top: 1em;
-  margin-bottom: 1rem;
+  @apply mb-4 mt-8; 
   font-size: 2em;
   font-weight: bold;
 }
 
 .save-idea-button{
-  @apply text-base;
+  @apply text-base mb-2;
 }
 
-/* .auto-save-text{
+.save-container {
+    display: flex;
+    align-items: center; /* Aligns items vertically center */
+    gap: 10px; /* Adjust the space between button and text */
+}
+
+ .saving-text{
   @apply mt-3 text-sm text-gray-500;
-} */
+} 
 
 .idea-form-container {
   flex-direction: column;

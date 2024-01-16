@@ -20,27 +20,13 @@
   import { Label } from "flowbite-svelte";
 
   let ideaId;
-
-  onMount(async () => {
-    const pathSegments = window.location.pathname.split("/");
-    ideaId = pathSegments[pathSegments.length - 1];
-    console.log("Idea ID from URL:", ideaId);
-    if (ideaId) {
-      idea = await fetchIdea(ideaId);
-      console.log("Idea/onMount, fetchedIdea:", idea);
-    } else {
-      console.log("Idea/onMount, error");
-      throw new AppError(`Error reading the idea with id:${ideaId}`, 400);
-    }
-  });
-
   let owner = {
     photoURL: $userStore.user.photoURL,
     displayName: $userStore.user.displayName,
     uid: $userStore.user.uid,
   };
 
-  export let idea = {
+  let idea = {
     owner: owner,
     title: "",
     logline: "",
@@ -61,36 +47,18 @@
   let ideaTitle = idea.title;
   $: ideaTitle = idea.title;
 
-  const originOptions = [
-    "Original Idea",
-    "Short Story",
-    "Novel",
-    "Article",
-    "Play",
-    "Film",
-  ];
-
-  $: localOriginValue = idea.selectedOrigin || "Original Idea";
-  function handleOriginChange(event) {
-    idea.selectedOrigin = event.target.value;
-  }
-
-  const genreOptions = [
-    "Action",
-    "Adventure",
-    "Biography",
-    "Comedy",
-    "Crime",
-    "Drama",
-    "Fantasy",
-    "Romance",
-    "Sci-Fi",
-    "Horror",
-    "Musical",
-    "Mystery",
-    "Thriller",
-    "Western",
-  ];
+  onMount(async () => {
+    const pathSegments = window.location.pathname.split("/");
+    ideaId = pathSegments[pathSegments.length - 1];
+    console.log("Idea ID from URL:", ideaId);
+    if (ideaId) {
+      idea = await fetchIdea(ideaId);
+      console.log("Idea/onMount, fetchedIdea:", idea);
+    } else {
+      console.log("Idea/onMount, error");
+      throw new AppError(`Error reading the idea with id:${ideaId}`, 400);
+    }
+  });
 
   function handleCollaboratorsUpdate(updateCollaborators) {
     console.log(
@@ -121,10 +89,11 @@
   async function saveIdea(currentIdeaId) {
     console.log("IdeaPage/Auto-saving IdeaId:", currentIdeaId);
     console.log("IdeaPage/Auto-saving Idea:", idea);
+    savingMessageDisplay();
     if (currentIdeaId && idea) {
       try {
         const updatedIdea = await editIdea(ideaId, idea);
-        idea = updatedIdea;
+        idea = { ...idea, ...updatedIdea };
         if (updatedIdea) {
         } else {
           throw new AppError("Couldn't update idea", { ideaId });
@@ -136,94 +105,56 @@
       }
     }
   }
+
+  let savingText = "";
+  function savingMessageDisplay() {
+    savingText = "(Saving...)";
+    setTimeout(() => {
+      savingText = "";
+    }, 2000);
+  }
 </script>
 
 <main class="idea-page-container global-font">
   <!-- IDEA TITLE -->
 
   <div class="idea-container">
-    <div class="idea-title">
-      <p>{ideaTitle || "Untitled New Idea"}</p>
-      <Button class="save-idea-button" on:click={saveIdea}>Save</Button>
-    </div>
-    <!-- FORM -->
-    <div class="idea-form-container">
-      <form on:submit|preventDefault>
-        <div class="idea-form-elements-container">
-          <!-- TITLE -->
-          <div class="idea-form-element">
-            <TextElement
-              id="title-input"
-              label="Title"
-              bind:value={idea.title}
-              rows={1}
-              cols={50}
-              placeholder=""
-            />
-          </div>
-          <!-- LOGLINE -->
-          <div class="idea-form-element">
-            <TextElement
-              id="logline-input"
-              label="Logline"
-              bind:value={idea.logline}
-              rows={2}
-              cols={50}
-              placeholder="Ex: When two young members of feuding families meet, forbidden love ensues."
-            />
-          </div>
-          <!-- ORIGIN -->
-          <div class="idea-form-element">
-            <Label class="idea-element-label">Origin:</Label>
-            <div class="origin-grid" id="origin-input">
-              {#each originOptions as originOption}
-                <RadioButtonElement
-                  id={`origin-${originOption.toLowerCase()}`}
-                  name="origin"
-                  label={originOption}
-                  value={originOption}
-                  selectedValue={localOriginValue}
-                  onChange={handleOriginChange}
-                />
-              {/each}
-            </div>
-            <!-- SOURCE MATERIAL TITLE -->
-            {#if localOriginValue !== "Original Idea"}
-              <div class="idea-form-element">
-                <TextElement
-                  id="source-material-input"
-                  label="Source Material Title"
-                  bind:value={idea.sourceMaterial}
-                  rows={1}
-                  cols={50}
-                  placeholder="Ex: Romeo & Juliet"
-                />
-                <!-- SOURCE AUTHOR(S) -->
-                <TextElement
-                  id="authors-input"
-                  label="Author(s)"
-                  bind:value={idea.authors}
-                  rows={1}
-                  cols={50}
-                  placeholder="Ex: William Shakespeare"
-                />
-              </div>
-            {/if}
-            <!-- GENRE -->
+    <div class="idea-title-container">
+      <div>
+        <p class="idea-title">{ideaTitle || "Untitled New Idea"}</p>
+        <div class="save-container">
+          <Button class="save-idea-button" on:click={saveIdea}>Save</Button>
+          <p class="saving-text">{savingText}</p>
+        </div>
+      </div>
+      </div>
+      <!-- FORM -->
+      <div class="idea-form-container">
+        <form on:submit|preventDefault>
+          <div class="idea-form-elements-container">
+            <!-- TITLE -->
             <div class="idea-form-element">
-              <Label class="idea-element-label">Genre:</Label>
-              <div class="genre-grid" id="genre-input">
-                {#each genreOptions as genreOption}
-                  <CheckboxElement
-                    id={`genre-${genreOption.toLowerCase()}`}
-                    name="genre"
-                    value={genreOption}
-                    label={genreOption}
-                    bind:bindGroup={idea.selectedGenres}
-                  />
-                {/each}
-              </div>
+              <TextElement
+                id="title-input"
+                label="Title"
+                bind:value={idea.title}
+                rows={1}
+                cols={50}
+                placeholder=""
+              />
             </div>
+            <!-- LOGLINE -->
+            <div class="idea-form-element">
+              <TextElement
+                id="logline-input"
+                label="Logline"
+                bind:value={idea.logline}
+                rows={2}
+                cols={50}
+                placeholder="Ex: When two young members of feuding families meet, forbidden love ensues."
+              />
+            </div>
+            <!-- GENRE -->
             <!-- TIME PERIOD -->
             <div class="idea-form-element">
               <TextElement
@@ -281,15 +212,14 @@
               <Comments on:updateComments={handleCommentsUpdate} />
             </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
-  </div>
-  <!-- COLLABORATORS -->
-  <div>
-    <Collaborators
-      {ideaTitle}
-      on:updateCollaborators={handleCollaboratorsUpdate}
-    />
-  </div>
+    <!-- COLLABORATORS -->
+    <div>
+      <Collaborators
+        {ideaTitle}
+        on:updateCollaborators={handleCollaboratorsUpdate}
+      />
+    </div>
 </main>
