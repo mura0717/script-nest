@@ -20,13 +20,8 @@ const createUserStore = () => {
         // Retrieve the ID token and its result to check for admin status
         const idTokenResult = await getIdTokenResult(firebaseUser);
         isAdminStatus = !!idTokenResult.claims.isAdmin; // "!!" converts a truthy or falsy value to a strict boolean, ensuring isAdmin is a boolean regardless of the original type.
-
-        console.log("userStore-idTokenResult:", idTokenResult);
-        console.log("userStore-idTokenResult claims:", idTokenResult.claims);
-  
         const token = await firebaseUser.getIdToken();
-        localStorage.setItem("firebaseAuthToken", token);
-
+        localStorage.setItem("firebaseAuthToken", token);  
         console.log("userStore-localStorage token:", token);
 
         set({

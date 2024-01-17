@@ -15,7 +15,7 @@
   import io from "socket.io-client";
   import { userStore } from "../../store/userStore.js";
   import { notificationsStore } from "../../store/notificationsStore.js";
-  
+
   let userId = "";
   $: if ($userStore.user) {
     userId = $userStore.user.uid;
@@ -25,19 +25,24 @@
   }
 
   const socket = io("localhost:3000");
-/*   socket.on("connect", () => {
+
+  //SERVER - USER TEST CONNECTION
+  /*   socket.on("connect", () => {
     console.log("Socket connection established on client with ID:", socket.id);
     socket.emit("register-user", { userId });
-  });
+  }); */
 
-  socket.on("disconnect", () => {
+  //SERVER - USER TEST DISCONNECTION
+  /*   socket.on("disconnect", () => {
     console.log("Socket disconnected on client.");
   }); */
 
   let notifications = $notificationsStore.notifications;
+  $: console.log("Updated notifications:", $notificationsStore.notifications);
 
   socket.on("server-send-a-notification", (newNotification) => {
     console.log("Received notification:", newNotification);
+    console.log("newNotification type:", newNotification.type);
     if (newNotification.targetUserId === userId) {
       // notifications = [...notifications, newNotification];
       notificationsStore.update((store) => {
@@ -49,20 +54,39 @@
     }
   });
 
-  let invitationId;
-  let timestamp;
-  let showInvitationModal = false;
-
-  function handleNotificationReply() {
-    socket.emit("client-send-a-notification", { notificationInfo });
+  function acceptInvitation(
+    invitationId,
+    respondingUserId,
+    respondingUserName,
+    inviterId,
+    relatedIdeaTitle
+  ) {
+    socket.emit("client-send-invitation-response", {
+      invitationId,
+      respondingUserId,
+      respondingUserName,
+      inviterId,
+      relatedIdeaTitle,
+      accepted: true,
+    });
   }
 
-  function handleInvitationModal() {
-    showInvitationModal = true;
+  function declineInvitation(
+    invitationId,
+    respondingUserId,
+    respondingUserName,
+    inviterId,
+    relatedIdeaTitle
+  ) {
+    socket.emit("client-send-invitation-response", {
+      invitationId,
+      respondingUserId,
+      respondingUserName,
+      inviterId,
+      relatedIdeaTitle,
+      accepted: false,
+    });
   }
-  function acceptInvitation(invitationId) {}
-
-  function declineInvitation(invitationId) {}
 
   function handleCommentNotification(commentId) {
     //redirect to the idea page with the comment
@@ -70,50 +94,41 @@
 </script>
 
 <div>
-  <Dropdown
-    triggeredBy="#bell"
-    size="sm"
-    class="w-full max-w-sm rounded divide-y divide-gray-100 shadow dark:bg-gray-800 dark:divide-gray-700"
-  >
+  <Dropdown triggeredBy="#bell" size="sm" class="dropdown">
     <div slot="header" class="text-center py-2 font-bold">Notifications</div>
-
-    {#each notifications as notification}
+    {#if notifications.length === 0}
+      <DropdownItem class="flex space-x-4">Nothing yet</DropdownItem>
+    {/if}
+    {#each $notificationsStore.notifications as notification}
       <DropdownItem class="flex space-x-4">
-        <div class="pl-3 w-full">
-          <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">
-            <strong>{notification.inviter.displayName}</strong> invites you to collaborate on <strong>{notification.relatedIdeaTitle}</strong>.
-          </div>
-          <div class="text-xs text-primary-600 dark:text-primary-500">
-            {notification.timestamp}
-          </div>
-        </div>
-        {#if notification.type === "collaborator_invite"}
+        <div class="notification-message">{notification.message}</div>
+        {#if notification.type === "collaborator-invite"}
           <Button
             size="xs"
-            on:click={() => acceptInvitation(notification.invitationId)}
-            >Accept</Button
+            on:click={() =>
+              acceptInvitation(
+                notification.invitationId,
+                notification.targetUserId,
+                notification.targetUserName,
+                notification.inviter.uid,
+                notification.relatedIdeaTitle
+              )}>Accept</Button
           >
           <Button
             size="xs"
             color="alternative"
-            on:click={() => declineInvitation(notification.invitationId)}
-            >Decline</Button
-          >
-        {/if}
-        {#if notification.type === "comment"}
-          <Button
-            size="xs"
-            on:click={() => handleCommentNotification(notification.commentId)}
-            >View</Button
+            on:click={() =>
+              declineInvitation(
+                notification.invitationId,
+                notification.targetUserId,
+                notification.targetUserName,
+                notification.inviter.uid,
+                notification.relatedIdeaTitle
+              )}>Decline</Button
           >
         {/if}
       </DropdownItem>
-      <DropdownDivider />
     {/each}
-
-    {#if notifications.length === 0}
-      <DropdownItem class="flex space-x-4">No new notifications</DropdownItem>
-    {/if}
   </Dropdown>
 </div>
 

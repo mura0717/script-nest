@@ -43,18 +43,51 @@ const wrap = (middleware) => (socket, next) =>
   middleware(socket.request, {}, next);
 io.use(wrap(sessionMiddleware));
 
-let userToSocketMap = {};
+let userToSocketMap = {}; //in obj format for simpler updates & deletes
 
- io.on("connection", (socket) => {
+io.on("connection", (socket) => {
   console.log("Socket connected with id:", socket.id);
 
-  socket.on("register-user", (userId) => {
+  //CLIENT - USER TEST CONNECTION
+/*   socket.on("register-user", (userId) => {
     userToSocketMap[userId] = socket.id;
     console.log("register-user id:", userId, "Socket ID:", socket.id);
+  }); */
+
+  // COLLAB INVITATION
+  socket.on("client-send-a-notification", (notificationInfo) => {
+    console.log("Received notification for forwarding:", notificationInfo);
+    handleNotification(io, notificationInfo);
   });
 
-  socket.on("disconnect", () => {
-    // Remove the user from the map on disconnect
+  // COLLAB INVITATION REPLY
+  socket.on("client-send-invitation-response", (responseData) => {
+    const {
+      invitationId,
+      respondingUserId,
+      respondingUserName,
+      inviterId,
+      relatedIdeaTitle,
+      accepted,
+    } = responseData;
+
+    const notificationInfo = {
+      type: accepted ? "invitation-accepted" : "invitation-declined",
+      message: `${respondingUserName} ${
+        accepted ? "accepted" : "declined"
+      } your invitation for "${relatedIdeaTitle}"`,
+      invitationId: invitationId,
+      relatedIdeaTitle: relatedIdeaTitle,
+      targetUserId: inviterId,
+      respondingUserId: respondingUserId,
+      respondingUserName: respondingUserName,
+    };
+
+    handleNotification(io, notificationInfo);
+  });
+
+  //CLIENT - USER TEST DISCONNECTION
+/*   socket.on("disconnect", () => {
     for (let userId in userToSocketMap) {
       if (userToSocketMap[userId] === socket.id) {
         delete userToSocketMap[userId];
@@ -62,23 +95,15 @@ let userToSocketMap = {};
         break;
       }
     }
-  });
-
-  // Register the event listener for 'client-send-a-notification' here
-  socket.on("client-send-a-notification", (notificationInfo) => {
-    console.log("Received notification for forwarding:", notificationInfo);
-    handleNotification(io, notificationInfo);
-  });
-
-  socket.on("disconnect", () => {
-    console.log("Socket disconnected with id:", socket.id);
-  });
+  }); */
 });
 
 export function handleNotification(io, notificationInfo) {
-    io.emit("server-send-a-notification", notificationInfo);
-} 
+  console.log("emittied notificationInfo:", notificationInfo);
+  io.emit("server-send-a-notification", notificationInfo);
+}
 
+// SOCKET TEST
 /*  io.on("connection", (socket) => {
    console.log("Socket connected with id:", socket.id);
    /*   eventEmitter.on("new-notification", (data) => {
@@ -98,18 +123,19 @@ export function handleNotification(io, notificationInfo) {
 
 //===================CORS SETUP=====================//
 import cors from "cors";
-/* app.use(cors({
-    credentials: true,
-    origin: ['http://localhost:5173', 'http://localhost:8080'],
-    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
-    optionsSuccessStatus: 204,
-})); */
 app.use(
   cors({
     credentials: true,
     origin: true,
   })
 );
+// Alternative CORS Settings
+/* app.use(cors({
+    credentials: true,
+    origin: ['http://localhost:5173', 'http://localhost:8080'],
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+    optionsSuccessStatus: 204,
+})); */
 
 //===================ROUTERS=====================//
 import authRouters from "./routers/authRouters.js";

@@ -10,7 +10,7 @@
   import "./navbar.css";
   import scriptnestLogo from "../../assets/logos/scriptnest_logo.png";
   import Notifications from "../Notifications/Notifications.svelte";
-  import { notificationsStore } from '../../store/notificationsStore.js';
+  import { notificationsStore } from "../../store/notificationsStore.js";
 
   $: hasUnreadNotifications = $notificationsStore.hasUnread;
 
@@ -36,20 +36,22 @@
       <NavLi class="navbar-elements-style" href="/auth/login">Login</NavLi>
       <NavLi class="navbar-elements-style" href="/auth/signup">Signup</NavLi>
       <NavLi class="navbar-elements-style" href="/auth/contact">Contact</NavLi>
-      <div
-        id="bell"
-        class="notification-bell"
-        on:click={resetNotificationIndicator}
-        on:keydown={resetNotificationIndicator}
-      >
-        <BellSolid class="notification-bell-solid" />
-        {#if hasUnreadNotifications}
-          <div class="notification-alert-dot dark:border-gray-90"></div>
-        {/if}
-      </div>
-      <div>
-        <Notifications />
-      </div>
+      <NavLi
+        ><div
+          id="bell"
+          class="notification-bell"
+          on:click={resetNotificationIndicator}
+          on:keydown={resetNotificationIndicator}
+        >
+          <BellSolid class="notification-bell-solid" />
+          {#if hasUnreadNotifications}
+            <div class="notification-alert-dot dark:border-gray-90"></div>
+          {/if}
+        </div>
+        <div>
+          <Notifications class="notifications-dropdown"/>
+        </div>
+      </NavLi>
     </NavUl>
   </Navbar>
 </div>

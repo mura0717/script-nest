@@ -4,6 +4,7 @@ import notificationServices from "../services/notificationServices.js";
 import { catchAsync } from "../utils/ErrorHandling/GlobalErrorHandler.js";
 import { handleNotification } from "../app.js";
 import { io } from "../app.js";
+import { v4 as uuidv4 } from "uuid";
 
 const router = Router();
 
@@ -19,13 +20,15 @@ router.post(
     console.log("collabData.inviter.displayName:", collabData.inviter.displayName);
 
     const notificationInfo = {
-      type: "collaborator_invite",
+      type: "collaborator-invite",
       inviter: collabData.inviter,
       targetUserId: collabData.uid,
+      targetUserName: collabData.displayName,
       relatedIdeaId: ideaId,
       relatedIdeaTitle: collabData.ideaTitle,
-      message: `New invite from ${collabData.inviter.displayName} for ${collabData.ideaTitle}. `,
-      timestamp: new Date().toString().slice(0, 21),
+      invitationId: uuidv4(),
+      message: `New invite from ${collabData.inviter.displayName} for: "${collabData.ideaTitle}". `,
+      timestamp: new Date(),
     }; 
 
     console.log("targetUserId:", notificationInfo.targetUserId);
