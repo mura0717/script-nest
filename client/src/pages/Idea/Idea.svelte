@@ -234,7 +234,7 @@
       {ideaTitle}
       {collaborators}
       {ideaId}
-      inviter={owner}
+      inviterInfo={owner}
       on:updateCollaborators={handleCollaboratorsUpdate}
     />
   </div>

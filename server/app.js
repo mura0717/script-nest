@@ -67,23 +67,25 @@ io.on("connection", (socket) => {
       respondingUserId,
       respondingUserName,
       inviterId,
-      relatedIdeaTitle,
+      ideaTitle,
+      ideaId,
       accepted,
     } = responseData;
 
-    const notificationInfo = {
+    const notificationData = {
       type: accepted ? "invitation-accepted" : "invitation-declined",
       message: `${respondingUserName} ${
         accepted ? "accepted" : "declined"
       } your invitation for "${relatedIdeaTitle}"`,
       invitationId: invitationId,
-      relatedIdeaTitle: relatedIdeaTitle,
+      ideaTitle: ideaTitle,
       targetUserId: inviterId,
       respondingUserId: respondingUserId,
       respondingUserName: respondingUserName,
+      ideaId: ideaId,
     };
 
-    handleNotification(io, notificationInfo);
+    handleNotification(io, notificationData);
   });
 
   //CLIENT - USER TEST DISCONNECTION

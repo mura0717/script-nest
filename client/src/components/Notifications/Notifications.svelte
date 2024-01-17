@@ -1,21 +1,15 @@
 <script>
-  import {
-    Navbar,
-    NavBrand,
-    NavLi,
-    NavUl,
-    NavHamburger,
+import {
     Dropdown,
     DropdownItem,
     DropdownDivider,
-    Modal,
     Button,
   } from "flowbite-svelte";
   import "./notifications.css";
   import io from "socket.io-client";
   import { userStore } from "../../store/userStore.js";
   import { notificationsStore } from "../../store/notificationsStore.js";
-  import { updateCollaboratorList } from "../IdeaFormElements/CollaboratorElement/Collaborators.svelte";
+  import * as Collaborators from "../IdeaFormElements/CollaboratorElement/Collaborators.svelte";
 
   let userId = "";
   $: if ($userStore.user) {
@@ -58,7 +52,7 @@
         notification.relatedIdeaId === currentIdeaId
       ) {
         // Call a function to update the collaborator list of the specific idea
-        updateCollaboratorList(notification.respondingUserId);
+        Collaborators.updateCollaboratorList(notification.respondingUserId);
       }
     }
   });
@@ -68,14 +62,16 @@
     respondingUserId,
     respondingUserName,
     inviterId,
-    relatedIdeaTitle
+    ideaTitle,
+    ideaId
   ) {
     socket.emit("client-send-invitation-response", {
       invitationId,
       respondingUserId,
       respondingUserName,
       inviterId,
-      relatedIdeaTitle,
+      ideaTitle,
+      ideaId,
       accepted: true,
     });
   }
@@ -85,14 +81,16 @@
     respondingUserId,
     respondingUserName,
     inviterId,
-    relatedIdeaTitle
+    ideaTitle,
+    ideaId
   ) {
     socket.emit("client-send-invitation-response", {
       invitationId,
       respondingUserId,
       respondingUserName,
       inviterId,
-      relatedIdeaTitle,
+      ideaTitle,
+      ideaId,
       accepted: false,
     });
   }
@@ -116,8 +114,9 @@
                 notification.invitationId,
                 notification.targetUserId,
                 notification.targetUserName,
-                notification.inviter.uid,
-                notification.relatedIdeaTitle
+                notification.inviterInfo.uid,
+                notification.ideaTitle,
+                notification.ideaId
               )}>Accept</Button
           >
           <Button
@@ -128,11 +127,13 @@
                 notification.invitationId,
                 notification.targetUserId,
                 notification.targetUserName,
-                notification.inviter.uid,
-                notification.relatedIdeaTitle
+                notification.inviterInfo.uid,
+                notification.ideaTitle,
+                notification.ideaId
               )}>Decline</Button
           >
         {/if}
+        <DropdownDivider />
       </DropdownItem>
     {/each}
     {#if notifications.length === 0}

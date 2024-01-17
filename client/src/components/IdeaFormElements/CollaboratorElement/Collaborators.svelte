@@ -1,5 +1,4 @@
 <script>
-  import Collaborators from "./Collaborators.svelte";
   import "./collaborators.css";
   import "../../../styles/global.css";
   import "../../../pages/Idea/idea.css";
@@ -11,7 +10,6 @@
     ListgroupItem,
     Label,
     Button,
-    P,
   } from "flowbite-svelte";
   import {
     SearchOutline,
@@ -36,9 +34,8 @@
   export let ideaTitle;
   export let collaborators = [];
   export let ideaId;
-  export let inviter;
+  export let inviterInfo;
   export let collaboratorId;
-
   const collaboratorDispatch = createEventDispatcher();
 
   $: if (Array.isArray(collaborators)) {
@@ -97,7 +94,7 @@
           uid: collaborator.uid,
           ideaTitle: ideaTitle,
           ideaId: ideaId,
-          inviter: inviter,
+          inviterInfo: inviterInfo,
         };
         const response = postRequest(
           `/api/auth/ideas/${ideaId}/collaborators`,
@@ -123,11 +120,10 @@
     }
   }
 
-  export function updateCollaboratorList(newCollaboratorId) {
+  export async function updateCollaboratorList(newCollaboratorId) {
     collaboratorId = newCollaboratorId;
     collaboratorDispatch("updateCollaborators", addedCollaborators);
-    addedCollaborators = [...addedCollaborators, collaborator];
-  
+    addedCollaborators = [...addedCollaborators, collaborator]; 
 }
 
   function removeCollaborator(collaboratorIndex) {
