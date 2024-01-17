@@ -19,7 +19,6 @@ router.post('/api/auth/set-admin', isAuthenticated, isAdmin, catchAsync(async (r
 // ADMIN LOGIN CHECK
 router.post(
   "/api/auth/login/guard/admin", isAuthenticated, isAdmin, catchAsync(async (req, res, next) => {
-    console.log("Admin login check endpoint is hit.")
     const { idToken } = req.body;
     if (!idToken) {
       return next(new AppError("ID token is missing. Not logged in.", 400));
@@ -41,7 +40,6 @@ router.get("/api/auth/admin/allusers", isAdmin, async (req, res) => {
       res.status(404).json({ status: 404, message: "No users found." });
     }
   } catch (error) {
-    console.error("Error fetching users:", error);
     res.status(500).json({ status: 500, message: "Internal Server Error" });
   }
 });

@@ -11,7 +11,6 @@ import isAuthenticated from "../middleware/isAuthenticated.js";
 router.post(
   "/api/auth/signup",
   catchAsync(async (req, res, next) => {
-    console.log("authRouters-Signup endpoint is hit.");
     const newUser = {
       name: req.body.name,
       email: req.body.email,
@@ -28,7 +27,6 @@ router.post(
 router.post(
   "/api/auth/login",
   catchAsync(async (req, res, next) => {
-    console.log("authRotuers-Login endpoint is hit.");
     const { idToken } = req.body; //Or const idToken = req.body.idToken;
     if (!idToken) {
       return next(new AppError("ID token is missing from the request.", 400));
@@ -42,7 +40,6 @@ router.post(
 
 // USER LOGIN CHECK
 router.post("/api/auth/login/guard", isAuthenticated, (req, res) => {
-  console.log("Login check endpoint is hit.");
   res.status(200).json({ success: true, message: "User logged in" });
 });
 

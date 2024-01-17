@@ -10,20 +10,9 @@
   import "./navbar.css";
   import scriptnestLogo from "../../assets/logos/scriptnest_logo.png";
   import Notifications from "../Notifications/Notifications.svelte";
-  import io from "socket.io-client";
+  import { notificationsStore } from '../../store/notificationsStore.js';
 
-  let notifications = [];
-  let hasUnreadNotifications = false;
-  const socket = io("http://localhost:3000");
-
-  socket.on("connect", () => {
-    console.log("Connected to server.");
-  });
-
-  socket.on("notification", (newNotification) => {
-    hasUnreadNotifications = true;
-    notifications.push(newNotification);
-  });
+  $: hasUnreadNotifications = $notificationsStore.hasUnread;
 
   function resetNotificationIndicator() {
     hasUnreadNotifications = false;

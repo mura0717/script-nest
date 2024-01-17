@@ -32,7 +32,7 @@ app.use(sessionMiddleware);
 import http from "http";
 import { Server as SocketIOServer } from "socket.io";
 const server = http.createServer(app);
-const io = new SocketIOServer(server, {
+export const io = new SocketIOServer(server, {
   cors: {
     origin: "*",
     methods: ["*"],
@@ -43,34 +43,58 @@ const wrap = (middleware) => (socket, next) =>
   middleware(socket.request, {}, next);
 io.use(wrap(sessionMiddleware));
 
-io.on("connect", (socket) => {
-  console.log("A user connected with id:", socket.id);
+let userToSocketMap = {};
 
-  // Handle other events...
+ io.on("connection", (socket) => {
+  console.log("Socket connected with id:", socket.id);
+
+  socket.on("register-user", (userId) => {
+    userToSocketMap[userId] = socket.id;
+    console.log("register-user id:", userId, "Socket ID:", socket.id);
+  });
 
   socket.on("disconnect", () => {
-    console.log("User disconnected", socket.id);
+    // Remove the user from the map on disconnect
+    for (let userId in userToSocketMap) {
+      if (userToSocketMap[userId] === socket.id) {
+        delete userToSocketMap[userId];
+        console.log("Socket disconnected with id:", socket.id);
+        break;
+      }
+    }
+  });
+
+  // Register the event listener for 'client-send-a-notification' here
+  socket.on("client-send-a-notification", (notificationInfo) => {
+    console.log("Received notification for forwarding:", notificationInfo);
+    handleNotification(io, notificationInfo);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("Socket disconnected with id:", socket.id);
   });
 });
 
-export { io };
+export function handleNotification(io, notificationInfo) {
+    io.emit("server-send-a-notification", notificationInfo);
+} 
 
-// io.on("connection", (socket) => {
-//   console.log("Socket connected with id:", socket.id);
-//   /*   eventEmitter.on("new-notification", (data) => {
-//     socket.emit("new-notification", data);
-//   }); */
+/*  io.on("connection", (socket) => {
+   console.log("Socket connected with id:", socket.id);
+   /*   eventEmitter.on("new-notification", (data) => {
+     socket.emit("new-notification", data);
+   }); 
 
-//   socket.on("client-choose-a-color", (data) => {
-//     console.log("Received data:", data); // Debugging
-//     io.emit("server-sent-a-color", data);
-//   });
+   socket.on("client-choose-a-color", (data) => {
+     console.log("Received data:", data); // Debugging
+     io.emit("server-sent-a-color", data);
+   });
 
-//   // Don't forget to handle disconnection
-//   socket.on("disconnect", () => {
-//     console.log("Socket disconnected", socket.id);
-//   });
-// });
+   // Don't forget to handle disconnection
+   socket.on("disconnect", () => {
+     console.log("Socket disconnected", socket.id);
+   });
+ });*/
 
 //===================CORS SETUP=====================//
 import cors from "cors";
@@ -114,6 +138,7 @@ app.get("/test", (req, res) => {
 //===================SERVER===================//
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log("Server is running on port ", PORT));
+
 const SOCKET_PORT = process.env.SOCKET_PORT || 3000;
 server.listen(
   SOCKET_PORT,

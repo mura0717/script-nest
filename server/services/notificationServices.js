@@ -1,7 +1,4 @@
 import { db } from "../config/firebaseAdmin.js";
-import { eventEmitter } from "../events/eventEmitter.js";
-import AppError from "../utils/ErrorHandling/AppError.js";
-import { catchAsync } from "../utils/ErrorHandling/GlobalErrorHandler.js";
 
 export const notificationServices = {
   addNotification: async (notificationId, notificationData) => {

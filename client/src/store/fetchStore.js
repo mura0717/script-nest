@@ -22,7 +22,6 @@ async function getRequest(endpoint) {
       return await response.json();
     }
   } catch (error) {
-    handleError(error);
     throw new AppError(`An error occurred: ${error.message}`, {
       initialError: error,
     });
@@ -53,7 +52,6 @@ async function postRequest(endpoint, data) {
     console.log("new idea response:", response)
     return responseData;
   } catch (error) {
-    handleError(error);
     throw new AppError(`An error occurred: ${error.message}`, {
       initialError: error,
     });
@@ -83,7 +81,6 @@ async function patchRequest(endpoint, data) {
     }
     return responseData;
   } catch (error) {
-    handleError(error);
     throw new AppError(`An error occurred: ${error.message}`, {
       initialError: error,
     });
@@ -112,7 +109,6 @@ async function deleteRequest(endpoint) {
       return await response.json();
     }
   } catch (error) {
-    handleError(error);
     throw new AppError(`An error occurred: ${error.message}`, {
       initialError: error,
     });

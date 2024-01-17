@@ -4,21 +4,12 @@ import { admin } from "../config/firebaseAdmin.js";
 import { catchAsync } from "../utils/ErrorHandling/GlobalErrorHandler.js";
 
 const app = createFirebaseApp()
-const db = getFirestore(app)
 
 const userServices = {
 
-  getUser: async (userId) => {
-
-  },
+  getUser: async (userId) => {},
   
-  getAllUsers: async () => {
-  
-  },
-  
-  /* export const createUser = async (userData) => {
-   
-  } */
+  getAllUsers: async () => {},
   
   editUser: catchAsync(async (userId, updates) => {
     console.log("userServices-editUser-userId & updates:", userId, updates)
@@ -26,29 +17,8 @@ const userServices = {
     return { success: true };
   }),
   
-  deleteUser: async (userId) => {
-   
-  }
+  deleteUser: async (userId) => {}
 
 };
-
-
-//firebase collection
-const collectionName = "users";
-
-//dummy user creator
-const createUser = (Name, Email, Password, isAdmin) => {
-  return {
-    Name,
-    Email,
-    Password,
-    isAdmin,
-  };
-};
-
-
-
-
-
 export default userServices;
 

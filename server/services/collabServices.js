@@ -10,7 +10,7 @@ export const collabServices = {
       .collection("collaborators");
     await collaboratorRef.add(collabData);
   },
-
+  
   getCollaborators: async (ideaId) => {
     const collaboratorsRef = db
       .collection("ideas")

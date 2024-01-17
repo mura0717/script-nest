@@ -36,7 +36,7 @@
   export let ideaTitle;
   export let collaborators = [];
   export let ideaId;
-  export let inviterName;
+  export let inviter;
 
   const collaboratorDispatch = createEventDispatcher();
 
@@ -50,11 +50,6 @@
         `/api/auth/user/inviteUserByEmail?email=${encodeURIComponent(
           userEmail
         )}`
-      );
-      console.log("CollaboratorsElement - Invite by Email response:", response);
-      console.log(
-        "CollaboratorElement- Invite Users by Email Response Data:",
-        response.data
       );
       if (response && response.data) {
         const retrievedUser = response.data;
@@ -70,7 +65,6 @@
         throw new AppError("Invitation not sent to:", { userEmail });
       }
     } catch (error) {
-      handleError(error);
       throw new AppError(`An error occured: ${error.message}`, {
         initialError: error,
       });
@@ -81,7 +75,6 @@
     if (searchEmail != "") {
       try {
         const result = await inviteUserByEmail(searchEmail);
-        console.log("Collaborators Element - searchusers:", result);
         userSearchResult = result;
         showDropdown = true;
       } catch (error) {
@@ -99,19 +92,18 @@
     try {
       if (collaborator) {
         const collabData = {
-          photoURL: collaborator.photoURL,
           displayName: collaborator.displayName,
           uid: collaborator.uid,
           ideaTitle: ideaTitle,
-          inviterName: inviterName,
+          ideaId: ideaId,
+          inviter: inviter,
         };
         const response = postRequest(
           `/api/auth/ideas/${ideaId}/collaborators`,
           collabData
         );
-        
         if (response) {
-          console.log("adduser as collabresponse:", response)
+          console.log("adduser as collabresponse:", response);
           addedCollaborators = [...addedCollaborators, collaborator];
           collaboratorDispatch("updateCollaborators", addedCollaborators);
           searchEmail = "";
@@ -185,11 +177,11 @@
     <form class="searchbar-collaborators-container">
       <Search
         size="sm"
-        class="searchbar-display"
+        class="searchbar-display rounded-r-none"
         placeholder="Add people..."
         bind:value={searchEmail}
       />
-      <Button class="search-button-display" on:click={searchUsers}>
+      <Button class="search-button-display rounded-s-none" on:click={searchUsers}>
         <SearchOutline class="search-outline-icon" />
       </Button>
     </form>
@@ -200,7 +192,7 @@
         bind:open={showDropdown}
       >
         {#each userSearchResult as user}
-          <ListgroupItem>
+          <ListgroupItem size="sm"> 
             <div class="user-search-dropdown-item">
               <img
                 class="user-avatar-thumbnail"
@@ -209,6 +201,7 @@
               />
               <p>{user.displayName}</p>
               <Button
+              size="sm"
                 class="add-collaborator-button"
                 on:click={() => addUserAsCollaborator(user)}
               >

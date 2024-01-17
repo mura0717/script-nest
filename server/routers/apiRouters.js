@@ -10,9 +10,7 @@ router.get(
   "/api/auth/books/search",
   isAuthenticated,
   catchAsync(async (req, res, next) => {
-    console.log("apiRouters-getBook is hit.");
     const searchQuery = req.query.q;
-    console.log("apiRouters-getBook searchQuery:", searchQuery);
     if (!searchQuery) {
       return next(new AppError("No search query provided.", 400));
     }
@@ -28,26 +26,11 @@ router.get(
   })
 );
 
-/* router.post(
-  "/api/auth/ideas/ideaId/books",
-  isAuthenticated,
-  catchAsync(async (req, res) => {
-    const userId = req.user.id; // Assume you have the user's ID from authentication
-    const ideaId = req.params.ideaId;
-    const bookReference = req.body; // Book reference data sent from the client
-    //await saveBookReference(userId, ideaId, bookReference);
-    res.status(200).json({ message: "Book reference saved successfully" });
-  })
-); */
-
-
 router.get(
   "/api/auth/movies/search",
   isAuthenticated,
   catchAsync(async (req, res, next) => {
-    console.log("apiRouters-getFilm is hit.");
     const searchQuery = req.query.q;
-    console.log("apiRouters-getFilm searchQuery:", searchQuery);
     if (!searchQuery) {
       return next(new AppError("No search query provided.", 400));
     }

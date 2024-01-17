@@ -23,7 +23,7 @@
   import { AppError } from "../../utils/ErrorHandling/AppError.js";
   import { postRequest } from "../../store/fetchStore";
 
-  export let userName = "";
+  let userName = ""; //REMOVED EXPORT HERE TO SEE IF IT STILL WORKS
   onMount(() => {
     userName = $userStore.user.displayName;
     console.log(userName);

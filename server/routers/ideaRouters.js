@@ -11,9 +11,8 @@ router.get(
   isAuthenticated,
   catchAsync(async (req, res) => {
     const userId = req.user.uid;
-    console.log("userId:", userId)
     const ideas = await ideaServices.getAllIdeas(userId);
-    res.json(ideas);
+    res.status(200).json(ideas);
   })
 );
 
@@ -24,11 +23,8 @@ router.get(
   catchAsync(async (req, res) => {
     const userId = req.user.uid;
     const ideaId = req.params.ideaId;
-    console.log("ideaRouters/getIdea userId:", userId);
-    console.log("ideaRouters/getIdea ideaId:", ideaId);
     const idea = await ideaServices.getIdea(ideaId, userId);
     if (idea) {
-      console.log("idea single get:", idea);
       res.json(idea);
     } else {
       res.status(404).json({ message: "Idea not found." });
@@ -41,14 +37,12 @@ router.post(
   "/api/auth/ideas",
   isAuthenticated,
   catchAsync(async (req, res) => {
-    console.log("ideaRouter/post is hit.")
     const userId = req.user.uid;
     const ideaData = req.body;
     const newIdeaId = await ideaServices.createIdea({
       ...ideaData,
       ownerId: userId,
     });
-    console.log("new idea data:", ideaData)
     res.status(201).json({ id: newIdeaId });
   })
 );
@@ -58,11 +52,8 @@ router.patch(
   "/api/auth/ideas/:ideaId",
   isAuthenticated,
   catchAsync(async (req, res) => {
-    console.log("ideaRouter/patch is hit.");
     const ideaId = req.params.ideaId;
-    console.log("ideaRouter/patch ideaId;", ideaId);
     const updatedIdeaData = req.body;
-    console.log("ideaRouter/patch updatedIdeaData;", updatedIdeaData);
     await ideaServices.editIdea(ideaId, updatedIdeaData);
     res.status(200).json({ message: "Idea updated successfully" });
   })
