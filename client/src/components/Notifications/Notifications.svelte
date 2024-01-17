@@ -15,6 +15,7 @@
   import io from "socket.io-client";
   import { userStore } from "../../store/userStore.js";
   import { notificationsStore } from "../../store/notificationsStore.js";
+  import { updateCollaboratorList } from "../IdeaFormElements/CollaboratorElement/Collaborators.svelte";
 
   let userId = "";
   $: if ($userStore.user) {
@@ -51,6 +52,14 @@
           hasUnread: true,
         };
       });
+
+      if (
+        notification.type === "invitation-accepted" &&
+        notification.relatedIdeaId === currentIdeaId
+      ) {
+        // Call a function to update the collaborator list of the specific idea
+        updateCollaboratorList(notification.respondingUserId);
+      }
     }
   });
 
@@ -96,9 +105,6 @@
 <div>
   <Dropdown triggeredBy="#bell" size="sm" class="dropdown">
     <div slot="header" class="text-center py-2 font-bold">Notifications</div>
-    {#if notifications.length === 0}
-      <DropdownItem class="flex space-x-4">Nothing yet</DropdownItem>
-    {/if}
     {#each $notificationsStore.notifications as notification}
       <DropdownItem class="flex space-x-4">
         <div class="notification-message">{notification.message}</div>
@@ -129,6 +135,9 @@
         {/if}
       </DropdownItem>
     {/each}
+    {#if notifications.length === 0}
+      <DropdownItem class="flex space-x-4">Nothing yet</DropdownItem>
+    {/if}
   </Dropdown>
 </div>
 

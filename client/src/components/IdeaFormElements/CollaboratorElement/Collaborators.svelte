@@ -24,7 +24,6 @@
   import { createEventDispatcher, onMount } from "svelte";
   import { getRequest, postRequest } from "../../../store/fetchStore";
   import { AppError } from "../../../utils/ErrorHandling/AppError";
-  import { handleError } from "../../../utils/ErrorHandling/GlobalErrorHandlerClient";
 
   let searchEmail = "";
   let userSearchResult = "";
@@ -33,10 +32,12 @@
   let showShareModal = false;
   let currentCollaboratorIndex;
   let showRemoveCollaboratorModal = false;
+  let invitationMessage = "";
   export let ideaTitle;
   export let collaborators = [];
   export let ideaId;
   export let inviter;
+  export let collaboratorId;
 
   const collaboratorDispatch = createEventDispatcher();
 
@@ -87,7 +88,7 @@
     }
   }
 
-  async function addUserAsCollaborator(collaborator) {
+  async function inviteUserAsCollaborator(collaborator) {
     console.log("Collaborator Element - Add Collaborator:", collaborator);
     try {
       if (collaborator) {
@@ -104,8 +105,7 @@
         );
         if (response) {
           console.log("adduser as collabresponse:", response);
-          addedCollaborators = [...addedCollaborators, collaborator];
-          collaboratorDispatch("updateCollaborators", addedCollaborators);
+          invitationMessage = `Invitation sent to ${collaborator.displayName}`;
           searchEmail = "";
           userSearchResult = "";
         } else {
@@ -115,11 +115,20 @@
         }
       }
     } catch (error) {
+      invitationMessage =
+        "Failed to send invitation to " + collaborator.displayName;
       throw new AppError(`An error occured: ${error.message}`, {
         initialError: error,
       });
     }
   }
+
+  export function updateCollaboratorList(newCollaboratorId) {
+    collaboratorId = newCollaboratorId;
+    collaboratorDispatch("updateCollaborators", addedCollaborators);
+    addedCollaborators = [...addedCollaborators, collaborator];
+  
+}
 
   function removeCollaborator(collaboratorIndex) {
     addedCollaborators = addedCollaborators.filter(
@@ -181,7 +190,10 @@
         placeholder="Add people..."
         bind:value={searchEmail}
       />
-      <Button class="search-button-display rounded-s-none" on:click={searchUsers}>
+      <Button
+        class="search-button-display rounded-s-none"
+        on:click={searchUsers}
+      >
         <SearchOutline class="search-outline-icon" />
       </Button>
     </form>
@@ -192,7 +204,7 @@
         bind:open={showDropdown}
       >
         {#each userSearchResult as user}
-          <ListgroupItem size="sm"> 
+          <ListgroupItem size="sm">
             <div class="user-search-dropdown-item">
               <img
                 class="user-avatar-thumbnail"
@@ -201,9 +213,9 @@
               />
               <p>{user.displayName}</p>
               <Button
-              size="sm"
+                size="sm"
                 class="add-collaborator-button"
-                on:click={() => addUserAsCollaborator(user)}
+                on:click={() => inviteUserAsCollaborator(user)}
               >
                 <UserAddOutline class="add-collaborator-icon" />
               </Button>
@@ -212,10 +224,13 @@
         {/each}
       </Listgroup>
     {/if}
+    {#if invitationMessage}
+      <p>{invitationMessage}</p>
+    {/if}
   </Modal>
   <Modal bind:open={showRemoveCollaboratorModal} size="xs" autoclose>
     <div class="remove-collaborator-modal-container">
-      <ExclamationCircleOutline class="modal-exclamation-icon" />
+      <ExclamationCircleOutline size="lg" class="modal-exclamation-icon" />
       <h3 class="modal-text">Are you sure you want to remove collaborator?</h3>
       <Button
         color="red"
