@@ -1,5 +1,5 @@
 <script>
-import {
+  import {
     Dropdown,
     DropdownItem,
     DropdownDivider,
@@ -35,24 +35,20 @@ import {
   let notifications = $notificationsStore.notifications;
   $: console.log("Updated notifications:", $notificationsStore.notifications);
 
-  socket.on("server-send-a-notification", (newNotification) => {
-    console.log("Received notification:", newNotification);
-    console.log("newNotification type:", newNotification.type);
-    if (newNotification.targetUserId === userId) {
+  socket.on("server-send-a-notification", (newNotificationData) => {
+    console.log("Received notification:", newNotificationData);
+    if (newNotificationData.targetUserId === userId) {
       // notifications = [...notifications, newNotification];
       notificationsStore.update((store) => {
         return {
-          notifications: [...store.notifications, newNotification],
+          notifications: [...store.notifications, newNotificationData],
           hasUnread: true,
         };
       });
-
-      if (
-        notification.type === "invitation-accepted" &&
-        notification.relatedIdeaId === currentIdeaId
-      ) {
-        // Call a function to update the collaborator list of the specific idea
-        Collaborators.updateCollaboratorList(notification.respondingUserId);
+      if (notification.type === "invitation-accepted") {
+        Collaborators.addUserAsCollaborator(newNotificationData);
+      } else {
+        return;
       }
     }
   });
@@ -61,38 +57,44 @@ import {
     invitationId,
     respondingUserId,
     respondingUserName,
+    respondingUserPhotoUrl,
     inviterId,
     ideaTitle,
     ideaId
   ) {
-    socket.emit("client-send-invitation-response", {
+    const notificationData = {
       invitationId,
       respondingUserId,
       respondingUserName,
+      respondingUserPhotoUrl,
       inviterId,
       ideaTitle,
       ideaId,
       accepted: true,
-    });
+    };
+    socket.emit("client-send-invitation-response", { notificationData });
   }
 
   function declineInvitation(
     invitationId,
     respondingUserId,
     respondingUserName,
+    respondingUserPhotoUrl,
     inviterId,
     ideaTitle,
     ideaId
   ) {
-    socket.emit("client-send-invitation-response", {
+    const notificationData = {
       invitationId,
       respondingUserId,
       respondingUserName,
+      respondingUserPhotoUrl,
       inviterId,
       ideaTitle,
       ideaId,
       accepted: false,
-    });
+    };
+    socket.emit("client-send-invitation-response", { notificationData });
   }
 
   function handleCommentNotification(commentId) {
@@ -103,6 +105,9 @@ import {
 <div>
   <Dropdown triggeredBy="#bell" size="sm" class="dropdown">
     <div slot="header" class="text-center py-2 font-bold">Notifications</div>
+    {#if !notifications}
+      <DropdownItem class="flex space-x-4">Nothing yet</DropdownItem>
+    {/if}
     {#each $notificationsStore.notifications as notification}
       <DropdownItem class="flex space-x-4">
         <div class="notification-message">{notification.message}</div>
@@ -114,6 +119,7 @@ import {
                 notification.invitationId,
                 notification.targetUserId,
                 notification.targetUserName,
+                notification.targetUserPhotoUrl,
                 notification.inviterInfo.uid,
                 notification.ideaTitle,
                 notification.ideaId
@@ -124,21 +130,15 @@ import {
             color="alternative"
             on:click={() =>
               declineInvitation(
-                notification.invitationId,
-                notification.targetUserId,
                 notification.targetUserName,
-                notification.inviterInfo.uid,
-                notification.ideaTitle,
-                notification.ideaId
+                notification.targetUserPhotoUrl,
+                notification.ideaTitle
               )}>Decline</Button
           >
         {/if}
         <DropdownDivider />
       </DropdownItem>
     {/each}
-    {#if notifications.length === 0}
-      <DropdownItem class="flex space-x-4">Nothing yet</DropdownItem>
-    {/if}
   </Dropdown>
 </div>
 

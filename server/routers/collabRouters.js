@@ -8,6 +8,8 @@ import { v4 as uuidv4 } from "uuid";
 
 const router = Router();
 
+//notification needs to be removed from here.
+
 router.post(
   "/api/auth/ideas/:ideaId/collaborators",
   catchAsync(async (req, res) => {
@@ -16,18 +18,14 @@ router.post(
     console.log("collabData:", collabData) 
 
     await collabServices.addCollaborator(ideaId, collabData);
-    console.log("collabData.uid:", collabData.uid);
-    console.log("collabData.displayName:", collabData.displayName);
-    console.log(
-      "collabData.owner:",
-      collabData.inviterInfo
-    );
+    console.log("collabData:", collabData);
 
     const notificationData = {
       type: "collaborator-invite",
       inviterInfo: collabData.inviterInfo,
       targetUserId: collabData.uid,
       targetUserName: collabData.displayName,
+      targetUserPhotoUrl: collabData.photoUrl,
       ideaId: ideaId,
       ideaTitle: collabData.ideaTitle,
       invitationId: uuidv4(),

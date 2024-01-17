@@ -35,7 +35,6 @@
   export let collaborators = [];
   export let ideaId;
   export let inviterInfo;
-  export let collaboratorId;
   const collaboratorDispatch = createEventDispatcher();
 
   $: if (Array.isArray(collaborators)) {
@@ -91,6 +90,7 @@
       if (collaborator) {
         const collabData = {
           displayName: collaborator.displayName,
+          photoURL: collaborator.photoURL,
           uid: collaborator.uid,
           ideaTitle: ideaTitle,
           ideaId: ideaId,
@@ -102,6 +102,8 @@
         );
         if (response) {
           console.log("adduser as collabresponse:", response);
+          //addedCollaborators = [...addedCollaborators, collaborator];
+          //collaboratorDispatch("updateCollaborators", addedCollaborators);
           invitationMessage = `Invitation sent to ${collaborator.displayName}`;
           searchEmail = "";
           userSearchResult = "";
@@ -120,11 +122,40 @@
     }
   }
 
-  export async function updateCollaboratorList(newCollaboratorId) {
-    collaboratorId = newCollaboratorId;
-    collaboratorDispatch("updateCollaborators", addedCollaborators);
-    addedCollaborators = [...addedCollaborators, collaborator]; 
-}
+  export async function addUserAsCollaborator(collabResponseData) {
+    try {
+      if (collabResponseData !== null) {
+        const collabData = {
+          displayName: collabResponseData.respondingUserName,
+          photoURL: collabResponseData.respondingUserPhotoUrl,
+          uid: collabResponseData.respondingUserId,
+          ideaTitle: collabResponseData.ideaTitle,
+          ideaId: collabResponseData.ideaId,
+          inviterId: collabResponseData.inviterId,
+        };
+        const response = postRequest(
+          `/api/auth/ideas/${collabData.ideaId}/collaborators`,
+          collabData
+        );
+        if (response) {
+          console.log("adduser as collabresponse:", response);
+          //addedCollaborators = [...addedCollaborators, collaborator];
+          //collaboratorDispatch("updateCollaborators", addedCollaborators);
+        } else {
+          throw new AppError(`An error occured: ${error.message}`, {
+            initialError: error,
+          });
+        }
+      }
+    } catch (error) {
+      console.log(
+        `Failed to add "${collabResponseData.respondingUserName}" as collaborator to "${collabResponseData.ideaTitle}".`
+      );
+      throw new AppError(`An error occured: ${error.message}`, {
+        initialError: error,
+      });
+    }
+  }
 
   function removeCollaborator(collaboratorIndex) {
     addedCollaborators = addedCollaborators.filter(

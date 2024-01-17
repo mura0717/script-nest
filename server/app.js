@@ -62,6 +62,7 @@ io.on("connection", (socket) => {
 
   // COLLAB INVITATION REPLY
   socket.on("client-send-invitation-response", (responseData) => {
+    const { notificationData } = responseData;
     const {
       invitationId,
       respondingUserId,
@@ -70,13 +71,13 @@ io.on("connection", (socket) => {
       ideaTitle,
       ideaId,
       accepted,
-    } = responseData;
+    } = notificationData;
 
-    const notificationData = {
+    const newNotificationData = {
       type: accepted ? "invitation-accepted" : "invitation-declined",
-      message: `${respondingUserName} ${
+      message: `"${respondingUserName}" ${
         accepted ? "accepted" : "declined"
-      } your invitation for "${relatedIdeaTitle}"`,
+      } your invitation for "${ideaTitle}"`,
       invitationId: invitationId,
       ideaTitle: ideaTitle,
       targetUserId: inviterId,
@@ -85,7 +86,7 @@ io.on("connection", (socket) => {
       ideaId: ideaId,
     };
 
-    handleNotification(io, notificationData);
+    handleNotification(io, newNotificationData);
   });
 
   //CLIENT - USER TEST DISCONNECTION
@@ -100,9 +101,9 @@ io.on("connection", (socket) => {
   }); */
 });
 
-export function handleNotification(io, notificationInfo) {
-  console.log("emittied notificationInfo:", notificationInfo);
-  io.emit("server-send-a-notification", notificationInfo);
+export function handleNotification(io, notificationData) {
+  console.log("emittied notificationData:", notificationData);
+  io.emit("server-send-a-notification", notificationData);
 }
 
 // SOCKET TEST
@@ -155,6 +156,7 @@ app.use(ideaRouters);
 import apiRouters from "./routers/apiRouters.js";
 app.use(apiRouters);
 
+import AppError from "./utils/ErrorHandling/AppError.js";
 import collabRouters from "./routers/collabRouters.js";
 app.use(collabRouters);
 

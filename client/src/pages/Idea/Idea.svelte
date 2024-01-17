@@ -64,9 +64,9 @@
 
   $: collaborators = idea.collaborators;
 
-  function handleCollaboratorsUpdate(updateCollaborators) {
+   function handleCollaboratorsUpdate(updateCollaborators) {
     idea = { ...idea, collaborators: updateCollaborators.detail };
-  }
+  } 
 
   function handleLitRefsUpdate(updatedLitRefs) {
     idea = { ...idea, literatureReferences: updatedLitRefs.detail };
