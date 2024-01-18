@@ -71,8 +71,7 @@
   <div class="user-profile-content w-full">
     <div class="mb-4 mt-4 ml-8 mr-8">
       <IdeasSearchBar
-        on:input={(event) => debouncedIdeaSearch(event.target.value)}
-        searchHandler={handleSearchIdea}
+        searchHandler={debouncedIdeaSearch}
       />
     </div>
     {#if filteredIdeas.length === 0}
