@@ -25,6 +25,7 @@
     removeCollaborator,
   } from "../../../store/collaboratorStore.js";
   import { AppError } from "../../../utils/ErrorHandling/AppError";
+  import { toast } from "svelte-french-toast";
 
   let searchEmail = "";
   let userSearchResult = "";
@@ -33,6 +34,7 @@
   let showRemoveInviteModal = false;
   let invitationMessage = "";
   let currentCollaboratorId;
+  let currentCollaboratorName;
   export let ideaTitle;
   export let ideaId;
   export let inviterInfo;
@@ -113,13 +115,16 @@
     showShareModal = true;
   }
 
-  function openRemoveCollaboratorModal(collaboratorId) {
+  function openRemoveCollaboratorModal(collaboratorId, collaboratorName) {
     currentCollaboratorId = collaboratorId;
+    currentCollaboratorName = collaboratorName;
+
     showRemoveInviteModal = true;
   }
 
   function confirmRemoveCollaborator() {
     removeCollaborator(ideaId, currentCollaboratorId);
+    toast.success(`"${currentCollaboratorName}" removed successfully.`)
     showRemoveInviteModal = false;
   }
 </script>
@@ -146,7 +151,7 @@
                 <p>{collaborator.displayName}</p>
                 <button
                   class="remove-collaborator-button"
-                  on:click={() => openRemoveCollaboratorModal(collaborator.id)}
+                  on:click={() => openRemoveCollaboratorModal(collaborator.id, collaborator.displayName)}
                 >
                   <TrashBinSolid class="remove-collaborator-icon" />
                 </button>
