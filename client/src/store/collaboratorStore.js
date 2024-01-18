@@ -11,10 +11,8 @@ export async function fetchCollaborators(ideaId) {
     );
     if (collaboratorResponse) {
       const collaborators = await collaboratorResponse;
-      console.log("fetchCollaborators/collaborators:", collaborators);
       collaboratorStore.set(collaborators || []);
       collaboratorStore.subscribe((value) => {
-        console.log("Store after set:", value);
       });
     } else {
       const errorMessage = `Failed to fetch collaborators . Server responded with status: ${response.status}`;
@@ -23,7 +21,6 @@ export async function fetchCollaborators(ideaId) {
       });
     }
   } catch (error) {
-    console.error("Error fetching collaborators:", error);
     throw new AppError(
       `An error occurred fetching collaborators: ${error.message}`,
       {
@@ -55,7 +52,6 @@ export async function addUserAsCollaborator(collabResponseData) {
         collabData
       );
       if (response) {
-        console.log("addUserResponse:", response);
         if (response) {
           collaboratorStore.update((currentCollaborators) => {
             return [...currentCollaborators, collabData];
@@ -69,9 +65,6 @@ export async function addUserAsCollaborator(collabResponseData) {
       }
     }
   } catch (error) {
-    console.log(
-      `Failed to add "${collabResponseData.respondingUserName}" as collaborator to "${collabResponseData.ideaTitle}".`
-    );
     throw new AppError(`An error occured: ${error.message}`, {
       initialError: error,
     });
@@ -98,7 +91,6 @@ export const removeCollaborator = async (ideaId, collaboratorId) => {
       }
     }
   } catch (error) {
-    console.error("Failed to remove collaborator:", error);
     throw new AppError(`An error occurred: ${error.message}`, {
       initialError: error,
     });

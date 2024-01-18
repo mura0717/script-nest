@@ -2,8 +2,6 @@ import { db } from "../config/firebaseAdmin.js";
 
 export const collabServices = {
   addCollaborator: async (ideaId, collabData) => {
-    console.log("Collabservices/addCollaborator ideaId:", collabData.ideaId);
-    console.log("CollabSercies/addCollaborator collabData:", collabData);
     const collaboratorRef = db
       .collection("ideas")
       .doc(ideaId)

@@ -1,7 +1,7 @@
 import http from "http";
 import { Server as SocketIOServer } from "socket.io";
 import { sessionMiddleware } from "../app.js";
-import notificationServices from "../services/notificationServices.js";
+
 
 let usersConnected = [];
 
@@ -36,11 +36,9 @@ export const socketServer = (app) => {
     });
 
     socket.on("invite-accepted", ({ notificationData }) => {
-      //sendAcceptResponseNotification(io, notificationData);
     });
 
     socket.on("invite-declined", ({ notificationData }) => {
-      //sendDeclineResponseNotification(io, notificationData);
     });
   });
   return server;
@@ -72,10 +70,6 @@ export function sendInvitationNotification(io, notificationData) {
 
 export function sendAcceptResponseNotification(io, notificationData) {
   const targetUserConn = connectionByUserId(notificationData.targetUserId);
-  console.log(
-    "socket.js/sendAcceptResponseNotification notificationData:",
-    notificationData
-  );
   if (!targetUserConn) return;
   const acceptResponseData = {
     message: `"${notificationData.displayName.displayName}" accepted your invitation for "${notificationData.ideaTitle}"`,
@@ -85,12 +79,6 @@ export function sendAcceptResponseNotification(io, notificationData) {
     respondingUserName: notificationData.displayName.displayName,
     ideaId: notificationData.ideaId,
   };
-    
-    console.log("acceptResponsedata:", acceptResponseData);
-  /* notificationServices.addNotification(notificationData.targetUserId, {
-    type: "invitation-accepted",
-    ...acceptResponseData,
-  }); */
   io.to(targetUserConn.socketId).emit("accept-invite", acceptResponseData);
 }
 
@@ -106,10 +94,6 @@ export function sendDeclineResponseNotification(io, notificationData) {
     respondingUserName: notificationData.respondingUserName,
     ideaId: notificationData.ideaId,
   };
-  /* notificationServices.addNotification(notificationData.targetUserId, {
-    type: "invitation-declined",
-    ...declineResponseData,
-  }); */
   io.to(targetUserConn.socketId).emit("decline-invite", declineResponseData);
 }
 

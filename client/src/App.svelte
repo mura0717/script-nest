@@ -10,7 +10,6 @@
   import Index from "./pages/Index/Index.svelte";
   import Signup from "./pages/Signup/Signup.svelte";
   import Login from "./pages/Login/Login.svelte";
-  import SocketTest from "./pages/SocketTest/SocketTest.svelte";
 
   import PrivateRoute from "./components/PrivateRoutes/PrivateRoute.svelte";
   import UserProfile from "./pages/UserProfile/UserProfile.svelte";
@@ -20,17 +19,16 @@
   import Settings from "./pages/Settings/Settings.svelte";
   import Contact from "./pages/Contact/Contact.svelte";
   import AdminProfile from "./pages/AdminProfile/AdminProfile.svelte";
-  import { DarkMode } from "flowbite-svelte";
+  import { userStore } from "./store/userStore";
 </script>
 
-<!-- <DarkMode /> -->
 <Toaster />
 
 <Router>
   <div id="app">
     <NavBar />
     <div class="page-layout-container">
-      {#if $authStore.isLoggedIn}
+      {#if $userStore.showSidebar}
         <aside class="sidebar-layout-container">
           <SideBar />
         </aside>
@@ -43,7 +41,6 @@
         <Route path="/auth/signup" component={Signup}></Route>
         <Route path="/auth/login" component={Login}></Route>
         <Route path="/auth/contact" component={Contact}></Route>
-        <Route path="/auth/sockettest" component={SocketTest}></Route>
 
         <!-- Private Routes -->
         <PrivateRoute path="/auth/user/profile" let:location>

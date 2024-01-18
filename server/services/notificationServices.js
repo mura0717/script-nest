@@ -25,8 +25,6 @@ export const notificationServices = {
   },
 
   deleteNotification: async (notificationId, ideaId) => {
-    console.log("notifId", notificationId)
-    console.log("ideaId", ideaId)
     const notificationsRef = db
       .collection("notifications")
       .doc(notificationId)

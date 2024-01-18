@@ -16,13 +16,8 @@ router.get(
     try {
       const ideaId = req.params.ideaId;
       const collaborators = await collabServices.getCollaborators(ideaId);
-      console.log(
-        "collabRouters/collaboratorsFetched.length:",
-        collaborators.length
-      );
       res.json(collaborators);
     } catch (error) {
-      console.error("Error fetching collaborators:", error);
       res.status(500).send({ message: "Internal server error" });
     }
   }
@@ -34,7 +29,6 @@ router.post(
   catchAsync(async (req, res) => {
     const ideaId = req.params.ideaId;
     const collabData = req.body; //BURADA EKSIK
-    console.log("collabRouters/add-collab collabData:", collabData);
     await collabServices.addCollaborator(ideaId, collabData);
     sendAcceptResponseNotification(io, collabData);
     res.status(201).json({ message: "Collaborator added." });
@@ -47,8 +41,6 @@ router.post(
   catchAsync(async (req, res) => {
     const ideaId = req.params.ideaId;
     const collabData = req.body;
-    console.log("collabRouter/post - collabData:", ideaId);
-    console.log("collabRouter/post - collabData:", collabData);
 
     const notificationData = {
       type: "collaborator-invite",
@@ -63,7 +55,6 @@ router.post(
       message: `New invite from "${collabData.inviterInfo.displayName}" for: "${collabData.ideaTitle}". `,
       timestamp: new Date(),
     };
-    console.log("Sending invite - notificationData:", notificationData);
 
     await notificationServices.addNotification(
       collabData.uid,

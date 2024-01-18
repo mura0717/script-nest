@@ -8,6 +8,7 @@ const createUserStore = () => {
     user: null,
     isAdmin: false,
     isAuthInitialized: false,
+    showSidebar: false,
   });
 
   const auth = getAuth();
@@ -27,10 +28,16 @@ const createUserStore = () => {
           user: firebaseUser,
           isAdmin: isAdminStatus,
           isAuthInitialized: true,
+          showSidebar: true,
         });
         console.log("userStore-isAdminStatus:", isAdminStatus);
       } else {
-        set({ user: null, isAdmin: false, isAuthInitialized: false });
+        set({
+          user: null,
+          isAdmin: false,
+          isAuthInitialized: false,
+          showSidebar: false,
+        });
       }
     } catch (error) {
       handleError(error);

@@ -10,13 +10,11 @@
     console.log("User is admin:", $userStore.isAdmin);
 
     if (!$userStore.user) {
-      console.log("Navigating to login, user not found");
       navigate("/auth/login", {
         state: { from: $location.pathname },
         replace: true,
       });
     } else if ($userStore.isAdmin) {
-      console.log("Navigating to admin profile");
       navigate("/auth/admin/profile", {
         state: { from: $location.pathname },
         replace: true,

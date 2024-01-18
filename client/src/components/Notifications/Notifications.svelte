@@ -12,21 +12,17 @@
   import { addUserAsCollaborator } from "../../store/collaboratorStore.js";
 
   const socket = io("localhost:8080");
-
   let userId = "";
 
   $: if ($userStore.user) {
     userId = $userStore.user.uid;
-    console.log("Notifications/User ID:", userId);
     socket.emit("user-connect", {
       userId,
     });
   } else {
-    console.log("Notifications/User not loaded yet");
   }
 
   socket.on("invite-collaborator", (data) => {
-    console.log("Notifications/socket-on: invite-collaborator data:", data);
     notificationsStore.update((store) => {
       return {
         notifications: [...store.notifications, data],
@@ -53,25 +49,19 @@
     });
   });
 
-  $: console.log("Updated notifications:", $notificationsStore.notifications);
-
   function acceptInvitation(notification) {
-    console.log("respongingUserName from target:", notification.targetUserName);
     const currentUser = $userStore.user;
-    console.log("Current User:", currentUser.displayName);
     const notificationData = {
       notificationId: notification.notificationId,
       invitationId: notification.invitationId,
       respondingUserId: notification.targetUserId,
-      respondingUserName: notification.targetUserName || currentUser || "",
+      respondingUserName: currentUser,
       targetUserId: notification.respondingUserId,
       targetUserName: notification.respondingUserName,
       ideaTitle: notification.ideaTitle,
       ideaId: notification.ideaId,
       accepted: true,
     };
-    console.log("Accepting with notification:", notification);
-    console.log("Accepting with notificationData:", notificationData);
     addUserAsCollaborator(notificationData);
     socket.emit("invite-accepted", { notificationData });
   }
@@ -82,14 +72,13 @@
       notificationId: notification.notificationId,
       invitationId: notification.invitationId,
       respondingUserId: notification.targetUserId,
-      respondingUserName: currentUser.displayName,
-      targetUserId: notification.inviterInfo.uid,
+      respondingUserName: currentUser,
+      targetUserId: notification.respondingUserId,
+      targetUserName: notification.respondingUserName,
       ideaTitle: notification.ideaTitle,
       ideaId: notification.ideaId,
       accepted: false,
     };
-    console.log("Declining with notification:", notification);
-    console.log("Declining with notificationData:", notificationData);
     socket.emit("invite-declined", { notificationData });
   }
 </script>

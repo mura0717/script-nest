@@ -11,6 +11,9 @@
   import scriptnestLogo from "../../assets/logos/scriptnest_logo.png";
   import Notifications from "../Notifications/Notifications.svelte";
   import { notificationsStore } from "../../store/notificationsStore.js";
+  import { userStore } from "../../store/userStore.js";
+
+  $: loggedIn = $userStore.user !== null;
 
   $: hasUnreadNotifications = $notificationsStore.hasUnread;
 
@@ -30,12 +33,10 @@
     </NavBrand>
     <NavHamburger />
     <NavUl>
-      <NavLi class="navbar-elements-style" href="/auth/sockettest"
-        >SocketTest</NavLi
-      >
       <NavLi class="navbar-elements-style" href="/auth/login">Login</NavLi>
       <NavLi class="navbar-elements-style" href="/auth/signup">Signup</NavLi>
       <NavLi class="navbar-elements-style" href="/auth/contact">Contact</NavLi>
+      {#if loggedIn}
       <NavLi
         ><div
           id="bell"
@@ -52,6 +53,7 @@
           <Notifications class="notifications-dropdown" />
         </div>
       </NavLi>
+      {/if}
     </NavUl>
   </Navbar>
 </div>

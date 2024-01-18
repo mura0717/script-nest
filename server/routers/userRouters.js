@@ -61,10 +61,6 @@ router.get(
           photoURL: userRecord.photoURL,
           uid: userRecord.uid,
         };
-        console.log(
-          "userRouter.js - Searched User Data to be Sent to Client:",
-          userData
-        );
         res.status(200).json({
           success: true,
           message: "User Record fetched.",
