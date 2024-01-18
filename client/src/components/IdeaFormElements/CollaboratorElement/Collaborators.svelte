@@ -210,7 +210,7 @@
   <!-- REMOVE COLLABORATOR -->
   <Modal bind:open={showRemoveInviteModal} size="xs" autoclose>
     <div class="remove-collaborator-modal-container">
-      <ExclamationCircleOutline size="lg" class="modal-exclamation-icon" />
+      <ExclamationCircleOutline size="xl" class="modal-exclamation-icon" />
       <h3 class="modal-text">Are you sure you want to remove collaborator?</h3>
       <Button color="red" class="me-2" on:click={confirmRemoveCollaborator}
         >Yes, I'm sure</Button

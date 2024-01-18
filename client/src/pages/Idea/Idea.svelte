@@ -58,9 +58,7 @@
         const fetchedIdeaData = await fetchIdea(ideaId);
         idea = { ...fetchedIdeaData };
         console.log("Idea/onMount, fetchedIdea:", idea);
-        //await fetchCollaborators(ideaId);
-        //collaboratorStore.set(fetchedIdeaData.collaborators);
-        //console.log("Idea/onMount, collaborators:", fetchedIdeaData.collaborators)
+        await fetchCollaborators(ideaId);
       } catch (error) {
         console.error("Error loading idea:", error);
         throw new AppError("Error loading idea", 400);
@@ -68,8 +66,8 @@
     }
   });
 
- /*   let collaborators = $collaboratorStore;
-  $: console.log("Current collaborators:", collaborators); */
+    let collaborators = $collaboratorStore;
+  $: console.log("Current collaborators:", collaborators); 
 
   function handleLitRefsUpdate(updatedLitRefs) {
     idea = { ...idea, literatureReferences: updatedLitRefs.detail };
@@ -88,6 +86,7 @@
   async function handleSaveIdea(currentIdeaId) {
     console.log("IdeaPage/ Saved IdeaId:", currentIdeaId);
     console.log("IdeaPage/ Saved Idea:", idea);
+    console.log("Idea/saveIdea, collaborators:", collaborators)
     savingMessageDisplay();
     if (currentIdeaId && idea) {
       try {

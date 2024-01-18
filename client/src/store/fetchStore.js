@@ -86,7 +86,7 @@ async function patchRequest(endpoint, data) {
   }
 }
 
-async function deleteRequest(endpoint, data) {
+async function deleteRequest(endpoint) {
   const firebaseToken = localStorage.getItem("firebaseAuthToken");
   try {
     const response = await fetch(API_BASE_URL_JS + endpoint, {
@@ -96,7 +96,6 @@ async function deleteRequest(endpoint, data) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${firebaseToken}`,
       },
-      body: JSON.stringify(data),
     });
     if (!response.ok) {
       const error = new AppError(

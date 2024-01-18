@@ -68,11 +68,13 @@ router.post(
   })
 );
 
-router.delete("/api/auth/ideas/:ideaId/invite-collaborator", isAuthenticated, catchAsync(async (req, res) => {
-const ideaId = req.params.ideaId;
-const collaboratorId = req.body;
-  console.log("Deleting collaborator - collaboratorId:", collaboratorId);
-  await collabServices.removeCollaborator(ideaId, collaboratorId);
-}));
+router.delete("/api/auth/ideas/:ideaId/remove-collaborator/:collaboratorId",
+  isAuthenticated,
+  catchAsync(async (req, res) => {
+    const { ideaId, collaboratorId } = req.params;
+    const deleteResult = await collabServices.removeCollaborator(ideaId, collaboratorId);
+    res.status(200).json(deleteResult);
+  })
+);
 
 export default router;

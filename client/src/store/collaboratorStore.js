@@ -11,14 +11,16 @@ export async function fetchCollaborators(ideaId) {
     );
     if (collaboratorResponse) {
       const collaborators = await collaboratorResponse;
-      console.log("fetchCollaborators/collaborators:", collaborators)
+      console.log("fetchCollaborators/collaborators:", collaborators);
       collaboratorStore.set(collaborators || []);
       collaboratorStore.subscribe((value) => {
         console.log("Store after set:", value);
       });
-      console.log("fetchCollaborators / collaboratorStore.set:",);
     } else {
-      throw new AppError("Error fetching collaborators", 400);
+      const errorMessage = `Failed to fetch collaborators . Server responded with status: ${response.status}`;
+      throw new AppError(errorMessage, {
+        statusCode: response.status,
+      });
     }
   } catch (error) {
     console.error("Error fetching collaborators:", error);
@@ -54,8 +56,9 @@ export async function addUserAsCollaborator(collabResponseData) {
             return [...currentCollaborators, collabData];
           });
         } else {
-          throw new AppError(`An error occured: ${error.message}`, {
-            initialError: error,
+          const errorMessage = `Failed to ass collaborator. Server responded with status: ${response.status}`;
+          throw new AppError(errorMessage, {
+            statusCode: response.status,
           });
         }
       }
@@ -74,26 +77,24 @@ export const removeCollaborator = async (ideaId, collaboratorId) => {
   try {
     if (ideaId && collaboratorId) {
       const response = await deleteRequest(
-        `/api/auth/ideas/${ideaId}/remove-collaborator`,
-        collaboratorId
+        `/api/auth/ideas/${ideaId}/remove-collaborator/${collaboratorId}`
       );
-      if (response) { //collaborator ID is returned?
+      if (response.success) {
         collaboratorStore.update((collaborators) => {
           return collaborators.filter(
             (collaborator) => collaborator.id !== collaboratorId
           );
         });
       } else {
-        throw new AppError(`An error occured: ${error.message}`, {
-          initialError: error,
+        const errorMessage = `Failed to remove collaborator. Server responded with status: ${response.status}`;
+        throw new AppError(errorMessage, {
+          statusCode: response.status,
         });
       }
     }
   } catch (error) {
-    console.log(
-      `Failed to remove collaborator with the id "${collaboratorId}".`
-    );
-    throw new AppError(`An error occured: ${error.message}`, {
+    console.error("Failed to remove collaborator:", error);
+    throw new AppError(`An error occurred: ${error.message}`, {
       initialError: error,
     });
   }

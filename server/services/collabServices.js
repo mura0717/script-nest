@@ -32,7 +32,11 @@ export const collabServices = {
       .collection("collaborators")
       .doc(collaboratorDocId);
     await collaboratorDocRef.delete();
-    return collaboratorDocId;
+        return {
+          success: true,
+          message: "Collaborator deleted successfully",
+          id: collaboratorDocId,
+        };
   },
 };
 
