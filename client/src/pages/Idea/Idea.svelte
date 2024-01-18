@@ -1,8 +1,8 @@
 <script>
   import Collaborators from "./../../components/IdeaFormElements/CollaboratorElement/Collaborators.svelte";
   import { onMount } from "svelte";
-  import { userStore } from "../../store/userStore";
-  import { collaboratorStore } from "../../store/collaboratorStore";
+  import { userStore } from "../../store/userStore.js";
+  import { collaboratorStore, fetchCollaborators } from "../../store/collaboratorStore.js";
   import { fetchIdea } from "../../store/ideaFetchStore.js";
   import { fetchUpdate } from "../../store/ideaFetchStore.js";
   import { AppError } from "../../utils/ErrorHandling/AppError.js";
@@ -36,7 +36,6 @@
     premise: "",
     synopsis: "",
     comments: [],
-    collaborators: [],
   };
 
   $: ideaTitle = idea.title;
@@ -59,7 +58,9 @@
         const fetchedIdeaData = await fetchIdea(ideaId);
         idea = { ...fetchedIdeaData };
         console.log("Idea/onMount, fetchedIdea:", idea);
-        collaboratorStore.set(fetchedIdeaData.collaborators);
+        //await fetchCollaborators(ideaId);
+        //collaboratorStore.set(fetchedIdeaData.collaborators);
+        //console.log("Idea/onMount, collaborators:", fetchedIdeaData.collaborators)
       } catch (error) {
         console.error("Error loading idea:", error);
         throw new AppError("Error loading idea", 400);
@@ -67,8 +68,8 @@
     }
   });
 
-  let collaborators = $collaboratorStore;
-  $: console.log("Current collaborators:", collaborators);
+ /*   let collaborators = $collaboratorStore;
+  $: console.log("Current collaborators:", collaborators); */
 
   function handleLitRefsUpdate(updatedLitRefs) {
     idea = { ...idea, literatureReferences: updatedLitRefs.detail };

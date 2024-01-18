@@ -39,7 +39,7 @@
 
   socket.on("server-send-a-notification", (notificationData) => {
     console.log("Received notification:", notificationData);
-    if (notificationData && notificationData.targetUserId === userId) {
+    if (notificationData.targetUserId === userId) {
       // notifications = [...notifications, newNotification];
       notificationsStore.update((store) => {
         return {
@@ -47,13 +47,11 @@
           hasUnread: true,
         };
       });
-      switch (notificationData.type) {
-        case "invitation-accepted":
-          console.log("notification type:", notificationData.type)
-          addUserAsCollaborator(notificationData);
-          break;
-        default:
-          console.log("Unhandled notification type:", notificationData.type);
+      if (notificationData.type === "invitation-accepted") {
+        console.log("notification type:", notificationData.type);
+        addUserAsCollaborator(notificationData);
+      } else {
+        console.log("Unhandled notification type:", notificationData.type);
       }
     } else {
       console.log("Notification not for the current user.");
@@ -65,7 +63,7 @@
     respondingUserId,
     respondingUserName,
     respondingUserPhotoUrl,
-    inviterId,
+    targetUserId,
     ideaTitle,
     ideaId
   ) {
@@ -74,7 +72,7 @@
       respondingUserId,
       respondingUserName,
       respondingUserPhotoUrl,
-      inviterId,
+      targetUserId,
       ideaTitle,
       ideaId,
       accepted: true,
@@ -88,7 +86,7 @@
     respondingUserId,
     respondingUserName,
     respondingUserPhotoUrl,
-    inviterId,
+    targetUserId,
     ideaTitle,
     ideaId
   ) {
@@ -97,14 +95,14 @@
       respondingUserId,
       respondingUserName,
       respondingUserPhotoUrl,
-      inviterId,
+      targetUserId,
       ideaTitle,
       ideaId,
       accepted: false,
     };
     console.log("declineInvitation/inviterId:", inviterId);
     socket.emit("client-send-invitation-response", { notificationData });
-    dropdownOpen = false;;
+    dropdownOpen = false;
   }
 
   function handleCommentNotification(commentId) {
@@ -115,9 +113,6 @@
 <div>
   <Dropdown triggeredBy="#bell" size="sm" class="dropdown">
     <div slot="header" class="text-center py-2 font-bold">Notifications</div>
-    {#if notifications.length === 0}
-      <DropdownItem class="flex space-x-4">Nothing yet</DropdownItem>
-    {/if}
     {#each notifications as notification}
       <DropdownItem class="flex space-x-4">
         <div class="notification-message">{notification.message}</div>
@@ -148,6 +143,9 @@
         {/if}
         <DropdownDivider />
       </DropdownItem>
+      {#if notifications.length === 0}
+        <DropdownItem class="flex space-x-4">Nothing yet</DropdownItem>
+      {/if}
     {/each}
   </Dropdown>
 </div>

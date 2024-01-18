@@ -67,7 +67,8 @@ io.on("connection", (socket) => {
       invitationId,
       respondingUserId,
       respondingUserName,
-      inviterId,
+      respondingUserPhotoUrl,
+      targetUserId,
       ideaTitle,
       ideaId,
       accepted,
@@ -80,9 +81,10 @@ io.on("connection", (socket) => {
       } your invitation for "${ideaTitle}"`,
       invitationId: invitationId,
       ideaTitle: ideaTitle,
-      targetUserId: inviterId,
+      targetUserId: targetUserId,
       respondingUserId: respondingUserId,
       respondingUserName: respondingUserName,
+      respondingUserPhotoUrl: respondingUserPhotoUrl,
       ideaId: ideaId,
     };
 

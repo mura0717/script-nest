@@ -13,7 +13,6 @@ const createUserStore = () => {
   const auth = getAuth();
 
   onAuthStateChanged(auth, async (firebaseUser) => { //NEEDS SIMPLIFICATION
-    console.log("Authentication state changed", !!firebaseUser);
     try {
       let isAdminStatus = false;
       if (firebaseUser) {

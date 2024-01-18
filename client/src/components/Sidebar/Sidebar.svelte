@@ -26,7 +26,6 @@
   let userName = ""; //REMOVED EXPORT HERE TO SEE IF IT STILL WORKS
   onMount(() => {
     userName = $userStore.user.displayName;
-    console.log(userName);
   });
 
   async function navigateToRoute(route) {

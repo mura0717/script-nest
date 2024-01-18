@@ -37,10 +37,6 @@
   export let ideaId;
   export let inviterInfo;
 
-  /* $: if (Array.isArray(collaborators)) {
-    addedCollaborators = [...collaborators];
-  } */
-
   async function getUserByEmail(userEmail) {
     try {
       const response = await getRequest(

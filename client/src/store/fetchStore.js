@@ -3,7 +3,6 @@ import { AppError } from "../utils/ErrorHandling/AppError.js";
 import { handleError } from "../utils/ErrorHandling/GlobalErrorHandlerClient.js";
 
 async function getRequest(endpoint) {
-  console.log("fetchStore-Sending request to:", API_BASE_URL_JS + endpoint);
   const firebaseToken = localStorage.getItem("firebaseAuthToken");
   try {
     const response = await fetch(API_BASE_URL_JS + endpoint, {
@@ -87,7 +86,7 @@ async function patchRequest(endpoint, data) {
   }
 }
 
-async function deleteRequest(endpoint) {
+async function deleteRequest(endpoint, data) {
   const firebaseToken = localStorage.getItem("firebaseAuthToken");
   try {
     const response = await fetch(API_BASE_URL_JS + endpoint, {
@@ -97,6 +96,7 @@ async function deleteRequest(endpoint) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${firebaseToken}`,
       },
+      body: JSON.stringify(data),
     });
     if (!response.ok) {
       const error = new AppError(

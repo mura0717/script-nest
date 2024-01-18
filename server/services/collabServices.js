@@ -21,6 +21,7 @@ export const collabServices = {
     snapshot.forEach((doc) =>
       collaborators.push({ id: doc.id, ...doc.data() })
     );
+    console.log("getCollaborators/collabServices: collaborators.length:", collaborators.length);
     return collaborators;
   },
 

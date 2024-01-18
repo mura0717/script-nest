@@ -1,12 +1,36 @@
 import { writable } from "svelte/store";
-import {
-  getRequest,
-  postRequest,
-  deleteRequest,
-} from "../store/fetchStore.js";
+import { getRequest, postRequest, deleteRequest } from "../store/fetchStore.js";
 import { AppError } from "../utils/ErrorHandling/AppError.js";
 
 export const collaboratorStore = writable([]);
+
+export async function fetchCollaborators(ideaId) {
+  try {
+    const collaboratorResponse = await getRequest(
+      `/api/auth/ideas/${ideaId}/collaborators`
+    );
+    if (collaboratorResponse) {
+      const collaborators = await collaboratorResponse;
+      console.log("fetchCollaborators/collaborators:", collaborators)
+      collaboratorStore.set(collaborators || []);
+      collaboratorStore.subscribe((value) => {
+        console.log("Store after set:", value);
+      });
+      console.log("fetchCollaborators / collaboratorStore.set:",);
+    } else {
+      throw new AppError("Error fetching collaborators", 400);
+    }
+  } catch (error) {
+    console.error("Error fetching collaborators:", error);
+    throw new AppError(
+      `An error occurred fetching collaborators: ${error.message}`,
+      {
+        initialError: error,
+        statusCode: error.statusCode || 500,
+      }
+    );
+  }
+}
 
 export async function addUserAsCollaborator(collabResponseData) {
   try {
@@ -53,9 +77,11 @@ export const removeCollaborator = async (ideaId, collaboratorId) => {
         `/api/auth/ideas/${ideaId}/remove-collaborator`,
         collaboratorId
       );
-      if (response) {
+      if (response) { //collaborator ID is returned?
         collaboratorStore.update((collaborators) => {
-          return collaborators.filter((collab) => collab.id !== collaboratorId);
+          return collaborators.filter(
+            (collaborator) => collaborator.id !== collaboratorId
+          );
         });
       } else {
         throw new AppError(`An error occured: ${error.message}`, {
@@ -65,7 +91,7 @@ export const removeCollaborator = async (ideaId, collaboratorId) => {
     }
   } catch (error) {
     console.log(
-      `Failed to remove "${collabResponseData.respondingUserName}" as collaborator from "${collabResponseData.ideaTitle}".`
+      `Failed to remove collaborator with the id "${collaboratorId}".`
     );
     throw new AppError(`An error occured: ${error.message}`, {
       initialError: error,

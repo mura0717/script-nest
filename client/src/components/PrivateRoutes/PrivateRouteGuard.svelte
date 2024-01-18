@@ -6,7 +6,6 @@
   
   $: if ($userStore.isAuthInitialized) {
 
-    console.log("isAuthInitialized:", $userStore.isAuthInitialized);
     console.log("User is authenticated:", !!$userStore.user);
     console.log("User is admin:", $userStore.isAdmin);
 
