@@ -8,43 +8,51 @@ import { v4 as uuidv4 } from "uuid";
 
 const router = Router();
 
-//notification needs to be removed from here.
-
 router.post(
-  "/api/auth/ideas/:ideaId/collaborators",
+  "/api/auth/ideas/:ideaId/add-collaborator",
   catchAsync(async (req, res) => {
     const ideaId = req.params.ideaId;
     const collabData = req.body;
-    console.log("collabData:", collabData) 
-
+    console.log("Adding collaborator - collabData:", collabData);
     await collabServices.addCollaborator(ideaId, collabData);
-    console.log("collabData:", collabData);
+    res.status(201).json({ message: "Collaborator added." });
+  })
+);
+
+router.post(
+  "/api/auth/ideas/:ideaId/invite-collaborator",
+  catchAsync(async (req, res) => {
+    const ideaId = req.params.ideaId;
+    const collabData = req.body;
+    console.log("Inviting collaborator - collabData:", collabData);
 
     const notificationData = {
       type: "collaborator-invite",
       inviterInfo: collabData.inviterInfo,
       targetUserId: collabData.uid,
       targetUserName: collabData.displayName,
-      targetUserPhotoUrl: collabData.photoUrl,
+      targetUserPhotoUrl: collabData.photoUrl || null,
       ideaId: ideaId,
       ideaTitle: collabData.ideaTitle,
       invitationId: uuidv4(),
-      message: `New invite from ${collabData.inviterInfo.displayName} for: "${collabData.ideaTitle}". `,
+      message: `New invite from "${collabData.inviterInfo.displayName}" for: "${collabData.ideaTitle}". `,
       timestamp: new Date(),
-    }; 
-
-    console.log("targetUserId:", notificationData.targetUserId);
-
+    };
+    console.log(
+      "Sending invite - targetUserId:",
+      notificationData.targetUserId
+    );
     await notificationServices.addNotification(
       collabData.uid,
       notificationData
     );
-    
     handleNotification(io, notificationData);
-
-    res.status(201).json({ message: "Collaborator added and notification sent." });
+    res.status(201).json({ message: "Invitation sent." });
   })
 );
 
-// Export the router
+router.delete("/api/auth/ideas/:ideaId/invite-collaborator", catchAsync(async (req, res) => {
+  
+}));
+
 export default router;

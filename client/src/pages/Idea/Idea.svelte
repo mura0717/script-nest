@@ -2,6 +2,7 @@
   import Collaborators from "./../../components/IdeaFormElements/CollaboratorElement/Collaborators.svelte";
   import { onMount } from "svelte";
   import { userStore } from "../../store/userStore";
+  import { collaboratorStore } from "../../store/collaboratorStore";
   import { fetchIdea } from "../../store/ideaFetchStore.js";
   import { fetchUpdate } from "../../store/ideaFetchStore.js";
   import { AppError } from "../../utils/ErrorHandling/AppError.js";
@@ -52,21 +53,22 @@
   onMount(async () => {
     const pathSegments = window.location.pathname.split("/");
     ideaId = pathSegments[pathSegments.length - 1];
-    console.log("Idea ID from URL:", ideaId);
+    console.log("IdeaId from URL:", ideaId);
     if (ideaId) {
-      idea = await fetchIdea(ideaId);
-      console.log("Idea/onMount, fetchedIdea:", idea);
-    } else {
-      console.log("Idea/onMount, error");
-      throw new AppError(`Error reading the idea with id:${ideaId}`, 400);
+      try {
+        const fetchedIdeaData = await fetchIdea(ideaId);
+        idea = { ...fetchedIdeaData };
+        console.log("Idea/onMount, fetchedIdea:", idea);
+        collaboratorStore.set(fetchedIdeaData.collaborators);
+      } catch (error) {
+        console.error("Error loading idea:", error);
+        throw new AppError("Error loading idea", 400);
+      }
     }
   });
 
-  $: collaborators = idea.collaborators;
-
-   function handleCollaboratorsUpdate(updateCollaborators) {
-    idea = { ...idea, collaborators: updateCollaborators.detail };
-  } 
+  let collaborators = $collaboratorStore;
+  $: console.log("Current collaborators:", collaborators);
 
   function handleLitRefsUpdate(updatedLitRefs) {
     idea = { ...idea, literatureReferences: updatedLitRefs.detail };
@@ -232,10 +234,8 @@
   <div>
     <Collaborators
       {ideaTitle}
-      {collaborators}
       {ideaId}
       inviterInfo={owner}
-      on:updateCollaborators={handleCollaboratorsUpdate}
     />
   </div>
 </main>

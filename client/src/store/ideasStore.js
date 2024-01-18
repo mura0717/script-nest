@@ -1,4 +1,4 @@
-import { writable } from "svelte/store";
+/* import { writable } from "svelte/store";
 
 const createIdeasStore = () => {
   const { subscribe, set, update } = writable([]);
@@ -29,3 +29,4 @@ const createIdeasStore = () => {
 };
 
 export const ideasStore = createIdeasStore();
+ */

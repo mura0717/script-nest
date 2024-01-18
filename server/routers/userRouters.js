@@ -48,7 +48,7 @@ router.patch(
 
 //User Record Fetch by Email for Collaborator Invite
 router.get(
-  "/api/auth/user/inviteUserByEmail",
+  "/api/auth/user/getUserByEmail",
   isAuthenticated,
   catchAsync(async (req, res, next) => {
     const { email } = req.query;

@@ -9,7 +9,7 @@
   import io from "socket.io-client";
   import { userStore } from "../../store/userStore.js";
   import { notificationsStore } from "../../store/notificationsStore.js";
-  import * as Collaborators from "../IdeaFormElements/CollaboratorElement/Collaborators.svelte";
+  import { addUserAsCollaborator } from "../../store/collaboratorStore.js";
 
   let userId = "";
   $: if ($userStore.user) {
@@ -32,24 +32,31 @@
     console.log("Socket disconnected on client.");
   }); */
 
+  let dropdownOpen = false;
+
   let notifications = $notificationsStore.notifications;
   $: console.log("Updated notifications:", $notificationsStore.notifications);
 
-  socket.on("server-send-a-notification", (newNotificationData) => {
-    console.log("Received notification:", newNotificationData);
-    if (newNotificationData.targetUserId === userId) {
+  socket.on("server-send-a-notification", (notificationData) => {
+    console.log("Received notification:", notificationData);
+    if (notificationData && notificationData.targetUserId === userId) {
       // notifications = [...notifications, newNotification];
       notificationsStore.update((store) => {
         return {
-          notifications: [...store.notifications, newNotificationData],
+          notifications: [...store.notifications, notificationData],
           hasUnread: true,
         };
       });
-      if (notification.type === "invitation-accepted") {
-        Collaborators.addUserAsCollaborator(newNotificationData);
-      } else {
-        return;
+      switch (notificationData.type) {
+        case "invitation-accepted":
+          console.log("notification type:", notificationData.type)
+          addUserAsCollaborator(notificationData);
+          break;
+        default:
+          console.log("Unhandled notification type:", notificationData.type);
       }
+    } else {
+      console.log("Notification not for the current user.");
     }
   });
 
@@ -73,6 +80,7 @@
       accepted: true,
     };
     socket.emit("client-send-invitation-response", { notificationData });
+    dropdownOpen = false;
   }
 
   function declineInvitation(
@@ -94,7 +102,9 @@
       ideaId,
       accepted: false,
     };
+    console.log("declineInvitation/inviterId:", inviterId);
     socket.emit("client-send-invitation-response", { notificationData });
+    dropdownOpen = false;;
   }
 
   function handleCommentNotification(commentId) {
@@ -105,10 +115,10 @@
 <div>
   <Dropdown triggeredBy="#bell" size="sm" class="dropdown">
     <div slot="header" class="text-center py-2 font-bold">Notifications</div>
-    {#if !notifications}
+    {#if notifications.length === 0}
       <DropdownItem class="flex space-x-4">Nothing yet</DropdownItem>
     {/if}
-    {#each $notificationsStore.notifications as notification}
+    {#each notifications as notification}
       <DropdownItem class="flex space-x-4">
         <div class="notification-message">{notification.message}</div>
         {#if notification.type === "collaborator-invite"}

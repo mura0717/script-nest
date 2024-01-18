@@ -19,34 +19,32 @@
     ExclamationCircleOutline,
   } from "flowbite-svelte-icons";
   import default_image_thumbnail from "../../../assets/defaultImages/default_image_thumbnail.jpeg";
-  import { createEventDispatcher, onMount } from "svelte";
   import { getRequest, postRequest } from "../../../store/fetchStore";
+  import {
+    collaboratorStore,
+    removeCollaborator,
+  } from "../../../store/collaboratorStore.js";
   import { AppError } from "../../../utils/ErrorHandling/AppError";
 
   let searchEmail = "";
   let userSearchResult = "";
-  let addedCollaborators = [];
   let showDropdown = false;
   let showShareModal = false;
-  let currentCollaboratorIndex;
-  let showRemoveCollaboratorModal = false;
+  let showRemoveInviteModal = false;
   let invitationMessage = "";
+  let currentCollaboratorId;
   export let ideaTitle;
-  export let collaborators = [];
   export let ideaId;
   export let inviterInfo;
-  const collaboratorDispatch = createEventDispatcher();
 
-  $: if (Array.isArray(collaborators)) {
+  /* $: if (Array.isArray(collaborators)) {
     addedCollaborators = [...collaborators];
-  }
+  } */
 
-  async function inviteUserByEmail(userEmail) {
+  async function getUserByEmail(userEmail) {
     try {
       const response = await getRequest(
-        `/api/auth/user/inviteUserByEmail?email=${encodeURIComponent(
-          userEmail
-        )}`
+        `/api/auth/user/getUserByEmail?email=${encodeURIComponent(userEmail)}`
       );
       if (response && response.data) {
         const retrievedUser = response.data;
@@ -59,7 +57,7 @@
           },
         ];
       } else {
-        throw new AppError("Invitation not sent to:", { userEmail });
+        throw new AppError("Failed to send invitation to:", { userEmail });
       }
     } catch (error) {
       throw new AppError(`An error occured: ${error.message}`, {
@@ -71,7 +69,7 @@
   async function searchUsers() {
     if (searchEmail != "") {
       try {
-        const result = await inviteUserByEmail(searchEmail);
+        const result = await getUserByEmail(searchEmail);
         userSearchResult = result;
         showDropdown = true;
       } catch (error) {
@@ -96,21 +94,14 @@
           ideaId: ideaId,
           inviterInfo: inviterInfo,
         };
-        const response = postRequest(
-          `/api/auth/ideas/${ideaId}/collaborators`,
+        const response = await postRequest(
+          `/api/auth/ideas/${ideaId}/invite-collaborator`,
           collabData
         );
         if (response) {
-          console.log("adduser as collabresponse:", response);
-          //addedCollaborators = [...addedCollaborators, collaborator];
-          //collaboratorDispatch("updateCollaborators", addedCollaborators);
           invitationMessage = `Invitation sent to ${collaborator.displayName}`;
           searchEmail = "";
           userSearchResult = "";
-        } else {
-          throw new AppError(`An error occured: ${error.message}`, {
-            initialError: error,
-          });
         }
       }
     } catch (error) {
@@ -122,54 +113,18 @@
     }
   }
 
-  export async function addUserAsCollaborator(collabResponseData) {
-    try {
-      if (collabResponseData !== null) {
-        const collabData = {
-          displayName: collabResponseData.respondingUserName,
-          photoURL: collabResponseData.respondingUserPhotoUrl,
-          uid: collabResponseData.respondingUserId,
-          ideaTitle: collabResponseData.ideaTitle,
-          ideaId: collabResponseData.ideaId,
-          inviterId: collabResponseData.inviterId,
-        };
-        const response = postRequest(
-          `/api/auth/ideas/${collabData.ideaId}/collaborators`,
-          collabData
-        );
-        if (response) {
-          console.log("adduser as collabresponse:", response);
-          //addedCollaborators = [...addedCollaborators, collaborator];
-          //collaboratorDispatch("updateCollaborators", addedCollaborators);
-        } else {
-          throw new AppError(`An error occured: ${error.message}`, {
-            initialError: error,
-          });
-        }
-      }
-    } catch (error) {
-      console.log(
-        `Failed to add "${collabResponseData.respondingUserName}" as collaborator to "${collabResponseData.ideaTitle}".`
-      );
-      throw new AppError(`An error occured: ${error.message}`, {
-        initialError: error,
-      });
-    }
-  }
-
-  function removeCollaborator(collaboratorIndex) {
-    addedCollaborators = addedCollaborators.filter(
-      (_, i) => i !== collaboratorIndex
-    );
-  }
-
-  function openRemoveCollaboratorModal(collaboratorIndex) {
-    currentCollaboratorIndex = collaboratorIndex;
-    showRemoveCollaboratorModal = true;
-  }
-
   function openShareModal() {
     showShareModal = true;
+  }
+
+  function openRemoveCollaboratorModal(collaboratorId) {
+    currentCollaboratorId = collaboratorId;
+    showRemoveInviteModal = true;
+  }
+
+  function confirmRemoveCollaborator() {
+    removeCollaborator(ideaId, currentCollaboratorId);
+    showRemoveInviteModal = false;
   }
 </script>
 
@@ -179,10 +134,11 @@
     <p>Share</p>
   </Button>
   <div>
-    {#if addedCollaborators.length > 0}
+    <!-- DISPLAY COLLABORATORS -->
+    {#if $collaboratorStore.length > 0}
       <div class="collaborators-display">
         <Label class="collaborator-element-label">Collaborators:</Label>
-        {#each addedCollaborators as collaborator, collaboratorIndex}
+        {#each $collaboratorStore as collaborator}
           <Listgroup active class="collaborators-list-group">
             <ListgroupItem class="collaborators-list-group-item">
               <div class="collaborators-list-group-item-display">
@@ -194,8 +150,7 @@
                 <p>{collaborator.displayName}</p>
                 <button
                   class="remove-collaborator-button"
-                  on:click={() =>
-                    openRemoveCollaboratorModal(collaboratorIndex)}
+                  on:click={() => openRemoveCollaboratorModal(collaborator.id)}
                 >
                   <TrashBinSolid class="remove-collaborator-icon" />
                 </button>
@@ -208,6 +163,7 @@
       <p class="mt-3 ml-5 text-center">No collaborators yet.</p>
     {/if}
   </div>
+  <!-- SEARCH AND ADD MODAL -->
   <Modal bind:open={showShareModal} size="xs" autoclose={false}>
     <h3>Share "{ideaTitle || "Untitled New Idea"}"</h3>
     <form class="searchbar-collaborators-container">
@@ -255,20 +211,17 @@
       <p>{invitationMessage}</p>
     {/if}
   </Modal>
-  <Modal bind:open={showRemoveCollaboratorModal} size="xs" autoclose>
+  <!-- REMOVE COLLABORATOR -->
+  <Modal bind:open={showRemoveInviteModal} size="xs" autoclose>
     <div class="remove-collaborator-modal-container">
       <ExclamationCircleOutline size="lg" class="modal-exclamation-icon" />
       <h3 class="modal-text">Are you sure you want to remove collaborator?</h3>
-      <Button
-        color="red"
-        class="me-2"
-        on:click={() => removeCollaborator(currentCollaboratorIndex)}
+      <Button color="red" class="me-2" on:click={confirmRemoveCollaborator}
         >Yes, I'm sure</Button
       >
       <Button
         color="alternative"
-        on:click={() => (showRemoveCollaboratorModal = false)}
-        >No, cancel</Button
+        on:click={() => (showRemoveInviteModal = false)}>No, cancel</Button
       >
     </div>
   </Modal>

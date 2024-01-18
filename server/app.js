@@ -73,7 +73,7 @@ io.on("connection", (socket) => {
       accepted,
     } = notificationData;
 
-    const newNotificationData = {
+    const responseNotificationData = {
       type: accepted ? "invitation-accepted" : "invitation-declined",
       message: `"${respondingUserName}" ${
         accepted ? "accepted" : "declined"
@@ -86,7 +86,7 @@ io.on("connection", (socket) => {
       ideaId: ideaId,
     };
 
-    handleNotification(io, newNotificationData);
+    handleNotification(io, responseNotificationData);
   });
 
   //CLIENT - USER TEST DISCONNECTION
