@@ -20,10 +20,7 @@
   } from "flowbite-svelte-icons";
   import default_image_thumbnail from "../../../assets/defaultImages/default_image_thumbnail.jpeg";
   import { getRequest, postRequest } from "../../../store/fetchStore";
-  import {
-    collaboratorStore,
-    removeCollaborator,
-  } from "../../../store/collaboratorStore.js";
+  import { removeCollaborator } from "../../../store/collaboratorStore.js";
   import { AppError } from "../../../utils/ErrorHandling/AppError";
   import { toast } from "svelte-french-toast";
 
@@ -38,6 +35,8 @@
   export let ideaTitle;
   export let ideaId;
   export let inviterInfo;
+  export let currentUserUid;
+  export let collaborators = [];
 
   async function getUserByEmail(userEmail) {
     try {
@@ -99,6 +98,9 @@
           invitationMessage = `Invitation sent to ${collaborator.displayName}`;
           searchEmail = "";
           userSearchResult = "";
+          setTimeout(() => {
+            invitationMessage = "";
+          }, 3000);
         }
       }
     } catch (error) {
@@ -123,7 +125,7 @@
 
   function confirmRemoveCollaborator() {
     removeCollaborator(ideaId, currentCollaboratorId);
-    toast.success(`"${currentCollaboratorName}" removed successfully.`)
+    toast.success(`"${currentCollaboratorName}" removed successfully.`);
     showRemoveInviteModal = false;
   }
 </script>
@@ -134,11 +136,11 @@
     <p>Share</p>
   </Button>
   <div>
-    <!-- DISPLAY COLLABORATORS -->
-    {#if $collaboratorStore.length > 0}
+    <!-- DISPLAY OWNER & COLLABORATORS -->
+    {#if collaborators.length > 0 || inviterInfo.uid !== currentUserUid}
       <div class="collaborators-display">
         <Label class="collaborator-element-label">Collaborators:</Label>
-        {#each $collaboratorStore as collaborator}
+        {#each collaborators as collaborator}
           <Listgroup active class="collaborators-list-group">
             <ListgroupItem class="collaborators-list-group-item">
               <div class="collaborators-list-group-item-display">
@@ -150,7 +152,11 @@
                 <p>{collaborator.displayName}</p>
                 <button
                   class="remove-collaborator-button"
-                  on:click={() => openRemoveCollaboratorModal(collaborator.id, collaborator.displayName)}
+                  on:click={() =>
+                    openRemoveCollaboratorModal(
+                      collaborator.id,
+                      collaborator.displayName
+                    )}
                 >
                   <TrashBinSolid class="remove-collaborator-icon" />
                 </button>

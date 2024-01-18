@@ -2,7 +2,10 @@
   import Collaborators from "./../../components/IdeaFormElements/CollaboratorElement/Collaborators.svelte";
   import { onMount } from "svelte";
   import { userStore } from "../../store/userStore.js";
-  import { collaboratorStore, fetchCollaborators } from "../../store/collaboratorStore.js";
+  import {
+    collaboratorStore,
+    fetchCollaborators,
+  } from "../../store/collaboratorStore.js";
   import { fetchIdea } from "../../store/ideaFetchStore.js";
   import { fetchUpdate } from "../../store/ideaFetchStore.js";
   import { AppError } from "../../utils/ErrorHandling/AppError.js";
@@ -57,7 +60,6 @@
       try {
         const fetchedIdeaData = await fetchIdea(ideaId);
         idea = { ...fetchedIdeaData };
-        console.log("Idea/onMount, fetchedIdea:", idea);
         await fetchCollaborators(ideaId);
       } catch (error) {
         console.error("Error loading idea:", error);
@@ -66,8 +68,11 @@
     }
   });
 
-    let collaborators = $collaboratorStore;
-  $: console.log("Current collaborators:", collaborators); 
+  $: filteredCollaborators = $collaboratorStore.filter(
+    (collab) => collab.uid !== currentUserUid
+  );
+
+  let currentUserUid = $userStore.user.uid;
 
   function handleLitRefsUpdate(updatedLitRefs) {
     idea = { ...idea, literatureReferences: updatedLitRefs.detail };
@@ -86,7 +91,7 @@
   async function handleSaveIdea(currentIdeaId) {
     console.log("IdeaPage/ Saved IdeaId:", currentIdeaId);
     console.log("IdeaPage/ Saved Idea:", idea);
-    console.log("Idea/saveIdea, collaborators:", collaborators)
+    console.log("Idea/saveIdea, collaborators:", collaborators);
     savingMessageDisplay();
     if (currentIdeaId && idea) {
       try {
@@ -230,12 +235,15 @@
       </form>
     </div>
   </div>
+
   <!-- COLLABORATORS -->
-  <div>
+  <div class="collaborators">
     <Collaborators
       {ideaTitle}
       {ideaId}
       inviterInfo={owner}
+      collaborators={filteredCollaborators}
+      currentUserUid={$userStore.user.uid}
     />
   </div>
 </main>

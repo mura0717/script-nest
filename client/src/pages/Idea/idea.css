@@ -30,9 +30,16 @@
     gap: 10px; /* Adjust the space between button and text */
 }
 
- .saving-text{
+.saving-text {
   @apply mt-3 text-sm text-gray-500;
 } 
+
+.owner {
+
+}
+.collaborators {
+
+}
 
 .idea-form-container {
   flex-direction: column;
@@ -70,3 +77,4 @@
   grid-template-columns: repeat(7, 1fr); /* 2 columns for genres */
   gap: 10px;
 }
+
