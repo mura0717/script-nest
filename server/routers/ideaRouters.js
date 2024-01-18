@@ -5,17 +5,6 @@ import { catchAsync } from "../utils/ErrorHandling/GlobalErrorHandler.js";
 import isAuthenticated from "../middleware/isAuthenticated.js";
 import ideaServices from "../services/ideaServices.js";
 
-//GET ALL IDEAS
-router.get(
-  "/api/auth/ideas",
-  isAuthenticated,
-  catchAsync(async (req, res) => {
-    const userId = req.user.uid;
-    const ideas = await ideaServices.getAllIdeas(userId);
-    res.status(200).json(ideas);
-  })
-);
-
 // GET A SINGLE IDEA
 router.get(
   "/api/auth/ideas/:ideaId",
@@ -29,6 +18,39 @@ router.get(
     } else {
       res.status(404).json({ message: "Idea not found." });
     }
+  })
+);
+
+//GET ALL IDEAS
+router.get(
+  "/api/auth/ideas",
+  isAuthenticated,
+  catchAsync(async (req, res) => {
+    const userId = req.user.uid;
+    const ideas = await ideaServices.getAllIdeas(userId);
+    res.status(200).json(ideas);
+  })
+);
+
+//GET ALL SHARED IDEAS
+router.get(
+  "/api/auth/shared-ideas",
+  isAuthenticated,
+  catchAsync(async (req, res) => {
+    const userId = req.user.uid;
+    const ideas = await ideaServices.getAllSharedIdeas(userId);
+    res.status(200).json(ideas);
+  })
+);
+
+//GET ALL COLLABORATOR IDEAS
+router.get(
+  "/api/auth/collaborator-ideas",
+  isAuthenticated,
+  catchAsync(async (req, res) => {
+    const userId = req.user.uid;
+    const ideas = await ideaServices.getAllCollaboratorIdeas(userId);
+    res.status(200).json(ideas);
   })
 );
 

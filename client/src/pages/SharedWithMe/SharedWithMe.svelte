@@ -1,50 +1,114 @@
 <script>
+  import { onMount } from "svelte";
   import "../../styles/global.css";
-  import "./shared-with-me.css";
   import "../UserProfile/userprofile.css";
-  import { Card, Button } from "flowbite-svelte";
-  import { getRequest } from "../../store/fetchStore.js";
+  import { Card, Button, Modal } from "flowbite-svelte";
+  import { navigate } from "svelte-navigator";
+  import { AppError } from "../../utils/ErrorHandling/AppError.js";
+  import * as fetchStore from "../../store/fetchStore.js";
+  import { ExclamationCircleOutline } from "flowbite-svelte-icons";
+  import { fetchAllCollaboratorIdeas } from "../../store/ideaFetchStore.js";
   import IdeasSearchBar from "../../components/IdeasSearchBar/IdeasSearchBar.svelte";
+  import debounce from "debounce";
 
-  let sharedIdeas = [];
+  let userIdeas = [];
+  let filteredIdeas = [];
+  let showDeleteIdeaModal = false;
+  let currentIdeaId;
+  let refreshTrigger = 0;
 
-  console.log("Directed to Shared page");
-
-  function handleSearchInput(event) {
-    const searchTerm = event.target.value;
-    // Implement search logic here
+  async function fetchIdeas() {
+    const ideas = await fetchAllCollaboratorIdeas();
+    console.log("collaborator ideas:", ideas);
+    userIdeas = ideas;
+    filteredIdeas = ideas;
   }
+  onMount(fetchIdeas);
+
+  $: if (refreshTrigger) {
+    fetchIdeas();
+  }
+
+  function handleEditIdea(ideaId) {
+    console.log("userprofile/handleEdit, ideaId:", ideaId);
+    navigate(`/auth/user/ideas/${ideaId}`, { replace: true });
+  }
+
+  function openDeleteIdeaModal(ideaId) {
+    currentIdeaId = ideaId;
+    showDeleteIdeaModal = true;
+  }
+
+  async function deleteIdea(ideaId) {
+    try {
+      const response = await fetchStore.deleteRequest(
+        `/api/auth/ideas/${ideaId}`
+      );
+      if (response) {
+        console.log("delete response:", response);
+        refreshTrigger++;
+        return await response;
+      }
+    } catch (error) {
+      throw new AppError(`An error occured: ${error.message}`, {
+        initialError: error,
+        statusCode: error.statusCode || 500,
+      });
+    }
+  }
+
+  function handleSearchIdea(event) {
+    const searchTitleName = event.target.value.toLowerCase();
+    filteredIdeas = userIdeas.filter((idea) =>
+      idea.title.toLowerCase().includes(searchTitleName)
+    );
+  }
+
+  const debouncedIdeaSearch = debounce(handleSearchIdea, 500);
 </script>
 
 <main class="user-profile-main-container">
   <div class="user-profile-content w-full">
     <div class="mb-4 mt-4 ml-8 mr-8">
-      <IdeasSearchBar searchHandler={handleSearchInput} />
+      <IdeasSearchBar searchHandler={debouncedIdeaSearch} />
     </div>
-
-    <div class="idea-cards-container">
-      <Card class="border-2">
-        <h5
-          class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
-        >
-          Shared Idea Title
-        </h5>
-        <p
-          class="mb-3 font-normal text-gray-700 dark:text-gray-400 leading-tight"
-        >
-          Shared Idea content...
-        </p>
-        <div>
-          <Button class="p-2 w-fit mb-0">View</Button>
-          <Button class="p-2 w-fit mb-0">Remove</Button>
-        </div>
-      </Card>
-      <!-- Iterate over your userIdeas here to display cards -->
-      {#each sharedIdeas as idea}
-        <div class="idea-card">
-          <!-- Content of the card -->
-        </div>
-      {/each}
-    </div>
+    {#if filteredIdeas.length === 0}
+      <div>
+        <p class="no-ideas-yet-text">You don't have any ideas yet.</p>
+      </div>
+    {:else}
+      <div class="idea-cards-container">
+        {#each filteredIdeas as idea}
+          <Card size="xs" class="idea-card">
+            <h5 class="idea-card-title">{idea.title}</h5>
+            <p class="idea-card-content">{idea.logline}</p>
+            <div>
+              <Button
+                class="idea-card-button"
+                on:click={() => handleEditIdea(idea.id)}>Edit</Button
+              >
+              <Button
+                class="idea-card-button"
+                on:click={() => openDeleteIdeaModal(idea.id)}>Delete</Button
+              >
+            </div>
+          </Card>
+        {/each}
+      </div>
+    {/if}
   </div>
+  <Modal bind:open={showDeleteIdeaModal} size="xs" autoclose>
+    <div class="remove-ref-modal-container">
+      <ExclamationCircleOutline size="lg" class="modal-exclamation-icon" />
+      <h3 class="modal-text">Are you sure you want to delete this idea?</h3>
+      <Button
+        color="red"
+        class="me-2"
+        on:click={() => deleteIdea(currentIdeaId)}>Yes, I'm sure</Button
+      >
+      <Button color="alternative" on:click={() => (showDeleteIdeaModal = false)}
+        >No, cancel</Button
+      >
+    </div>
+  </Modal>
 </main>

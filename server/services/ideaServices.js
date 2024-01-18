@@ -11,10 +11,16 @@ export const ideaServices = {
     const ideaSnapshot = await ideaDocRef.get();
     if (ideaSnapshot.exists) {
       const ideaData = ideaSnapshot.data();
-      if (
-        ideaData.ownerId === userId ||
-        ideaData.collaborators.some((collab) => collab.uid === userId)
-      ) {
+      const collaboratorsSnapshot = await ideaDocRef
+        .collection("collaborators")
+        .get();
+      const collaborators = collaboratorsSnapshot.docs.map((doc) => doc.data());
+
+      const isCollaborator = collaborators.some(
+        (collab) => collab.uid === userId
+      );
+
+      if (ideaData.ownerId === userId || isCollaborator) {
         return { id: ideaSnapshot.id, ...ideaData };
       } else {
         throw new AppError("Access unauthorized", 401);
@@ -45,29 +51,33 @@ export const ideaServices = {
     }
   },
 
-  getAllSharedIdeas: async (collaboratorId) => {
+  getAllCollaboratorIdeas: async (userId) => {
     try {
       const ideasCollectionRef = db.collection("ideas");
       const ideasListSnapshot = await ideasCollectionRef.get();
-      let sharedIdeas = [];
-      if (!ideasListSnapshot.empty) {
-        ideasListSnapshot.forEach((doc) => {
+      let collaboratorIdeas = [];
+
+      for (const doc of ideasListSnapshot.docs) {
+        const collaboratorsSnapshot = await doc.ref
+          .collection("collaborators")
+          .where("uid", "==", userId)
+          .get();
+
+        if (!collaboratorsSnapshot.empty) {
           const ideaData = doc.data();
-          const isCollaborator = ideaData.collaborators.some(
-            (collab) => collab.uid === collaboratorId
-          );
-          if (isCollaborator) {
-            sharedIdeas.push({ id: doc.id, ...ideaData });
-          }
-        });
-        return sharedIdeas;
-      } else {
-        console.log("No shared ideas found for the user.");
-        return [];
+          collaboratorIdeas.push({ id: doc.id, ...ideaData });
+        }
       }
+
+      return collaboratorIdeas;
     } catch (error) {
+      console.error("Error in getAllCollaboratorIdeas:", error);
       handleError(error);
-      throw new AppError("Error fetching shared ideas from Firestore.", 404);
+      throw new AppError(
+        "Error fetching collaborator ideas from Firestore.",
+        error.status || 500,
+        error
+      );
     }
   },
 

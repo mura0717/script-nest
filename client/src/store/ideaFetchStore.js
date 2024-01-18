@@ -38,6 +38,40 @@ export async function fetchAllIdeas() {
   }
 }
 
+export async function fetchdAllSharedIdeas() {
+  try {
+    const response = await fetchStore.getRequest("/api/auth/shared-ideas");
+    if (response) {
+      return await response;
+    } else {
+      throw new AppError("Error fetching ideas", 400);
+    }
+  } catch (error) {
+    throw new AppError(`An error occured: ${error.message}`, {
+      initialError: error,
+      statusCode: error.statusCode || 500,
+    });
+  }
+}
+
+export async function fetchAllCollaboratorIdeas() {
+  try {
+    const response = await fetchStore.getRequest(
+      "/api/auth/collaborator-ideas"
+    );
+    if (response) {
+      return await response;
+    } else {
+      throw new AppError("Error fetching collaborator ideas", 400);
+    }
+  } catch (error) {
+    throw new AppError(`An error occured: ${error.message}`, {
+      initialError: error,
+      statusCode: error.statusCode || 500,
+    });
+  }
+}
+
 export async function fetchUpdate(ideaId, updatedIdeaData) {
   try {
     const response = await fetchStore.patchRequest(
