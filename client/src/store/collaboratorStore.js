@@ -35,15 +35,20 @@ export async function fetchCollaborators(ideaId) {
 }
 
 export async function addUserAsCollaborator(collabResponseData) {
+  console.log(
+    "collaboratorStore/collabResponseData in addUserAsCollaborator:",
+    collabResponseData
+  );
   try {
-    if (collabResponseData !== null) {
+    if (collabResponseData !== null) { 
       const collabData = {
-        displayName: collabResponseData.respondingUserName,
-        photoURL: collabResponseData.respondingUserPhotoUrl,
-        uid: collabResponseData.respondingUserId,
-        ideaTitle: collabResponseData.ideaTitle,
-        ideaId: collabResponseData.ideaId,
-        inviterId: collabResponseData.inviterId,
+        notificationId: collabResponseData.notificationId,
+        displayName: collabResponseData.respondingUserName || "",
+        uid: collabResponseData.respondingUserId || "",
+        ideaTitle: collabResponseData.ideaTitle || "",
+        ideaId: collabResponseData.ideaId || "",
+        targetUserId: collabResponseData.targetUserId,
+        targetUserName: collabResponseData.targetUserName,
       };
       const response = await postRequest(
         `/api/auth/ideas/${collabData.ideaId}/add-collaborator`,
@@ -56,7 +61,7 @@ export async function addUserAsCollaborator(collabResponseData) {
             return [...currentCollaborators, collabData];
           });
         } else {
-          const errorMessage = `Failed to ass collaborator. Server responded with status: ${response.status}`;
+          const errorMessage = `Failed to add collaborator. Server responded with status: ${response.status}`;
           throw new AppError(errorMessage, {
             statusCode: response.status,
           });

@@ -20,7 +20,7 @@ console.log(sessionSecret); */
 //===================SESSION SETUP=======================//
 
 import session from "express-session";
-const sessionMiddleware = session({
+export const sessionMiddleware = session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
@@ -29,102 +29,9 @@ const sessionMiddleware = session({
 app.use(sessionMiddleware);
 
 //===================SOCKET IO SETUP=====================//
-import http from "http";
-import { Server as SocketIOServer } from "socket.io";
-const server = http.createServer(app);
-export const io = new SocketIOServer(server, {
-  cors: {
-    origin: "*",
-    methods: ["*"],
-  },
-});
 
-const wrap = (middleware) => (socket, next) =>
-  middleware(socket.request, {}, next);
-io.use(wrap(sessionMiddleware));
-
-let userToSocketMap = {}; //in obj format for simpler updates & deletes
-
-io.on("connection", (socket) => {
-  console.log("Socket connected with id:", socket.id);
-
-  //CLIENT - USER TEST CONNECTION
-/*   socket.on("register-user", (userId) => {
-    userToSocketMap[userId] = socket.id;
-    console.log("register-user id:", userId, "Socket ID:", socket.id);
-  }); */
-
-  // COLLAB INVITATION
-  socket.on("client-send-a-notification", (notificationInfo) => {
-    console.log("Received notification for forwarding:", notificationInfo);
-    handleNotification(io, notificationInfo);
-  });
-
-  // COLLAB INVITATION REPLY
-  socket.on("client-send-invitation-response", (responseData) => {
-    const { notificationData } = responseData;
-    const {
-      invitationId,
-      respondingUserId,
-      respondingUserName,
-      respondingUserPhotoUrl,
-      targetUserId,
-      ideaTitle,
-      ideaId,
-      accepted,
-    } = notificationData;
-
-    const responseNotificationData = {
-      type: accepted ? "invitation-accepted" : "invitation-declined",
-      message: `"${respondingUserName}" ${
-        accepted ? "accepted" : "declined"
-      } your invitation for "${ideaTitle}"`,
-      invitationId: invitationId,
-      ideaTitle: ideaTitle,
-      targetUserId: targetUserId,
-      respondingUserId: respondingUserId,
-      respondingUserName: respondingUserName,
-      respondingUserPhotoUrl: respondingUserPhotoUrl,
-      ideaId: ideaId,
-    };
-
-    handleNotification(io, responseNotificationData);
-  });
-
-  //CLIENT - USER TEST DISCONNECTION
-/*   socket.on("disconnect", () => {
-    for (let userId in userToSocketMap) {
-      if (userToSocketMap[userId] === socket.id) {
-        delete userToSocketMap[userId];
-        console.log("Socket disconnected with id:", socket.id);
-        break;
-      }
-    }
-  }); */
-});
-
-export function handleNotification(io, notificationData) {
-  console.log("emittied notificationData:", notificationData);
-  io.emit("server-send-a-notification", notificationData);
-}
-
-// SOCKET TEST
-/*  io.on("connection", (socket) => {
-   console.log("Socket connected with id:", socket.id);
-   /*   eventEmitter.on("new-notification", (data) => {
-     socket.emit("new-notification", data);
-   }); 
-
-   socket.on("client-choose-a-color", (data) => {
-     console.log("Received data:", data); // Debugging
-     io.emit("server-sent-a-color", data);
-   });
-
-   // Don't forget to handle disconnection
-   socket.on("disconnect", () => {
-     console.log("Socket disconnected", socket.id);
-   });
- });*/
+import { socketServer } from "./sockets/sockets.js";
+const server = socketServer(app);
 
 //===================CORS SETUP=====================//
 import cors from "cors";
@@ -158,7 +65,6 @@ app.use(ideaRouters);
 import apiRouters from "./routers/apiRouters.js";
 app.use(apiRouters);
 
-import AppError from "./utils/ErrorHandling/AppError.js";
 import collabRouters from "./routers/collabRouters.js";
 app.use(collabRouters);
 
@@ -169,10 +75,5 @@ app.get("/test", (req, res) => {
 
 //===================SERVER===================//
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => console.log("Server is running on port ", PORT));
+server.listen(PORT, () => console.log("Server is running on port ", PORT));
 
-const SOCKET_PORT = process.env.SOCKET_PORT || 3000;
-server.listen(
-  SOCKET_PORT,
-  console.log("Server is listening on port:", SOCKET_PORT)
-);

@@ -48,8 +48,8 @@
             <div class="notification-alert-dot dark:border-gray-90"></div>
           {/if}
         </div>
-        <div>
-          <Notifications class="notifications-dropdown"/>
+        <div class="absolute">
+          <Notifications class="notifications-dropdown" />
         </div>
       </NavLi>
     </NavUl>

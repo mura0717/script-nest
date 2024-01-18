@@ -52,11 +52,8 @@ router.get(
   isAuthenticated,
   catchAsync(async (req, res, next) => {
     const { email } = req.query;
-    console.log("userRouter.js - Searched User Email:", email);
     try {
       const userRecord = await admin.auth().getUserByEmail(email);
-      console.log("userRouter.js - Searched User Record:", userRecord);
-
       if (userRecord) {
         const userData = {
           displayName: userRecord.displayName,

@@ -81,7 +81,6 @@
   }
 
   async function inviteUserAsCollaborator(collaborator) {
-    console.log("Collaborator Element - Add Collaborator:", collaborator);
     try {
       if (collaborator) {
         const collabData = {
