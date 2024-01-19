@@ -1,4 +1,5 @@
 <script>
+  import Comments from "./../../components/IdeaFormElements/CommentElement/Comments.svelte";
   import Collaborators from "./../../components/IdeaFormElements/CollaboratorElement/Collaborators.svelte";
   import { onMount } from "svelte";
   import { userStore } from "../../store/userStore.js";
@@ -12,7 +13,6 @@
   import TextElement from "../../components/IdeaFormElements/TextElement/TextElement.svelte";
   import LiteratureReferences from "../../components/IdeaFormElements/API/LiteratureReferences.svelte";
   import MovieReferences from "../../components/IdeaFormElements/API/MovieReferences.svelte";
-  import Comments from "../../components/IdeaFormElements/CommentElement/Comments.svelte";
   import debounce from "debounce";
   import { Button } from "flowbite-svelte";
   import "./idea.css";
@@ -22,6 +22,11 @@
   let isInitialLoad = true;
   let userMadeChanges = false;
   let currentUserUid = $userStore.user.uid;
+  let ideaOwner;
+  $: if (idea && idea.owner) {
+    ideaOwner = idea.owner;
+  }
+  console.log(ideaOwner);
 
   let owner = {
     photoURL: $userStore.user.photoURL,
@@ -47,44 +52,38 @@
   $: ideaTitle = idea.title;
 
   onMount(async () => {
-  const pathSegments = window.location.pathname.split("/");
-  ideaId = pathSegments[pathSegments.length - 1];
-  if (ideaId) {
-    try {
-      const fetchedIdeaData = await fetchIdea(ideaId);
-      if (fetchedIdeaData) {
-        idea = { ...fetchedIdeaData };
-        // Ensure userMadeChanges is not set during idea loading
-        userMadeChanges = false;
-        await fetchCollaborators(ideaId);
-      } else {
-        // New idea
-        idea.creationTimestamp = new Date().toISOString();
-        // Call handleSaveIdea only for new idea
-        handleSaveIdea(ideaId);
+    const pathSegments = window.location.pathname.split("/");
+    ideaId = pathSegments[pathSegments.length - 1];
+    if (ideaId) {
+      try {
+        const fetchedIdeaData = await fetchIdea(ideaId);
+        if (fetchedIdeaData) {
+          idea = { ...fetchedIdeaData };
+          ideaOwner = fetchIdea.owner;
+          userMadeChanges = false;
+          await fetchCollaborators(ideaId);
+        } else {
+          idea.creationTimestamp = new Date().toISOString();
+          handleSaveIdea(ideaId);
+        }
+      } catch (error) {
+        console.error("Error loading idea:", error);
+        throw new AppError("Error loading idea", 400);
       }
-    } catch (error) {
-      console.error("Error loading idea:", error);
-      throw new AppError("Error loading idea", 400);
+    } else {
+      // Handle case for new idea creation when there's no ideaId
+      idea.creationTimestamp = new Date().toISOString();
+      handleSaveIdea(null);
     }
-  } else {
-    // Handle case for new idea creation when there's no ideaId
-    idea.creationTimestamp = new Date().toISOString();
-    handleSaveIdea(null);
-  }
-  isInitialLoad = false;
-});
+    isInitialLoad = false;
+  });
 
-
-  $: filteredCollaborators = $collaboratorStore.filter(
-    (collab) => collab.uid !== currentUserUid
-  );
+  $: allCollaborators = $collaboratorStore;
 
   function handleInputChange(field, value) {
-  userMadeChanges = true;
-  idea[field] = value;
-}
-
+    userMadeChanges = true;
+    idea[field] = value;
+  }
 
   function handleLitRefsUpdate(updatedLitRefs) {
     userMadeChanges = true;
@@ -98,7 +97,7 @@
 
   function handleCommentsUpdate(updatedComments) {
     userMadeChanges = true;
-    idea.comments = updatedComments;
+    idea = {...idea, comments: updatedComments.detail};
   }
 
   async function handleSaveIdea(currentIdeaId) {
@@ -257,7 +256,10 @@
           </div>
           <!-- COMMENTS -->
           <div class="idea-form-element">
-            <Comments on:updateComments={handleCommentsUpdate} />
+            <Comments
+              bind:comments={idea.comments}
+              on:updateComments={handleCommentsUpdate}
+            />
           </div>
         </div>
       </form>
@@ -270,7 +272,8 @@
       {ideaTitle}
       {ideaId}
       inviterInfo={owner}
-      collaborators={filteredCollaborators}
+      collaborators={allCollaborators}
+      {ideaOwner}
     />
   </div>
 </main>

@@ -23,6 +23,7 @@
   import { removeCollaborator } from "../../../store/collaboratorStore.js";
   import { AppError } from "../../../utils/ErrorHandling/AppError";
   import { toast } from "svelte-french-toast";
+  import { userStore } from "../../../store/userStore";
 
   let searchEmail = "";
   let userSearchResult = "";
@@ -32,11 +33,12 @@
   let invitationMessage = "";
   let currentCollaboratorId;
   let currentCollaboratorName;
+  let currentUserUid = $userStore.user.uid;
   export let ideaTitle;
   export let ideaId;
   export let inviterInfo;
-  //export let currentUserUid;
   export let collaborators = [];
+  export let ideaOwner;
 
   async function getUserByEmail(userEmail) {
     try {
@@ -118,6 +120,11 @@
     }
   }
 
+  function canRemove() {
+    return inviterInfo.uid === currentUserUid;
+  }
+  console.log(canRemove());
+
   function openShareModal() {
     showShareModal = true;
   }
@@ -125,14 +132,21 @@
   function openRemoveCollaboratorModal(collaboratorId, collaboratorName) {
     currentCollaboratorId = collaboratorId;
     currentCollaboratorName = collaboratorName;
-
     showRemoveInviteModal = true;
   }
 
-  function confirmRemoveCollaborator() {
+  /*   function confirmRemoveCollaborator() {
     removeCollaborator(ideaId, currentCollaboratorId);
     toast.success(`"${currentCollaboratorName}" removed successfully.`);
     showRemoveInviteModal = false;
+  } */
+
+  function confirmRemoveCollaborator() {
+    if (canRemove()) {
+      removeCollaborator(ideaId, currentCollaboratorId);
+      toast.success(`"${currentCollaboratorName}" removed successfully.`);
+      showRemoveInviteModal = false;
+    }
   }
 </script>
 
@@ -144,7 +158,7 @@
   <div>
     <!-- DISPLAY OWNER & COLLABORATORS -->
     <div class="owner-display">
-      <p>Idea Author: {inviterInfo.displayName}</p>
+      <p>Idea Author: {ideaOwner}</p>
     </div>
     {#if collaborators.length > 0}
       <div class="collaborators-display">
@@ -161,6 +175,7 @@
                 <p>{collaborator.displayName}</p>
                 <button
                   class="remove-collaborator-button"
+                  disabled={!canRemove(collaborator)}
                   on:click={() =>
                     openRemoveCollaboratorModal(
                       collaborator.id,

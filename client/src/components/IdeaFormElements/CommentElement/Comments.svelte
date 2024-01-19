@@ -5,24 +5,18 @@
   import "../../../styles/global.css";
   import { createEventDispatcher, onMount } from "svelte";
   import { userStore } from "../../../store/userStore.js";
-
-  let comments = [];
+  export let comments = [];
+  let displayedComments = [];
   let comment = '';
-  let ideaOwnerName = $userStore.user.displayName;
-  let ownerId = $userStore.user.uid;
   let assignedName = "";
   const commentDispatch = createEventDispatcher();
 
-  function assignCommentatorName(ideaData, collabId){
+   $: if (Array.isArray(comments)) {
+    displayedComments = [...comments];
+  }
+
+  function assignCommentatorName(){
     assignedName = $userStore.user.displayName;
-    
-   /*  if(ideaData.owner.uid === collabId){
-      commentatorName = ideaOwnerName;
-    } else {
-      const collaborator = ideaData.collaborators.find(collab => collab.uid === collabId);
-      commentatorName = collaborator ? collaborator.displayName : 'Unknown User';
-    } */
-    
     return assignedName;
   } 
 
@@ -33,8 +27,8 @@
       commentText: comment,
       commentDate: new Date().toLocaleString().slice(0, 17),
     };
-    comments = [newComment, ...comments];
-    commentDispatch("updateComments", comments); //("event name", payload) to be send to the parent.
+    displayedComments = [newComment, ...displayedComments];
+    commentDispatch("updateComments", displayedComments); //("event name", payload)
     comment = '';
   }
 
@@ -48,10 +42,10 @@
   </div>
 
   <div class="comments-list-container">
-    {#each comments as comment}
+    {#each displayedComments as comment}
       <div class="comment-display">
-        <p class="comment-info">{comment.name} - {comment.date}</p>
-        <p>{comment.comment}</p>
+        <p class="comment-info">{comment.commentatorName} - {comment.commentDate}</p>
+        <p>{comment.commentText}</p>
       </div>
     {/each}
   </div>
