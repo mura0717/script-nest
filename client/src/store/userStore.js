@@ -29,6 +29,8 @@ const createUserStore = () => {
           isAdmin: isAdminStatus,
           isAuthInitialized: true,
           showSidebar: true,
+          showLogin: false,
+          showSignUp: false,
         });
         console.log("userStore-isAdminStatus:", isAdminStatus);
       } else {
@@ -37,6 +39,8 @@ const createUserStore = () => {
           isAdmin: false,
           isAuthInitialized: false,
           showSidebar: false,
+          showLogin: true,
+          showSignUp: true,
         });
       }
     } catch (error) {

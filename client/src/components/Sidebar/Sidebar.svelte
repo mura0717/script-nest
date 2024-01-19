@@ -12,7 +12,6 @@
     FileOutline,
     ArrowRightToBracketSolid,
     UserSettingsOutline,
-    TrashBinOutline,
     UsersSolid,
   } from "flowbite-svelte-icons";
   import { onMount } from "svelte";
@@ -23,7 +22,7 @@
   import { AppError } from "../../utils/ErrorHandling/AppError.js";
   import { postRequest } from "../../store/fetchStore";
 
-  let userName = ""; //REMOVED EXPORT HERE TO SEE IF IT STILL WORKS
+  let userName = "";
   onMount(() => {
     userName = $userStore.user.displayName;
   });

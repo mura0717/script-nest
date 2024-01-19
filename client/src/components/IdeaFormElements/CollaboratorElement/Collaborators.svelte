@@ -35,7 +35,7 @@
   export let ideaTitle;
   export let ideaId;
   export let inviterInfo;
-  export let currentUserUid;
+  //export let currentUserUid;
   export let collaborators = [];
 
   async function getUserByEmail(userEmail) {
@@ -77,6 +77,12 @@
     } else {
       userSearchResult = "";
     }
+  }
+
+  function isCollaboratorSelected(collabortorToCheck) {
+    return collaborators.some(
+      (collaborator) =>
+        collaborator.uid === collabortorToCheck.uid);
   }
 
   async function inviteUserAsCollaborator(collaborator) {
@@ -137,12 +143,15 @@
   </Button>
   <div>
     <!-- DISPLAY OWNER & COLLABORATORS -->
-    {#if collaborators.length > 0 || inviterInfo.uid !== currentUserUid}
+    <div class="owner-display">
+      <p>Idea Author: {inviterInfo.displayName}</p>
+    </div>
+    {#if collaborators.length > 0}
       <div class="collaborators-display">
         <Label class="collaborator-element-label">Collaborators:</Label>
         {#each collaborators as collaborator}
           <Listgroup active class="collaborators-list-group">
-            <ListgroupItem class="collaborators-list-group-item">
+            <ListgroupItem class="collaborators-list-group-item  border-1">
               <div class="collaborators-list-group-item-display">
                 <img
                   class="collaborator-avatar-image"
@@ -166,7 +175,7 @@
         {/each}
       </div>
     {:else}
-      <p class="mt-3 ml-5 text-center">No collaborators yet.</p>
+      <p class="no-collab-text">No collaborators yet.</p>
     {/if}
   </div>
   <!-- SEARCH AND ADD MODAL -->
@@ -174,7 +183,7 @@
     <h3>Share "{ideaTitle || "Untitled New Idea"}"</h3>
     <form class="searchbar-collaborators-container">
       <Search
-        size="sm"
+        size="md"
         class="searchbar-display rounded-r-none"
         placeholder="Add people..."
         bind:value={searchEmail}

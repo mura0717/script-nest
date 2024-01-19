@@ -1,7 +1,5 @@
 <script>
   import "./styles/global.css";
-  import { initializeApp } from "firebase/app";
-  import { authStore } from "./store/authStore.js";
   import { Router, Route } from "svelte-navigator";
   import { Toaster } from "svelte-french-toast";
 

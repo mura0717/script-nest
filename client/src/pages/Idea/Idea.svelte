@@ -19,16 +19,19 @@
   import "../../styles/global.css";
 
   let ideaId;
+  let isInitialLoad = true;
+  let userMadeChanges = false;
+  let currentUserUid = $userStore.user.uid;
+
   let owner = {
     photoURL: $userStore.user.photoURL,
     displayName: $userStore.user.displayName,
     uid: $userStore.user.uid,
   };
-  let creationTimestamp = new Date().toISOString();
 
   let idea = {
     owner: owner,
-    creationTimestamp: creationTimestamp,
+    creationTimestamp: null,
     title: "",
     logline: "",
     genre: "",
@@ -43,55 +46,62 @@
 
   $: ideaTitle = idea.title;
 
-  /*   let isNewIdea = true; // Flag to check if it's a new idea
-  let isInitialLoad = true;
-
-  const debounceSave = debounce(() => handleSaveIdea(ideaId), 2000);
-
-   $: if (!isInitialLoad && !isNewIdea) {
-    debounceSave();
-  } */
-
   onMount(async () => {
-    const pathSegments = window.location.pathname.split("/");
-    ideaId = pathSegments[pathSegments.length - 1];
-    console.log("IdeaId from URL:", ideaId);
-    if (ideaId) {
-      try {
-        const fetchedIdeaData = await fetchIdea(ideaId);
+  const pathSegments = window.location.pathname.split("/");
+  ideaId = pathSegments[pathSegments.length - 1];
+  if (ideaId) {
+    try {
+      const fetchedIdeaData = await fetchIdea(ideaId);
+      if (fetchedIdeaData) {
         idea = { ...fetchedIdeaData };
+        // Ensure userMadeChanges is not set during idea loading
+        userMadeChanges = false;
         await fetchCollaborators(ideaId);
-      } catch (error) {
-        console.error("Error loading idea:", error);
-        throw new AppError("Error loading idea", 400);
+      } else {
+        // New idea
+        idea.creationTimestamp = new Date().toISOString();
+        // Call handleSaveIdea only for new idea
+        handleSaveIdea(ideaId);
       }
+    } catch (error) {
+      console.error("Error loading idea:", error);
+      throw new AppError("Error loading idea", 400);
     }
-  });
+  } else {
+    // Handle case for new idea creation when there's no ideaId
+    idea.creationTimestamp = new Date().toISOString();
+    handleSaveIdea(null);
+  }
+  isInitialLoad = false;
+});
+
 
   $: filteredCollaborators = $collaboratorStore.filter(
     (collab) => collab.uid !== currentUserUid
   );
 
-  let currentUserUid = $userStore.user.uid;
+  function handleInputChange(field, value) {
+  userMadeChanges = true;
+  idea[field] = value;
+}
+
 
   function handleLitRefsUpdate(updatedLitRefs) {
+    userMadeChanges = true;
     idea = { ...idea, literatureReferences: updatedLitRefs.detail };
   }
 
   function handleMovieRefsUpdate(updatedMovieRefs) {
+    userMadeChanges = true;
     idea = { ...idea, movieReferences: updatedMovieRefs.detail };
   }
 
   function handleCommentsUpdate(updatedComments) {
-    console.log("Idea Page - Before handleCommentsUpdate:", idea.comments);
+    userMadeChanges = true;
     idea.comments = updatedComments;
-    console.log("Idea Page - After handleCommentsUpdate:", idea.comments);
   }
 
   async function handleSaveIdea(currentIdeaId) {
-    console.log("IdeaPage/ Saved IdeaId:", currentIdeaId);
-    console.log("IdeaPage/ Saved Idea:", idea);
-    console.log("Idea/saveIdea, collaborators:", collaborators);
     savingMessageDisplay();
     if (currentIdeaId && idea) {
       try {
@@ -108,10 +118,19 @@
       }
     }
   }
+  $: if (!isInitialLoad && userMadeChanges) {
+    debounceSave();
+  }
+  const debounceSave = debounce(() => {
+    if (userMadeChanges) {
+      handleSaveIdea(ideaId);
+      userMadeChanges = false;
+    }
+  }, 500);
 
   let savingText = "";
   function savingMessageDisplay() {
-    savingText = "(Saving...)";
+    savingText = "(Auto-Saving...)";
     setTimeout(() => {
       savingText = "";
     }, 2000);
@@ -123,7 +142,9 @@
   <div class="idea-container">
     <div class="idea-title-container">
       <div>
-        <p class="idea-title">{ideaTitle || "Untitled New Idea"}</p>
+        <div class="flex">
+          <p class="idea-title">{ideaTitle || "Untitled New Idea"}</p>
+        </div>
         <div class="save-container">
           <Button class="save-idea-button" on:click={handleSaveIdea}
             >Save</Button
@@ -142,6 +163,7 @@
               id="title-input"
               label="Title"
               bind:value={idea.title}
+              on:input={() => handleInputChange("title", idea.title)}
               rows={1}
               cols={50}
               placeholder=""
@@ -153,8 +175,9 @@
               id="logline-input"
               label="Logline"
               bind:value={idea.logline}
+              on:input={() => handleInputChange("logline", idea.logline)}
               rows={2}
-              cols={50}
+              cols={100}
               placeholder="Ex: When two young members of feuding families meet, forbidden love ensues."
             />
           </div>
@@ -164,6 +187,7 @@
               id="genre-input"
               label="Genre"
               bind:value={idea.genre}
+              on:input={() => handleInputChange("title", idea.genre)}
               rows={1}
               cols={50}
               placeholder="Ex: Romance, Drama..."
@@ -175,6 +199,7 @@
               id="premise-input"
               label="Premise"
               bind:value={idea.premise}
+              on:input={() => handleInputChange("title", idea.premise)}
               rows={1}
               cols={50}
               placeholder="Ex: Love conquers all."
@@ -186,6 +211,7 @@
               id="time-input"
               label="Time Period"
               bind:value={idea.timePeriod}
+              on:input={() => handleInputChange("title", idea.timePeriod)}
               rows={1}
               cols={50}
               placeholder="Ex: Sometime in 14th Century"
@@ -197,6 +223,7 @@
               id="setting-input"
               label="Setting"
               bind:value={idea.setting}
+              on:input={() => handleInputChange("title", idea.setting)}
               rows={1}
               cols={50}
               placeholder="Ex: Verona, Italy"
@@ -208,6 +235,7 @@
               id="synopsis-input"
               label="Synopsis"
               bind:value={idea.synopsis}
+              on:input={() => handleInputChange("title", idea.synopsis)}
               rows={15}
               cols={50}
               placeholder="A detailed description of the plot goes here..."
@@ -243,7 +271,6 @@
       {ideaId}
       inviterInfo={owner}
       collaborators={filteredCollaborators}
-      currentUserUid={$userStore.user.uid}
     />
   </div>
 </main>

@@ -16,7 +16,7 @@
   import debounce from "debounce";
   import { AppError } from "../../../utils/ErrorHandling/AppError";
   import { handleError } from "../../../utils/ErrorHandling/GlobalErrorHandlerClient";
-  import { createEventDispatcher, onMount } from "svelte";
+  import { createEventDispatcher } from "svelte";
 
   let searchMovieName = "";
   let movieSearchResults = [];
@@ -37,7 +37,6 @@
         `/api/auth/movies/search?q=${encodeURIComponent(query)}`
       );
       if (response && response.filmId && response.filmId.results) {
-        console.log("MovieRef- TMDB api response:", response);
         return response.filmId.results.slice(0, 5).map((item) => ({
           thumbnail: item.poster_path
             ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
@@ -80,12 +79,12 @@
   async function selectMovie(movie) {
     console.log(movie);
     try {
-      if (movie) {
+      if (!isMovieSelected(movie) && movie) {
         const movieReference = {
           coverImageUrl: movie.thumbnail,
           title: movie.title,
           releaseDate: movie.releaseDate,
-        };
+        }
         selectedMovies = [...selectedMovies, movie];
         movieRefDispatch("updateMovieRefs", selectedMovies);
         movieSearchResults = [];
@@ -99,8 +98,18 @@
     }
   }
 
+  function isMovieSelected(movieToCheck) {
+    return selectedMovies.some(
+      (movie) =>
+        movie.title === movieToCheck.title &&
+        movie.releaseDate === movieToCheck.releaseDate &&
+        movie.thumbnail === movieToCheck.thumbnail
+    );
+  }
+
   function removeMovie(movieIndex) {
     selectedMovies = selectedMovies.filter((_, i) => i !== movieIndex);
+    movieRefDispatch("updateMovieRefs", selectedMovies);
   }
 
   function openRemoveMovieModal(movieIndex) {
@@ -114,17 +123,18 @@
     >Film References:</Label
   >
   <form class="search-bar">
-     <Search
+    <Search
       size="md"
       on:input={(event) => debouncedSearchMovies(event.target.value)}
       bind:value={searchMovieName}
     />
- 
+
     {#if movieSearchResults.length > 0}
       <Dropdown class="dropdown" size="md" bind:open={showDropdown}>
         {#each movieSearchResults as movie}
           <DropdownItem
             class="dropdown-item"
+            disabled={isMovieSelected(movie)}
             on:click={() => selectMovie(movie)}
           >
             <img
@@ -168,7 +178,7 @@
 
   <Modal bind:open={showRemoveMovieModal} size="xs" autoclose>
     <div class="remove-ref-modal-container">
-      <ExclamationCircleOutline size="lg" class="modal-exclamation-icon" />
+      <ExclamationCircleOutline size="xl" class="modal-exclamation-icon" />
       <h3 class="modal-text">
         Are you sure you want to remove this film reference?
       </h3>

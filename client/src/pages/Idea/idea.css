@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .idea-page-container {
-  @apply flex ml-8;
+  @apply w-full flex ml-8;
 }
 
 .idea-container {

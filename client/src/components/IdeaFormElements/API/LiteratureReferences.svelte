@@ -30,14 +30,13 @@
   $: if (Array.isArray(literatureReferences)) {
     selectedBooks = [...literatureReferences];
   }
-  
+
   async function fetchBooks(searchQuery) {
     try {
       const response = await getRequest(
         `/api/auth/books/search?q=${encodeURIComponent(searchQuery)}`
       );
       if (response && response.bookId && response.bookId.items) {
-        console.log("LitRef-google book api response:", response);
         return response.bookId.items.slice(0, 5).map((item) => ({
           thumbnail: item.volumeInfo.imageLinks
             ? item.volumeInfo.imageLinks.smallThumbnail
@@ -83,15 +82,17 @@
   async function selectBook(book) {
     console.log(book);
     try {
-      if (book) {
+      if (!isBookSelected(book) && book) {
         const bookReference = {
           coverImageUrl: book.thumbnail,
           title: book.title,
-          authors: Array.isArray(book.authors) ? book.authors.join(", ") : "Unknown author(s)",
+          authors: Array.isArray(book.authors)
+            ? book.authors.join(", ")
+            : "Unknown author(s)",
           publishedDate: book.publishedDate,
         };
         if (Array.isArray(selectedBooks)) {
-          selectedBooks = [...selectedBooks, book];
+          selectedBooks = [...selectedBooks, bookReference];
           litRefDispatch("updateLitRefs", selectedBooks);
           bookSearchResults = [];
           searchBookName = "";
@@ -105,8 +106,18 @@
     }
   }
 
+  function isBookSelected(bookToCheck) {
+    return selectedBooks.some(
+      (book) =>
+        book.title === bookToCheck.title &&
+        book.publishedDate === bookToCheck.publishedDate &&
+        book.thumbnail === bookToCheck.thumbnail
+    );
+  }
+
   function removeBook(bookIndex) {
     selectedBooks = selectedBooks.filter((_, i) => i !== bookIndex);
+    litRefDispatch("updateLitRefs", selectedBooks);
   }
 
   function openRemoveBookModal(bookIndex) {
@@ -128,7 +139,11 @@
     {#if bookSearchResults.length > 0}
       <Dropdown class="dropdown" size="md" bind:open={showDropdown}>
         {#each bookSearchResults as book}
-          <DropdownItem class="dropdown-item" on:click={() => selectBook(book)}>
+          <DropdownItem
+            class="dropdown-item"
+            disabled={isBookSelected(book)}
+            on:click={() => selectBook(book)}
+          >
             <img class="ref-thumbnail" src={book.thumbnail} alt={book.title} />
             {book.title}
             ({book.authors})
@@ -152,7 +167,11 @@
           <!-- DETAILS on HOVER -->
           <div class="ref-details">
             <p>{book.title}</p>
-            <p>({Array.isArray(book.authors) ? book.authors.join(", ") : "Unknown author(s)"},</p>
+            <p>
+              ({Array.isArray(book.authors)
+                ? book.authors.join(", ")
+                : "Unknown author(s)"},
+            </p>
             <p>{book.publishedDate})</p>
           </div>
           <button
@@ -167,7 +186,7 @@
 
   <Modal bind:open={showRemoveBookModal} size="xs" autoclose>
     <div class="remove-ref-modal-container">
-      <ExclamationCircleOutline size="lg" class="modal-exclamation-icon" />
+      <ExclamationCircleOutline size="xl" class="modal-exclamation-icon" />
       <h3 class="modal-text">
         Are you sure you want to remove this literature reference?
       </h3>

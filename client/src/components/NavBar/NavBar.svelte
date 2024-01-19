@@ -1,4 +1,5 @@
 <script>
+  import Signup from "./../../pages/Signup/Signup.svelte";
   import {
     Navbar,
     NavBrand,
@@ -32,27 +33,31 @@
       />
     </NavBrand>
     <NavHamburger />
-    <NavUl>
-      <NavLi class="navbar-elements-style" href="/auth/login">Login</NavLi>
-      <NavLi class="navbar-elements-style" href="/auth/signup">Signup</NavLi>
+    <NavUl class="mr-16">
+      {#if $userStore.showLogin}
+        <NavLi class="navbar-elements-style" href="/auth/login">Login</NavLi>
+      {/if}
+      {#if $userStore.SignUp}
+        <NavLi class="navbar-elements-style" href="/auth/signup">Signup</NavLi>
+      {/if}
       <NavLi class="navbar-elements-style" href="/auth/contact">Contact</NavLi>
       {#if loggedIn}
-      <NavLi
-        ><div
-          id="bell"
-          class="notification-bell"
-          on:click={resetNotificationIndicator}
-          on:keydown={resetNotificationIndicator}
-        >
-          <BellSolid class="notification-bell-solid" />
-          {#if hasUnreadNotifications}
-            <div class="notification-alert-dot dark:border-gray-90"></div>
-          {/if}
-        </div>
-        <div class="absolute">
-          <Notifications class="notifications-dropdown" />
-        </div>
-      </NavLi>
+        <NavLi
+          ><div
+            id="bell"
+            class="notification-bell"
+            on:click={resetNotificationIndicator}
+            on:keydown={resetNotificationIndicator}
+          >
+            <BellSolid class="notification-bell-solid" />
+            {#if hasUnreadNotifications}
+              <div class="notification-alert-dot dark:border-gray-90"></div>
+            {/if}
+          </div>
+          <div class="absolute">
+            <Notifications class="notifications-dropdown" />
+          </div>
+        </NavLi>
       {/if}
     </NavUl>
   </Navbar>

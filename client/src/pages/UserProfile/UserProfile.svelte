@@ -101,7 +101,7 @@
   </div>
   <Modal bind:open={showDeleteIdeaModal} size="xs" autoclose>
     <div class="remove-ref-modal-container">
-      <ExclamationCircleOutline size="lg" class="modal-exclamation-icon" />
+      <ExclamationCircleOutline size="xl" class="modal-exclamation-icon" />
       <h3 class="modal-text">Are you sure you want to delete this idea?</h3>
       <Button
         color="red"
