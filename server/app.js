@@ -50,28 +50,21 @@ app.use(
 })); */
 
 //===================ROUTERS=====================//
-import authRouters from "./routers/authRouters.js";
-app.use(authRouters);
 
-import adminRouters from "./routers/adminRouters.js";
-app.use(adminRouters);
+import adminRouter from "./routers/adminRouter.js";
+app.use(adminRouter);
 
-import userRouters from "./routers/userRouters.js";
-app.use(userRouters);
+import usersRouter from "./routers/usersRouter.js";
+app.use(usersRouter);
 
-import ideaRouters from "./routers/ideaRouters.js";
-app.use(ideaRouters);
+import ideasRouter from "./routers/ideasRouter.js";
+app.use(ideasRouter);
 
-import apiRouters from "./routers/apiRouters.js";
-app.use(apiRouters);
+import apiRouter from "./routers/apiRouter.js";
+app.use(apiRouter);
 
-import collabRouters from "./routers/collabRouters.js";
-app.use(collabRouters);
-
-//Server Endpoint Test
-app.get("/test", (req, res) => {
-  res.send("Test endpoint is working.");
-});
+import collabRouter from "./routers/collabRouter.js";
+app.use(collabRouter);
 
 //===================SERVER===================//
 const PORT = process.env.PORT || 8080;

@@ -6,9 +6,8 @@ const isAdmin = catchAsync(async (req, res, next) => {
   const header = req.headers.authorization;
   const idToken = header.split(" ")[1];
   const decodedToken = await admin.auth().verifyIdToken(idToken);
-  // Checks if the decoded token has isAdmin claim present.
   if (decodedToken.isAdmin) {
-    next(); // User is an admin, proceed to the next middleware/route handler
+    next();
   } else {
     next(new AppError("Access denied. Admins only.", 403));
   }

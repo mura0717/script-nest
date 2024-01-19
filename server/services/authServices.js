@@ -1,5 +1,6 @@
 import { admin } from "../config/firebaseAdmin.js";
 import AppError from '../utils/ErrorHandling/AppError.js';
+import authRouter from "../routers/authRouter.js"
 
 export const signupServices = {
   registerUserWithFirebase: async (newUser) => {
