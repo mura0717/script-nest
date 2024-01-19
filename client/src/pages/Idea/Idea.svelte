@@ -14,15 +14,15 @@
   import LiteratureReferences from "../../components/IdeaFormElements/API/LiteratureReferences.svelte";
   import MovieReferences from "../../components/IdeaFormElements/API/MovieReferences.svelte";
   import debounce from "debounce";
-  import { Button } from "flowbite-svelte";
+
   import "./idea.css";
   import "../../styles/global.css";
 
   let ideaId;
   let isInitialLoad = true;
   let userMadeChanges = false;
-  let currentUserUid = $userStore.user.uid;
-  let ideaOwner;
+
+  export let ideaOwner;
   $: if (idea && idea.owner) {
     ideaOwner = idea.owner;
   }
@@ -71,7 +71,6 @@
         throw new AppError("Error loading idea", 400);
       }
     } else {
-      // Handle case for new idea creation when there's no ideaId
       idea.creationTimestamp = new Date().toISOString();
       handleSaveIdea(null);
     }
@@ -85,9 +84,10 @@
     idea[field] = value;
   }
 
-  function handleLitRefsUpdate(updatedLitRefs) {
+   function handleLitRefsUpdate(updatedLitRefs) {
     userMadeChanges = true;
-    idea = { ...idea, literatureReferences: updatedLitRefs.detail };
+    idea = { ...idea, literatureReferences: updatedLitRefs.detail };;
+
   }
 
   function handleMovieRefsUpdate(updatedMovieRefs) {
@@ -97,7 +97,7 @@
 
   function handleCommentsUpdate(updatedComments) {
     userMadeChanges = true;
-    idea = {...idea, comments: updatedComments.detail};
+    idea = { ...idea, comments: updatedComments.detail };
   }
 
   async function handleSaveIdea(currentIdeaId) {
@@ -106,7 +106,10 @@
       try {
         const updatedIdea = await fetchUpdate(ideaId, idea);
         if (updatedIdea) {
+          console.log(" idea1:", idea)
           idea = { ...idea, ...updatedIdea };
+          console.log("updated idea:", updatedIdea)
+            console.log(" idea2:", idea)
         } else {
           throw new AppError("Couldn't update idea", { ideaId });
         }
@@ -143,11 +146,6 @@
       <div>
         <div class="flex">
           <p class="idea-title">{ideaTitle || "Untitled New Idea"}</p>
-        </div>
-        <div class="save-container">
-          <Button class="save-idea-button" on:click={handleSaveIdea}
-            >Save</Button
-          >
           <p class="saving-text">{savingText}</p>
         </div>
       </div>
@@ -240,11 +238,11 @@
               placeholder="A detailed description of the plot goes here..."
             />
           </div>
-          <!-- LITERATURE REFERENCES -->
-          <div class="idea-form-element" id="lit-ref-input">
+          <!-- BOOK REFERENCES -->
+          <div class="idea-form-element" id="book-ref-input">
             <LiteratureReferences
               bind:literatureReferences={idea.literatureReferences}
-              on:updateLitRefs={handleLitRefsUpdate}
+              on:updateBookRefs={handleLitRefsUpdate}
             />
           </div>
           <!-- FILM REFERENCES -->
@@ -273,7 +271,6 @@
       {ideaId}
       inviterInfo={owner}
       collaborators={allCollaborators}
-      {ideaOwner}
     />
   </div>
 </main>

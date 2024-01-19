@@ -12,7 +12,7 @@
   } from "flowbite-svelte";
   import { ExclamationCircleOutline } from "flowbite-svelte-icons";
   import default_image_thumbnail from "../../../assets/defaultImages/default_image_thumbnail.jpeg";
-  import { getRequest, postRequest } from "../../../store/fetchStore";
+  import { getRequest } from "../../../store/fetchStore";
   import debounce from "debounce";
   import { AppError } from "../../../utils/ErrorHandling/AppError";
   import { handleError } from "../../../utils/ErrorHandling/GlobalErrorHandlerClient";
@@ -48,9 +48,7 @@
             : "No publication date",
         }));
       } else {
-        throw new AppError("No data found from Google Books", {
-          query: searchQuery,
-        });
+        throw new AppError("No data found from Google Books", {});
       }
     } catch (error) {
       throw new AppError(`An error occured: ${error.message}`, {
@@ -66,7 +64,6 @@
         const results = await fetchBooks(bookName);
         bookSearchResults = results;
         showDropdown = true;
-        console.log("showDropdown:", showDropdown);
       } catch (error) {
         throw new AppError(`An error occured: ${error.message}`, {
           initialError: error,
@@ -80,11 +77,11 @@
   const debouncedSearchBooks = debounce(searchBooks, 500);
 
   async function selectBook(book) {
-    console.log(book);
+    console.log("selectBook:", book);
     try {
       if (book && !isBookSelected(book)) {
         const bookReference = {
-          coverImageUrl: book.thumbnail,
+          coverImageUrl: book.coverImageUrl,
           title: book.title,
           authors: Array.isArray(book.authors)
             ? book.authors.join(", ")

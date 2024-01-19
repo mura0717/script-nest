@@ -62,7 +62,7 @@
       })
       .catch((error) => {
         handleError(error);
-        console.error("Logout error:", error);
+        console.error("Sign out error:", error);
       });
   }
 </script>

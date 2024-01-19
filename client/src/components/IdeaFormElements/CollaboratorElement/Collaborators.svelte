@@ -38,6 +38,7 @@
   export let ideaId;
   export let inviterInfo;
   export let collaborators = [];
+  export let ideaOwner = "";
 
   async function getUserByEmail(userEmail) {
     try {
@@ -47,12 +48,14 @@
       if (response && response.data) {
         const retrievedUser = response.data;
         userEmail = "";
+        console.log("retrievedUser", retrievedUser);
         return [
           {
             photoURL: retrievedUser.photoURL || default_image_thumbnail,
             displayName: retrievedUser.displayName || "Unknown User",
             uid: retrievedUser.uid || "Unknown UID",
           },
+          console.log("retrievedUser", retrievedUser.displayName),
         ];
       } else {
         throw new AppError("Failed to send invitation to:", { userEmail });
@@ -97,6 +100,7 @@
           ideaId: ideaId,
           inviterInfo: inviterInfo,
         };
+        console - log("2invite users stotr:", collabData);
         const response = await postRequest(
           `/api/auth/ideas/${ideaId}/invite-collaborator`,
           collabData
@@ -135,22 +139,22 @@
   }
 
   function confirmRemoveCollaborator() {
-    if (canRemove()) {
-      removeCollaborator(ideaId, currentCollaboratorId);
-      toast.success(`"${currentCollaboratorName}" removed successfully.`);
-      showRemoveInviteModal = false;
-    }
+    removeCollaborator(ideaId, currentCollaboratorId);
+    toast.success(`"${currentCollaboratorName}" removed successfully.`);
+    showRemoveInviteModal = false;
   }
 </script>
 
-<div class="collaborators-container">
-  <Button class="share-modal-button" on:click={openShareModal}>
+<div class="collaborators-container mr-16">
+  <Button class="share-modal-button " on:click={openShareModal}>
     <GlobeSolid />
     <p>Share</p>
   </Button>
   <div>
     <!-- DISPLAY OWNER & COLLABORATORS -->
-
+    <div class="owner-display">
+      <p>Idea Author: {inviterInfo.displayName}</p>
+    </div>
     {#if collaborators.length > 0}
       <div class="collaborators-display">
         <Label class="collaborator-element-label">Collaborators:</Label>

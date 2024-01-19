@@ -10,10 +10,8 @@ export async function fetchCollaborators(ideaId) {
       `/api/auth/ideas/${ideaId}/collaborators`
     );
     if (collaboratorResponse) {
-      const collaborators = await collaboratorResponse;
+      const collaborators = collaboratorResponse;
       collaboratorStore.set(collaborators || []);
-      collaboratorStore.subscribe((value) => {
-      });
     } else {
       const errorMessage = `Failed to fetch collaborators . Server responded with status: ${response.status}`;
       throw new AppError(errorMessage, {

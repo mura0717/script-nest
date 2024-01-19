@@ -15,8 +15,8 @@ app.use(errorMiddleware);
 // Use it to create a session secret.
 /* import crypto from "crypto";
 const sessionSecret = crypto.randomBytes(64).toString("hex");
-console.log(sessionSecret); */
-
+console.log(sessionSecret);
+ */
 //===================SESSION SETUP=======================//
 
 import session from "express-session";
