@@ -82,7 +82,7 @@
   async function selectBook(book) {
     console.log(book);
     try {
-      if (!isBookSelected(book) && book) {
+      if (book && !isBookSelected(book)) {
         const bookReference = {
           coverImageUrl: book.thumbnail,
           title: book.title,

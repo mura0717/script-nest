@@ -81,13 +81,13 @@
 
   function isCollaboratorSelected(collabortorToCheck) {
     return collaborators.some(
-      (collaborator) =>
-        collaborator.uid === collabortorToCheck.uid);
+      (collaborator) => collaborator.uid === collabortorToCheck.uid
+    );
   }
 
   async function inviteUserAsCollaborator(collaborator) {
     try {
-      if (collaborator) {
+      if (collaborator && !isCollaboratorSelected(collaborator)) {
         const collabData = {
           displayName: collaborator.displayName,
           photoURL: collaborator.photoURL,
@@ -213,6 +213,7 @@
               <Button
                 size="sm"
                 class="add-collaborator-button"
+                disabled={isCollaboratorSelected(user)}
                 on:click={() => inviteUserAsCollaborator(user)}
               >
                 <UserAddOutline class="add-collaborator-icon" />

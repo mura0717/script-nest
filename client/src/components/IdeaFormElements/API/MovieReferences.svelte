@@ -79,7 +79,7 @@
   async function selectMovie(movie) {
     console.log(movie);
     try {
-      if (!isMovieSelected(movie) && movie) {
+      if (movie && !isMovieSelected(movie)) {
         const movieReference = {
           coverImageUrl: movie.thumbnail,
           title: movie.title,
