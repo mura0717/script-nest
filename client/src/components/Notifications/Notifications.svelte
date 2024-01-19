@@ -10,6 +10,7 @@
   import { userStore } from "../../store/userStore.js";
   import { notificationsStore } from "../../store/notificationsStore.js";
   import { addUserAsCollaborator } from "../../store/collaboratorStore.js";
+  import { Toaster } from "svelte-french-toast";
 
   const socket = io("localhost:8080");
   let userId = "";
@@ -64,6 +65,7 @@
     };
     addUserAsCollaborator(notificationData);
     socket.emit("invite-accepted", { notificationData });
+    toast.success("You have accepted invitation.")
   }
 
   function declineInvitation(notification) {
@@ -80,8 +82,10 @@
       accepted: false,
     };
     socket.emit("invite-declined", { notificationData });
+    toast.error("You have declined the invitation.")
   }
 </script>
+<Toaster />
 
 <div>
   <Dropdown triggeredBy="#bell" size="sm" class="dropdown">

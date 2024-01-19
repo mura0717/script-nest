@@ -38,7 +38,6 @@
   export let ideaId;
   export let inviterInfo;
   export let collaborators = [];
-  export let ideaOwner;
 
   async function getUserByEmail(userEmail) {
     try {
@@ -135,12 +134,6 @@
     showRemoveInviteModal = true;
   }
 
-  /*   function confirmRemoveCollaborator() {
-    removeCollaborator(ideaId, currentCollaboratorId);
-    toast.success(`"${currentCollaboratorName}" removed successfully.`);
-    showRemoveInviteModal = false;
-  } */
-
   function confirmRemoveCollaborator() {
     if (canRemove()) {
       removeCollaborator(ideaId, currentCollaboratorId);
@@ -157,9 +150,7 @@
   </Button>
   <div>
     <!-- DISPLAY OWNER & COLLABORATORS -->
-    <div class="owner-display">
-      <p>Idea Author: {ideaOwner}</p>
-    </div>
+
     {#if collaborators.length > 0}
       <div class="collaborators-display">
         <Label class="collaborator-element-label">Collaborators:</Label>

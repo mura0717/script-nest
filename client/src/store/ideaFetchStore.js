@@ -7,12 +7,9 @@ export async function fetchIdea(ideaId) {
     const ideaResponse = await fetchStore.getRequest(
       `/api/auth/ideas/${ideaId}`
     );
-    console.log("fetchIdea ideaResponse:", ideaResponse);
     if (!ideaResponse) {
       throw new AppError(`Failed to fetch idea with ID: ${ideaId}`);
     }
-    const collaborators = await collaboratorStore.fetchCollaborators(ideaId) || [];
-    console.log("ideaFetchStore/collaboratorsResponse:", collaborators);
     return { ...ideaResponse};
   } catch (error) {
     throw new AppError(`An error occured: ${error.message}`, {

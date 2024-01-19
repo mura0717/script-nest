@@ -19,7 +19,6 @@
 
   async function fetchIdeas() {
     const ideas = await fetchAllIdeas();
-    console.log("all ideas:", ideas);
     userIdeas = ideas;
     filteredIdeas = ideas;
   }
