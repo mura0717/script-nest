@@ -81,7 +81,7 @@
       <div class="idea-cards-container">
         {#each filteredIdeas as idea}
           <Card size="xs" class="idea-card">
-            <h5 class="idea-card-title">{idea.title}</h5>
+            <h5 class="idea-card-title">{idea.title || "Untitled Idea"}</h5>
             <p class="idea-card-content">{idea.logline || "Lorem ipsum..."}</p>
             <div>
               <Button

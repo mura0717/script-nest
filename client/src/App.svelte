@@ -11,7 +11,7 @@
 
   import PrivateRoute from "./components/PrivateRoutes/PrivateRoute.svelte";
   import UserProfile from "./pages/UserProfile/UserProfile.svelte";
-  import SideBar from "./components/SideBar/SideBar.svelte";
+  import SideBar from "./components/Sidebar/Sidebar.svelte"
   import Idea from "./pages/Idea/Idea.svelte";
   import SharedWithMe from "./pages/SharedWithMe/SharedWithMe.svelte";
   import Settings from "./pages/Settings/Settings.svelte";
@@ -35,9 +35,11 @@
       <main class="main-content">
 
         <!-- Public Routes -->
+         {#if !$userStore.user}
         <Route path="/" component={Index}></Route>
         <Route path="/auth/signup" component={Signup}></Route>
         <Route path="/auth/login" component={Login}></Route>
+        {/if}
         <Route path="/auth/contact" component={Contact}></Route>
 
         <!-- Private Routes -->
