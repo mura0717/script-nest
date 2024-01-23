@@ -184,7 +184,7 @@
               id="genre-input"
               label="Genre"
               bind:value={idea.genre}
-              on:input={() => handleInputChange("title", idea.genre)}
+              on:input={() => handleInputChange("genre", idea.genre)}
               rows={1}
               cols={50}
               placeholder="Ex: Romance, Drama..."
@@ -196,7 +196,7 @@
               id="premise-input"
               label="Premise"
               bind:value={idea.premise}
-              on:input={() => handleInputChange("title", idea.premise)}
+              on:input={() => handleInputChange("premise", idea.premise)}
               rows={1}
               cols={50}
               placeholder="Ex: Love conquers all."
@@ -208,7 +208,7 @@
               id="time-input"
               label="Time Period"
               bind:value={idea.timePeriod}
-              on:input={() => handleInputChange("title", idea.timePeriod)}
+              on:input={() => handleInputChange("timePeriod", idea.timePeriod)}
               rows={1}
               cols={50}
               placeholder="Ex: Sometime in 14th Century"
@@ -220,7 +220,7 @@
               id="setting-input"
               label="Setting"
               bind:value={idea.setting}
-              on:input={() => handleInputChange("title", idea.setting)}
+              on:input={() => handleInputChange("setting", idea.setting)}
               rows={1}
               cols={50}
               placeholder="Ex: Verona, Italy"
@@ -232,7 +232,7 @@
               id="synopsis-input"
               label="Synopsis"
               bind:value={idea.synopsis}
-              on:input={() => handleInputChange("title", idea.synopsis)}
+              on:input={() => handleInputChange("synopsis", idea.synopsis)}
               rows={15}
               cols={50}
               placeholder="A detailed description of the plot goes here..."
