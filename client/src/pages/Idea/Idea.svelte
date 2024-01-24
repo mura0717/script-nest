@@ -26,7 +26,6 @@
   $: if (idea && idea.owner) {
     ideaOwner = idea.owner;
   }
-  console.log(ideaOwner);
 
   let owner = {
     photoURL: $userStore.user.photoURL,
@@ -86,8 +85,7 @@
 
    function handleLitRefsUpdate(updatedLitRefs) {
     userMadeChanges = true;
-    idea = { ...idea, literatureReferences: updatedLitRefs.detail };;
-
+    idea = { ...idea, literatureReferences: updatedLitRefs.detail };
   }
 
   function handleMovieRefsUpdate(updatedMovieRefs) {
@@ -106,10 +104,10 @@
       try {
         const updatedIdea = await fetchUpdate(ideaId, idea);
         if (updatedIdea) {
-          console.log(" idea1:", idea)
+          console.log("ideaPrevious:", idea)
           idea = { ...idea, ...updatedIdea };
           console.log("updated idea:", updatedIdea)
-            console.log(" idea2:", idea)
+            console.log("ideaUpdated:", idea)
         } else {
           throw new AppError("Couldn't update idea", { ideaId });
         }
@@ -242,7 +240,7 @@
           <div class="idea-form-element" id="book-ref-input">
             <LiteratureReferences
               bind:literatureReferences={idea.literatureReferences}
-              on:updateBookRefs={handleLitRefsUpdate}
+              on:updateLitRefs={handleLitRefsUpdate}
             />
           </div>
           <!-- FILM REFERENCES -->
