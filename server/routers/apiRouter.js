@@ -21,7 +21,6 @@ router.get(
     );
     console.log("apiRouter-apiGetRouterBook response:", response);
     const bookId = await response.json();
-    //await apiServices.saveBookReference(bookId);
     res.status(200).send({ bookId, message: "Books fetch successful." });
   })
 );

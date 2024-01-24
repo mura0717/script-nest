@@ -81,13 +81,14 @@
     try {
       if (book && !isBookSelected(book)) {
         const bookReference = {
-          coverImageUrl: book.coverImageUrl,
+          thumbnail: book.thumbnail,
           title: book.title,
           authors: Array.isArray(book.authors)
             ? book.authors.join(", ")
             : "Unknown author(s)",
           publishedDate: book.publishedDate,
         };
+        console.log(bookReference);
         if (Array.isArray(selectedBooks)) {
           selectedBooks = [...selectedBooks, bookReference];
           litRefDispatch("updateLitRefs", selectedBooks);
