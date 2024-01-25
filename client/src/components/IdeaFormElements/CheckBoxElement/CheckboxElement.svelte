@@ -6,9 +6,13 @@
   export let label;
   export let value;
   export let bindGroup;
+
+   function handleInput(event) {
+    dispatch("checkbox-input", event.target.value);
+  }
 </script>
 
 <div>
-  <Checkbox {id} {name} {label} {value} bind:group={bindGroup} />
+  <Checkbox {id} {name} {label} {value} bind:group={bindGroup} on:input={handleInput} />
   <Label class="checkbox-element" for={id}>{label}</Label>
 </div>

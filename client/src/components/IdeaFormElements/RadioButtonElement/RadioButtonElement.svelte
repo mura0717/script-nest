@@ -6,11 +6,14 @@
   export let name;
   export let label;
   export let value;
-  export let selectedValue;
-  export let onChange;
+  export let selectedValue
+
+   function handleInput(event) {
+    dispatch("radio-button-input", event.target.value);
+  }
 </script>
 
 <div>
-  <Radio {id} {name} {label} {value} checked={selectedValue === value} on:change={onChange} />
+  <Radio {id} {name} {label} {value} checked={selectedValue === value} on:input={handleInput} />
   <Label for={id}>{label}</Label>
 </div>
