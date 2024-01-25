@@ -117,10 +117,36 @@
     idea[field] = value;
   }
 
-  /*   let localOriginValue = idea.origin;
-  function handleOriginChange(event) {
-    localOriginValue = event.currentTarget.value;
-  } */
+  function handleOriginChange(field, value) {
+    console.log(`Input changed: type=${field}, value=${value}`);
+    if (field === "origin" && value === "Original Idea") {
+      // Show confirmation modal here
+      // On confirmation, reset fields and trigger auto-save
+      idea.sourceMaterial = "";
+      idea.sourceAuthors = "";
+    }
+    userMadeChanges = true;
+    idea[field] = value;
+  }
+
+  function handleGenreChange(field, value) {
+    if (field === "genre") {
+      // If the genre field is being updated, update the idea object accordingly.
+      // Assuming value is the genre to be added or removed
+      const index = idea.genre.indexOf(value);
+      if (index === -1) {
+        // Add genre if it's not already in the array
+        idea.genre = [...idea.genre, value];
+      } else {
+        // Remove genre if it's already in the array
+        idea.genre = idea.genre.filter((g) => g !== value);
+      }
+    } else {
+      // For other fields, update directly
+      idea[field] = value;
+    }
+    userMadeChanges = true; // Trigger auto-save
+  }
 
   function handleLitRefsUpdate(updatedLitRefs) {
     userMadeChanges = true;
@@ -140,16 +166,17 @@
   // AUTO-SAVE
 
   async function handleSaveIdea(currentIdeaId) {
-    savingMessageDisplay();
+    autoSavingTextDisplay();
     if (currentIdeaId && idea) {
       try {
         const updatedIdea = await fetchUpdate(ideaId, idea);
         if (updatedIdea) {
-          console.log("idea:", idea);
+          console.log("ideaBeforeUpdate:", idea);
           idea = { ...idea, ...updatedIdea };
-          console.log("updated idea:", updatedIdea);
+          console.log("updatedIdea:", updatedIdea);
+          console.log("ideaAfterUpdate:", idea);
         } else {
-          throw new AppError("Couldn't update idea", { ideaId });
+          throw new AppError("Couldn't update idea:", { ideaId });
         }
       } catch (error) {
         throw new AppError(`An error occured: ${error.message}`, {
@@ -166,13 +193,13 @@
       handleSaveIdea(ideaId);
       userMadeChanges = false;
     }
-  }, 500);
+  }, 1000);
 
-  let savingText = "";
-  function savingMessageDisplay() {
-    savingText = "(Auto-Saving...)";
+  let autoSavingText = "";
+  function autoSavingTextDisplay() {
+    autoSavingText = "(Auto-Saving...)";
     setTimeout(() => {
-      savingText = "";
+      autoSavingText = "";
     }, 2000);
   }
 </script>
@@ -184,7 +211,7 @@
       <div>
         <div class="flex">
           <p class="idea-title">{ideaTitle || "Untitled New Idea"}</p>
-          <p class="saving-text">{savingText}</p>
+          <p class="saving-text">{autoSavingText}</p>
         </div>
       </div>
     </div>
@@ -250,9 +277,9 @@
                   name="origin"
                   label={originOption}
                   value={originOption}
-                  bind:group={idea.origin}
+                  selectedValue={idea.origin}
                   on:radio-button-change={(event) =>
-                    handleInputChange("origin", event.detail)}
+                    handleOriginChange("origin", event.detail)}
                 />
               {/each}
             </div>
@@ -293,7 +320,7 @@
                     value={genreOption}
                     label={genreOption}
                     bind:bindGroup={idea.genre}
-                    on:input={() => handleInputChange("genre", idea.genre)}
+                    on:checkbox-input={(event) => handleGenreChange("genre", event.detail)}
                   />
                 {/each}
               </div>

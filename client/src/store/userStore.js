@@ -32,7 +32,6 @@ const createUserStore = () => {
           showLogin: false,
           showSignUp: false,
         });
-        console.log("userStore-isAdminStatus:", isAdminStatus);
       } else {
         set({
           user: null,

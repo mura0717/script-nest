@@ -31,12 +31,9 @@
 }
 
 .saving-text {
-  @apply mt-2 ml-12 text-sm text-gray-500;
+  @apply mt-5 ml-12 text-sm text-gray-500;
 } 
 
-.owner {
-
-}
 .collaborators {
 
 }
@@ -74,7 +71,7 @@
 
 .genre-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr); /* 2 columns for genres */
+  grid-template-columns: repeat(4, 5fr); /* 2 columns for genres */
   gap: 10px;
 }
 

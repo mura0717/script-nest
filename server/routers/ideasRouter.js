@@ -77,7 +77,7 @@ router.patch(
     const ideaId = req.params.ideaId;
     const updatedIdeaData = req.body;
     await ideaServices.editIdea(ideaId, updatedIdeaData);
-    res.status(200).json({ message: "Idea updated successfully" });
+    res.status(200).json({ message: "Idea updated successfully." });
   })
 );
 
@@ -86,11 +86,10 @@ router.delete(
   "/api/auth/ideas/:ideaId",
   isAuthenticated,
   catchAsync(async (req, res) => {
-    console.log("ideaRouter/delete is hit.");
     const ideaId = req.params.ideaId;
     console.log("ideaRouter/delete ideaId;", ideaId);
     await ideaServices.deleteIdea(ideaId);
-    res.status(200).json({ message: "Idea deleted successfully"});
+    res.status(200).json({ message: "Idea deleted successfully."});
   })
 );
 

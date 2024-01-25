@@ -21,7 +21,7 @@
     {label}
     {value}
     bind:group={bindGroup}
-    on:input={handleInput}
+    on:change={handleInput}
   />
   <Label class="checkbox-element" for={id}>{label}</Label>
 </div>
