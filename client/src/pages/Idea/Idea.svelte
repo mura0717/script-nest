@@ -41,7 +41,7 @@
     title: "",
     logline: "",
     genre: [],
-    origin: "",
+    origin: "Original Idea",
     sourceMaterial: "",
     sourceAuthors: "",
     timePeriod: "",
@@ -112,14 +112,15 @@
   $: allCollaborators = $collaboratorStore;
 
   function handleInputChange(field, value) {
+    console.log(`Input changed: type=${field}, value=${value}`);
     userMadeChanges = true;
     idea[field] = value;
   }
 
-  let localOriginValue = idea.origin;
+  /*   let localOriginValue = idea.origin;
   function handleOriginChange(event) {
     localOriginValue = event.currentTarget.value;
-  }
+  } */
 
   function handleLitRefsUpdate(updatedLitRefs) {
     userMadeChanges = true;
@@ -144,10 +145,9 @@
       try {
         const updatedIdea = await fetchUpdate(ideaId, idea);
         if (updatedIdea) {
-          console.log("ideaPrevious:", idea);
+          console.log("idea:", idea);
           idea = { ...idea, ...updatedIdea };
           console.log("updated idea:", updatedIdea);
-          console.log("ideaUpdated:", idea);
         } else {
           throw new AppError("Couldn't update idea", { ideaId });
         }
@@ -201,21 +201,21 @@
               on:input={() => handleInputChange("title", idea.title)}
               rows={1}
               cols={50}
-              placeholder=""
+              placeholder="Your idea title here..."
             />
           </div>
-             <!-- PREMISE -->
-            <div class="idea-form-element">
-              <TextElement
-                id="premise-input"
-                label="Premise"
-                bind:value={idea.premise}
-                on:input={() => handleInputChange("premise", idea.premise)}
-                rows={1}
-                cols={50}
-                placeholder="Ex: Love conquers all."
-              />
-            </div>
+          <!-- PREMISE -->
+          <div class="idea-form-element">
+            <TextElement
+              id="premise-input"
+              label="Premise"
+              bind:value={idea.premise}
+              on:input={() => handleInputChange("premise", idea.premise)}
+              rows={1}
+              cols={50}
+              placeholder="Ex: Love conquers all."
+            />
+          </div>
           <!-- LOGLINE -->
           <div class="idea-form-element">
             <TextElement
@@ -249,14 +249,15 @@
                   id={`origin-${originOption.toLowerCase()}`}
                   name="origin"
                   label={originOption}
-                  bind:value={originOption}
-                  selectedValue={localOriginValue}
-                  on:input={() => handleInputChange("origin", idea.origin)}
+                  value={originOption}
+                  bind:group={idea.origin}
+                  on:radio-button-change={(event) =>
+                    handleInputChange("origin", event.detail)}
                 />
               {/each}
             </div>
             <!-- SOURCE MATERIAL TITLE -->
-            {#if localOriginValue !== "Original Idea"}
+            {#if idea.origin !== "Original Idea"}
               <div class="idea-form-element">
                 <TextElement
                   id="source-material-input"
@@ -292,8 +293,7 @@
                     value={genreOption}
                     label={genreOption}
                     bind:bindGroup={idea.genre}
-                      on:input={() =>
-                    handleInputChange("genre", idea.genre)}
+                    on:input={() => handleInputChange("genre", idea.genre)}
                   />
                 {/each}
               </div>
