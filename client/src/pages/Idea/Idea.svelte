@@ -39,7 +39,7 @@
 
   let idea = {
     author: currentUser,
-    creationTimestamp: null,
+    saveCounter: 0,
     title: "",
     logline: "",
     genre: [],
@@ -88,27 +88,20 @@
   onMount(async () => {
     const pathSegments = window.location.pathname.split("/");
     ideaId = pathSegments[pathSegments.length - 1];
-    if (ideaId) {
-      try {
-        const fetchedIdeaData = await fetchIdea(ideaId);
-        if (fetchedIdeaData) {
-          idea = { ...fetchedIdeaData, genre: fetchedIdeaData.genre || [] };
-          ideaAuthor = fetchIdea.currentUser;
-          userMadeChanges = false;
-          await fetchCollaborators(ideaId);
-        } else {
-          idea.creationTimestamp = new Date().toISOString();
-          idea.origin = defaultOrigin;
-          handleSaveIdea(ideaId);
-        }
-      } catch (error) {
-        console.error("Error loading idea:", error);
-        throw new AppError("Error loading idea", 400);
+    try {
+      const fetchedIdeaData = await fetchIdea(ideaId);
+      if (fetchedIdeaData && fetchedIdeaData.saveCounter !== 0) {
+        idea = { ...fetchedIdeaData, genre: fetchedIdeaData.genre || [] };
+        userMadeChanges = false;
+        await fetchCollaborators(ideaId);
+      } else {
+       const defaultIdeaData = { ...idea}
+      handleInitialSave(ideaId, defaultIdeaData);
       }
-    } else {
-      idea.origin = defaultOrigin;
-      idea.creationTimestamp = new Date().toISOString();
-      handleSaveIdea(null);
+      console.log("initialSavedIdea:", defaultIdea)
+    } catch (error) {
+      console.error("Error loading idea:", error);
+      throw new AppError("Error loading idea", 400);
     }
     isInitialLoad = false;
     console.log("Current idea.genre:", idea.genre);
@@ -164,6 +157,32 @@
     idea = { ...idea, comments: updatedComments.detail };
   }
 
+// INITIAL SAVE
+async function handleInitialSave(ideaId, defaultIdeaData) {
+  console.log("Initial save triggered.");
+
+  if (ideaId && defaultIdeaData) {
+    try {
+      const initialUpdate = await fetchUpdate(ideaId, defaultIdeaData);
+      if (initialUpdate) {
+        console.log("Initial idea saved:", initialUpdate);
+        // Update the global idea object with the response
+        idea = { ...defaultIdeaData, ...initialUpdate, saveCounter: 1 };
+      } else {
+        throw new AppError("Couldn't do initial save", { ideaId });
+      }
+    } catch (error) {
+      throw new AppError(`An error occurred: ${error.message}`, {
+        initialError: error,
+      });
+    }
+  } else {
+    console.error("Missing ideaId or defaultIdeaData");
+  }
+}
+
+
+
   // AUTO-SAVE
   async function handleSaveIdea(currentIdeaId) {
     console.log("auto save triggered.");
@@ -173,6 +192,10 @@
         const updatedIdea = await fetchUpdate(ideaId, idea);
         if (updatedIdea) {
           console.log("ideaBeforeUpdate:", idea);
+          if (isNaN(idea.saveCounter)) {
+            idea.saveCounter = 0;
+          }
+          ++idea.saveCounter; // Increment the counter
           idea = { ...idea, ...updatedIdea };
           console.log("updatedIdea:", updatedIdea);
           console.log("ideaAfterUpdate:", idea);
@@ -266,7 +289,7 @@
                   name="origin"
                   label={originOption}
                   value={originOption}
-                  selectedValue={idea.origin}
+                  bind:selectedValue={idea.origin}
                   on:radio-button-change={(event) =>
                     handleInputChange("origin", event.detail)}
                 />
