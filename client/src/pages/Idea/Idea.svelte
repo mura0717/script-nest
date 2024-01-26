@@ -35,13 +35,15 @@
     uid: $userStore.user.uid,
   };
 
+  let defaultOrigin = "Original Idea";
+
   let idea = {
     author: currentUser,
     creationTimestamp: null,
     title: "",
     logline: "",
     genre: [],
-    origin: "Original Idea",
+    origin: defaultOrigin,
     sourceMaterial: "",
     sourceAuthors: "",
     timePeriod: "",
@@ -90,12 +92,13 @@
       try {
         const fetchedIdeaData = await fetchIdea(ideaId);
         if (fetchedIdeaData) {
-          idea = { ...fetchedIdeaData };
-          ideaAuthor = fetchIdea.owner;
+          idea = { ...fetchedIdeaData, genre: fetchedIdeaData.genre || [] };
+          ideaAuthor = fetchIdea.currentUser;
           userMadeChanges = false;
           await fetchCollaborators(ideaId);
         } else {
           idea.creationTimestamp = new Date().toISOString();
+          idea.origin = defaultOrigin;
           handleSaveIdea(ideaId);
         }
       } catch (error) {
@@ -103,22 +106,23 @@
         throw new AppError("Error loading idea", 400);
       }
     } else {
+      idea.origin = defaultOrigin;
       idea.creationTimestamp = new Date().toISOString();
       handleSaveIdea(null);
     }
     isInitialLoad = false;
+    console.log("Current idea.genre:", idea.genre);
   });
 
   $: allCollaborators = $collaboratorStore;
 
+  // FORM CHANGES EVENT-HANDLERS
   function handleInputChange(field, value) {
-    console.log(`Input changed: type=${field}, value=${value}`);
-    userMadeChanges = true;
-    idea[field] = value;
-  }
-
-  function handleOriginChange(field, value) {
-    console.log(`Input changed: type=${field}, value=${value}`);
+    console.log(`Input changed: field=${field}, value=${value}`);
+    if (field === "genre" && !Array.isArray(value)) {
+      console.error("Invalid genre value:", value);
+      return;
+    }
     if (field === "origin" && value === "Original Idea") {
       // Show confirmation modal here
       // On confirmation, reset fields and trigger auto-save
@@ -129,23 +133,20 @@
     idea[field] = value;
   }
 
-  function handleGenreChange(field, value) {
-    if (field === "genre") {
-      // If the genre field is being updated, update the idea object accordingly.
-      // Assuming value is the genre to be added or removed
-      const index = idea.genre.indexOf(value);
-      if (index === -1) {
-        // Add genre if it's not already in the array
+  function originModal() {}
+
+  function handleGenreChange(detail) {
+    const { value, checked } = detail;
+
+    if (checked) {
+      if (!idea.genre.includes(value)) {
         idea.genre = [...idea.genre, value];
-      } else {
-        // Remove genre if it's already in the array
-        idea.genre = idea.genre.filter((g) => g !== value);
       }
     } else {
-      // For other fields, update directly
-      idea[field] = value;
+      idea.genre = idea.genre.filter((g) => g !== value);
     }
-    userMadeChanges = true; // Trigger auto-save
+
+    userMadeChanges = true;
   }
 
   function handleLitRefsUpdate(updatedLitRefs) {
@@ -164,8 +165,8 @@
   }
 
   // AUTO-SAVE
-
   async function handleSaveIdea(currentIdeaId) {
+    console.log("auto save triggered.");
     autoSavingTextDisplay();
     if (currentIdeaId && idea) {
       try {
@@ -255,18 +256,6 @@
               placeholder="Ex: When two young members of feuding families meet, forbidden love ensues."
             />
           </div>
-          <!-- GENRE -->
-          <!--           <div class="idea-form-element">
-            <TextElement
-              id="genre-input"
-              label="Genre"
-              bind:value={idea.genre}
-              on:input={() => handleInputChange("genre", idea.genre)}
-              rows={1}
-              cols={50}
-              placeholder="Ex: Romance, Drama..."
-            />
-          </div> -->
           <!-- ORIGIN -->
           <div class="idea-form-element">
             <Label class="idea-element-label">Origin:</Label>
@@ -279,7 +268,7 @@
                   value={originOption}
                   selectedValue={idea.origin}
                   on:radio-button-change={(event) =>
-                    handleOriginChange("origin", event.detail)}
+                    handleInputChange("origin", event.detail)}
                 />
               {/each}
             </div>
@@ -319,8 +308,9 @@
                     name="genre"
                     value={genreOption}
                     label={genreOption}
-                    bind:bindGroup={idea.genre}
-                    on:checkbox-input={(event) => handleGenreChange("genre", event.detail)}
+                    bindGroup={idea.genre || []}
+                    on:checkbox-input={(event) =>
+                      handleGenreChange(event.detail)}
                   />
                 {/each}
               </div>

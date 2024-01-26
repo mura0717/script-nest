@@ -6,12 +6,14 @@
   export let name;
   export let label;
   export let value;
-  export let bindGroup;
+  export let bindGroup = [];
   const dispatch = createEventDispatcher();
 
   function handleInput(event) {
-    dispatch("checkbox-input", event.target.value);
-  }
+  dispatch("checkbox-input", { value: event.target.value, checked: event.target.checked });
+}
+
+
 </script>
 
 <div>
