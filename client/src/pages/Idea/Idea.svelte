@@ -36,11 +36,11 @@
   };
 
   let defaultOrigin = "Original Idea";
-  let saveCounter = 0;
+  let initialSaveCount = 0;
 
   let idea = {
     author: currentUser,
-    saveCounter: 0,
+    saveCount: initialSaveCount,
     title: "",
     logline: "",
     genre: [],
@@ -89,29 +89,26 @@
   onMount(async () => {
     const pathSegments = window.location.pathname.split("/");
     ideaId = pathSegments[pathSegments.length - 1];
-    console.log("Counter:", saveCounter);
+    console.log("first onMount Counter:", initialSaveCount);
     try {
       const fetchedIdea = await fetchIdea(ideaId);
-      if (fetchedIdea && fetchedIdea.saveCounter !== 0) {
-        console.log("fetchedIdea:", fetchedIdea);
+      if (
+        fetchedIdea &&
+        (fetchedIdea.saveCount === 0 || fetchedIdea.saveCount === undefined)
+      ) {
+        const defaultIdea = { ...idea };
+        handleInitialSave(ideaId, defaultIdea);
+      } else if (fetchIdea) {
         idea = { ...fetchedIdea, genre: fetchedIdea.genre || [] };
         userMadeChanges = false;
         await fetchCollaborators(ideaId);
-        console.log("fetchedIdea:", idea);
-      } else {
-        const defaultIdea = { ...idea };
-        console.log("deafaultIdeaData", defaultIdea);
-        handleInitialSave(ideaId, defaultIdea);
-        console.log("initialSavedIdea:", idea);
       }
-      
     } catch (error) {
       console.error("Error loading idea:", error);
       throw new AppError("Error loading idea", 400);
     }
     isInitialLoad = false;
     console.log("Current idea.genre:", idea.genre);
-    console.log("Counter:", saveCounter);
   });
 
   $: allCollaborators = $collaboratorStore;
@@ -119,6 +116,14 @@
   // FORM CHANGES EVENT-HANDLERS
   function handleInputChange(field, value) {
     console.log(`Input changed: field=${field}, value=${value}`);
+    userMadeChanges = true;
+    idea[field] = value;
+    console.log(`idea field value=${value}`);
+  }
+
+    let testOrigin = 'Original Idea';
+    
+  function HandleOriginChange(field, value) {
     console.log("default origin:", defaultOrigin);
     if (field === "origin" && value === "Original Idea") {
       // Show confirmation modal here
@@ -160,16 +165,14 @@
   }
 
   // INITIAL SAVE
-  async function handleInitialSave(ideaId, defaultIdeaData) {
-    console.log("Initial save triggered.");
-
-    if (ideaId && defaultIdeaData) {
+  async function handleInitialSave(ideaId, defaultIdea) {
+    if (ideaId && defaultIdea) {
       try {
-        const initialUpdate = await fetchUpdate(ideaId, defaultIdeaData);
+        const initialUpdate = await fetchUpdate(ideaId, defaultIdea);
         if (initialUpdate) {
+          idea = { ...defaultIdea, ...initialUpdate, saveCount: 1 };
           console.log("Initial idea saved:", initialUpdate);
-          // Update the global idea object with the response
-          idea = { ...defaultIdeaData, ...initialUpdate, saveCounter: 1 };
+          console.log("Save Count after initial save:", idea.saveCount);
         } else {
           throw new AppError("Couldn't do initial save", { ideaId });
         }
@@ -179,7 +182,7 @@
         });
       }
     } else {
-      console.error("Missing ideaId or defaultIdeaData");
+      console.error("Missing ideaId or defaultIdea");
     }
   }
 
@@ -192,12 +195,11 @@
         const updatedIdea = await fetchUpdate(ideaId, idea);
         if (updatedIdea) {
           console.log("ideaBeforeUpdate:", idea);
-          if (isNaN(idea.saveCounter)) {
-            idea.saveCounter = 0;
+          if (isNaN(idea.saveCount)) {
+            idea.saveCount = 0;
           }
-          ++idea.saveCounter; // Increment the counter
+          ++idea.saveCount; // Increment the counter
           idea = { ...idea, ...updatedIdea };
-          console.log("updatedIdea:", updatedIdea);
           console.log("ideaAfterUpdate:", idea);
         } else {
           throw new AppError("Couldn't update idea:", { ideaId });
