@@ -12,7 +12,10 @@
 
   function handleInput(event) {
     dispatch("radio-button-change", event.target.value);
+    console.log("event-target-value:", event.target.value);
   }
+
+  console.log("dispatch:", dispatch);
 </script>
 
 <div>

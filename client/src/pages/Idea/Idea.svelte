@@ -36,6 +36,7 @@
   };
 
   let defaultOrigin = "Original Idea";
+  let saveCounter = 0;
 
   let idea = {
     author: currentUser,
@@ -88,23 +89,29 @@
   onMount(async () => {
     const pathSegments = window.location.pathname.split("/");
     ideaId = pathSegments[pathSegments.length - 1];
+    console.log("Counter:", saveCounter);
     try {
-      const fetchedIdeaData = await fetchIdea(ideaId);
-      if (fetchedIdeaData && fetchedIdeaData.saveCounter !== 0) {
-        idea = { ...fetchedIdeaData, genre: fetchedIdeaData.genre || [] };
+      const fetchedIdea = await fetchIdea(ideaId);
+      if (fetchedIdea && fetchedIdea.saveCounter !== 0) {
+        console.log("fetchedIdea:", fetchedIdea);
+        idea = { ...fetchedIdea, genre: fetchedIdea.genre || [] };
         userMadeChanges = false;
         await fetchCollaborators(ideaId);
+        console.log("fetchedIdea:", idea);
       } else {
-       const defaultIdeaData = { ...idea}
-      handleInitialSave(ideaId, defaultIdeaData);
+        const defaultIdea = { ...idea };
+        console.log("deafaultIdeaData", defaultIdea);
+        handleInitialSave(ideaId, defaultIdea);
+        console.log("initialSavedIdea:", idea);
       }
-      console.log("initialSavedIdea:", defaultIdea)
+      
     } catch (error) {
       console.error("Error loading idea:", error);
       throw new AppError("Error loading idea", 400);
     }
     isInitialLoad = false;
     console.log("Current idea.genre:", idea.genre);
+    console.log("Counter:", saveCounter);
   });
 
   $: allCollaborators = $collaboratorStore;
@@ -112,25 +119,21 @@
   // FORM CHANGES EVENT-HANDLERS
   function handleInputChange(field, value) {
     console.log(`Input changed: field=${field}, value=${value}`);
-    if (field === "genre" && !Array.isArray(value)) {
-      console.error("Invalid genre value:", value);
-      return;
-    }
+    console.log("default origin:", defaultOrigin);
     if (field === "origin" && value === "Original Idea") {
       // Show confirmation modal here
-      // On confirmation, reset fields and trigger auto-save
       idea.sourceMaterial = "";
       idea.sourceAuthors = "";
     }
     userMadeChanges = true;
     idea[field] = value;
+    console.log(`idea field value=${value}`);
   }
 
   function originModal() {}
 
   function handleGenreChange(detail) {
     const { value, checked } = detail;
-
     if (checked) {
       if (!idea.genre.includes(value)) {
         idea.genre = [...idea.genre, value];
@@ -138,7 +141,6 @@
     } else {
       idea.genre = idea.genre.filter((g) => g !== value);
     }
-
     userMadeChanges = true;
   }
 
@@ -157,31 +159,29 @@
     idea = { ...idea, comments: updatedComments.detail };
   }
 
-// INITIAL SAVE
-async function handleInitialSave(ideaId, defaultIdeaData) {
-  console.log("Initial save triggered.");
+  // INITIAL SAVE
+  async function handleInitialSave(ideaId, defaultIdeaData) {
+    console.log("Initial save triggered.");
 
-  if (ideaId && defaultIdeaData) {
-    try {
-      const initialUpdate = await fetchUpdate(ideaId, defaultIdeaData);
-      if (initialUpdate) {
-        console.log("Initial idea saved:", initialUpdate);
-        // Update the global idea object with the response
-        idea = { ...defaultIdeaData, ...initialUpdate, saveCounter: 1 };
-      } else {
-        throw new AppError("Couldn't do initial save", { ideaId });
+    if (ideaId && defaultIdeaData) {
+      try {
+        const initialUpdate = await fetchUpdate(ideaId, defaultIdeaData);
+        if (initialUpdate) {
+          console.log("Initial idea saved:", initialUpdate);
+          // Update the global idea object with the response
+          idea = { ...defaultIdeaData, ...initialUpdate, saveCounter: 1 };
+        } else {
+          throw new AppError("Couldn't do initial save", { ideaId });
+        }
+      } catch (error) {
+        throw new AppError(`An error occurred: ${error.message}`, {
+          initialError: error,
+        });
       }
-    } catch (error) {
-      throw new AppError(`An error occurred: ${error.message}`, {
-        initialError: error,
-      });
+    } else {
+      console.error("Missing ideaId or defaultIdeaData");
     }
-  } else {
-    console.error("Missing ideaId or defaultIdeaData");
   }
-}
-
-
 
   // AUTO-SAVE
   async function handleSaveIdea(currentIdeaId) {
