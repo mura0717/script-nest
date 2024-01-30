@@ -10,11 +10,11 @@
   export let selectedValue;
   const dispatch = createEventDispatcher();
 
-  function handleInput(event) {
+  function HandleInput(event) {
     dispatch("radio-button-change", event.target.value);
     console.log("event-target-value:", event.target.value);
   }
-
+  console.log("selectedValue:", selectedValue)
   console.log("dispatch:", dispatch);
 </script>
 
@@ -25,7 +25,7 @@
     {label}
     {value}
     checked={selectedValue === value}
-    on:change={handleInput}
+    on:change={HandleInput}
   />
   <Label for={id}>{label}</Label>
 </div>

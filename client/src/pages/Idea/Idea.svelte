@@ -97,9 +97,9 @@
         (fetchedIdea.saveCount === 0 || fetchedIdea.saveCount === undefined)
       ) {
         const defaultIdea = { ...idea };
-        handleInitialSave(ideaId, defaultIdea);
+        HandleInitialSave(ideaId, defaultIdea);
       } else if (fetchIdea) {
-        idea = { ...fetchedIdea, genre: fetchedIdea.genre || [] };
+        idea = { ...fetchedIdea, genre: fetchedIdea.genre || [], origin: fetchedIdea.origin || defaultOrigin};
         userMadeChanges = false;
         await fetchCollaborators(ideaId);
       }
@@ -114,14 +114,14 @@
   $: allCollaborators = $collaboratorStore;
 
   // FORM CHANGES EVENT-HANDLERS
-  function handleInputChange(field, value) {
+  function HandleInputChange(field, value) {
     console.log(`Input changed: field=${field}, value=${value}`);
     userMadeChanges = true;
     idea[field] = value;
     console.log(`idea field value=${value}`);
   }
 
-    let testOrigin = 'Original Idea';
+  
     
   function HandleOriginChange(field, value) {
     console.log("default origin:", defaultOrigin);
@@ -135,9 +135,9 @@
     console.log(`idea field value=${value}`);
   }
 
-  function originModal() {}
+  function OriginModal() {}
 
-  function handleGenreChange(detail) {
+  function HandleGenreChange(detail) {
     const { value, checked } = detail;
     if (checked) {
       if (!idea.genre.includes(value)) {
@@ -149,23 +149,23 @@
     userMadeChanges = true;
   }
 
-  function handleLitRefsUpdate(updatedLitRefs) {
+  function HandleLitRefsUpdate(updatedLitRefs) {
     userMadeChanges = true;
     idea = { ...idea, literatureReferences: updatedLitRefs.detail };
   }
 
-  function handleMovieRefsUpdate(updatedMovieRefs) {
+  function HandleMovieRefsUpdate(updatedMovieRefs) {
     userMadeChanges = true;
     idea = { ...idea, movieReferences: updatedMovieRefs.detail };
   }
 
-  function handleCommentsUpdate(updatedComments) {
+  function HandleCommentsUpdate(updatedComments) {
     userMadeChanges = true;
     idea = { ...idea, comments: updatedComments.detail };
   }
 
   // INITIAL SAVE
-  async function handleInitialSave(ideaId, defaultIdea) {
+  async function HandleInitialSave(ideaId, defaultIdea) {
     if (ideaId && defaultIdea) {
       try {
         const initialUpdate = await fetchUpdate(ideaId, defaultIdea);
@@ -187,9 +187,9 @@
   }
 
   // AUTO-SAVE
-  async function handleSaveIdea(currentIdeaId) {
+  async function HandleSaveIdea(currentIdeaId) {
     console.log("auto save triggered.");
-    autoSavingTextDisplay();
+    AutoSavingTextDisplay();
     if (currentIdeaId && idea) {
       try {
         const updatedIdea = await fetchUpdate(ideaId, idea);
@@ -216,13 +216,13 @@
   }
   const debounceSave = debounce(() => {
     if (userMadeChanges) {
-      handleSaveIdea(ideaId);
+      HandleSaveIdea(ideaId);
       userMadeChanges = false;
     }
   }, 1000);
 
   let autoSavingText = "";
-  function autoSavingTextDisplay() {
+  function AutoSavingTextDisplay() {
     autoSavingText = "(Auto-Saving...)";
     setTimeout(() => {
       autoSavingText = "";
@@ -251,7 +251,7 @@
               id="title-input"
               label="Title"
               bind:value={idea.title}
-              on:input={() => handleInputChange("title", idea.title)}
+              on:input={() => HandleInputChange("title", idea.title)}
               rows={1}
               cols={50}
               placeholder="Your idea title here..."
@@ -263,7 +263,7 @@
               id="premise-input"
               label="Premise"
               bind:value={idea.premise}
-              on:input={() => handleInputChange("premise", idea.premise)}
+              on:input={() => HandleInputChange("premise", idea.premise)}
               rows={1}
               cols={50}
               placeholder="Ex: Love conquers all."
@@ -275,7 +275,7 @@
               id="logline-input"
               label="Logline"
               bind:value={idea.logline}
-              on:input={() => handleInputChange("logline", idea.logline)}
+              on:input={() => HandleInputChange("logline", idea.logline)}
               rows={2}
               cols={100}
               placeholder="Ex: When two young members of feuding families meet, forbidden love ensues."
@@ -293,7 +293,7 @@
                   value={originOption}
                   bind:selectedValue={idea.origin}
                   on:radio-button-change={(event) =>
-                    handleInputChange("origin", event.detail)}
+                    HandleOriginChange("origin", event.detail)}
                 />
               {/each}
             </div>
@@ -308,7 +308,7 @@
                   cols={50}
                   placeholder="Ex: Romeo & Juliet"
                   on:input={() =>
-                    handleInputChange("sourceMaterial", idea.sourceMaterial)}
+                    HandleInputChange("sourceMaterial", idea.sourceMaterial)}
                 />
                 <!-- SOURCE AUTHOR(S) -->
                 <TextElement
@@ -319,7 +319,7 @@
                   cols={50}
                   placeholder="Ex: William Shakespeare"
                   on:input={() =>
-                    handleInputChange("sourceAuthors", idea.sourceAuthors)}
+                    HandleInputChange("sourceAuthors", idea.sourceAuthors)}
                 />
               </div>
             {/if}
@@ -335,7 +335,7 @@
                     label={genreOption}
                     bindGroup={idea.genre || []}
                     on:checkbox-input={(event) =>
-                      handleGenreChange(event.detail)}
+                      HandleGenreChange(event.detail)}
                   />
                 {/each}
               </div>
@@ -347,7 +347,7 @@
                 label="Time Period"
                 bind:value={idea.timePeriod}
                 on:input={() =>
-                  handleInputChange("timePeriod", idea.timePeriod)}
+                  HandleInputChange("timePeriod", idea.timePeriod)}
                 rows={1}
                 cols={50}
                 placeholder="Ex: Sometime in 14th Century"
@@ -359,7 +359,7 @@
                 id="setting-input"
                 label="Setting"
                 bind:value={idea.setting}
-                on:input={() => handleInputChange("setting", idea.setting)}
+                on:input={() => HandleInputChange("setting", idea.setting)}
                 rows={1}
                 cols={50}
                 placeholder="Ex: Verona, Italy"
@@ -371,7 +371,7 @@
                 id="synopsis-input"
                 label="Synopsis"
                 bind:value={idea.synopsis}
-                on:input={() => handleInputChange("synopsis", idea.synopsis)}
+                on:input={() => HandleInputChange("synopsis", idea.synopsis)}
                 rows={15}
                 cols={50}
                 placeholder="A detailed description of the plot goes here..."
@@ -381,21 +381,21 @@
             <div class="idea-form-element" id="book-ref-input">
               <LiteratureReferences
                 bind:literatureReferences={idea.literatureReferences}
-                on:updateLitRefs={handleLitRefsUpdate}
+                on:updateLitRefs={HandleLitRefsUpdate}
               />
             </div>
             <!-- FILM REFERENCES -->
             <div class="idea-form-element" id="film-ref-input">
               <MovieReferences
                 bind:movieReferences={idea.movieReferences}
-                on:updateMovieRefs={handleMovieRefsUpdate}
+                on:updateMovieRefs={HandleMovieRefsUpdate}
               />
             </div>
             <!-- COMMENTS -->
             <div class="idea-form-element">
               <Comments
                 bind:comments={idea.comments}
-                on:updateComments={handleCommentsUpdate}
+                on:updateComments={HandleCommentsUpdate}
               />
             </div>
           </div>
